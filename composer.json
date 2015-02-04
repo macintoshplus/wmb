@@ -25,5 +25,10 @@
     "autoload": {
         "psr-0": { "JbNahan\\Bundle\\WorkflowManagerBundle": "" }
     },
-    "target-dir": "JbNahan/Bundle/WorkflowManagerBundle"
+    "target-dir": "JbNahan/Bundle/WorkflowManagerBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
 }
