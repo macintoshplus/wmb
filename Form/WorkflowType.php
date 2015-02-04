@@ -26,8 +26,28 @@ class WorkflowType extends AbstractType
             ->add('createdBy')
             ->add('updatedAt')
             ->add('updatedBy')
-            ->add('rolesForUpdate')
-            ->add('rolesForUse')
+            ->add('rolesForUpdate', 'collection', array(
+                'type'=> 'text',
+                'options'=>array('required'=>false),
+                'required' => true,
+                'cascade_validation'=>false,
+                'allow_add'=>true,
+                'prototype_name'=>'__name_value__',
+                'allow_delete' => true,
+                'error_bubbling'=>false/*,
+                'by_reference'=>false*/
+            ))
+            ->add('rolesForUse', 'collection', array(
+                'type'=> 'text',
+                'options'=>array('required'=>false),
+                'required' => true,
+                'cascade_validation'=>false,
+                'allow_add'=>true,
+                'prototype_name'=>'__name_value__',
+                'allow_delete' => true,
+                'error_bubbling'=>false/*,
+                'by_reference'=>false*/
+            ))
         ;
     }
     
