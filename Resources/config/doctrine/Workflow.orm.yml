@@ -78,6 +78,6 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow:
         nodes:
             targetEntity: Node
             mappedBy: workflow
-        executions:
-            targetEntity: Execution
-            mappedBy: workflow
+#        executions:
+#            targetEntity: Execution
+#            mappedBy: workflow

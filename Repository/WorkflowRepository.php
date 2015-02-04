@@ -14,23 +14,56 @@ use JbNahan\Bundle\WorkflowManagerBundle\Entity\DefinitionSearch;
 class WorkflowRepository extends EntityRepository
 {
     /**
-     * @param int $workflowId
-     * @return ArrayCollection
+     * @param DefinitionSearch $param
+     * @return Querybuilder
      */
-    public function getQbWithSearch(DefinitionSearch $param){
+    public function getQbWithSearch(DefinitionSearch $param)
+    {
         $qb = $this->createQueryBuilder('w');
         if (null !== $param->getName()) {
             $qb->andWhere($qb->expr()->like('w.name', $qb->expr()->literal('%'.$param->getName().'%')));
         }
         //Limite aux roles
-        if (is_array($param->getRolesForUpdate()) && !empty($param->getRolesForUpdate())) {
+        if (is_array($param->getRolesForUpdate()) && 0 < count($param->getRolesForUpdate())) { //
             $expr = '';
             foreach ($param->getRolesForUpdate() as $role) {
-                $expr .= ($expr===''? '':' OR ') . 'w.roleForUpdate like \'%'.$role.'%\'';
+                $expr .= ($expr===''? '':' OR ') . 'w.rolesForUpdate like \'%'.$role.'%\'';
             }
 
-            $qb->andWhere($qb->expr()->literal('(' . $expr . ')'));
+            $qb->andWhere('(' . $expr . ')');
 
+        }
+        
+        if (null !== $param->getPublishedAt()) {
+            if ($param->getPublishedAt() instanceof \DateTime) {
+                $qb->andWhere('w.publishedAt = :datepublish')
+                    ->setParameter('datepublish', $param->getPublishedAt());
+            }
+            //c'est publié
+            if (is_bool($param->getPublishedAt()) && true === $param->getPublishedAt()) {
+                $qb->andWhere($qb->expr->isNotNull('w.publishedAt'));
+            }
+            //c'est pas publié
+            if (is_bool($param->getPublishedAt()) && false === $param->getPublishedAt()) {
+                $qb->andWhere($qb->expr->isNull('w.publishedAt'));
+            }
+            
+        }
+        
+        if (null !== $param->getArchivedAt()) {
+            if ($param->getArchivedAt() instanceof \DateTime) {
+                $qb->andWhere('w.archivedAt = :datearchive')
+                    ->setParameter('datearchive', $param->getArchivedAt());
+            }
+            //c'est archivé
+            if (is_bool($param->getArchivedAt()) && true === $param->getArchivedAt()) {
+                $qb->andWhere($qb->expr->isNotNull('w.archivedAt'));
+            }
+            //c'est pas archivé
+            if (is_bool($param->getArchivedAt()) && false === $param->getArchivedAt()) {
+                $qb->andWhere($qb->expr->isNull('w.archivedAt'));
+            }
+            
         }
         /*if (null !== $param->get()) {
             $qb->andWhere('w. =')

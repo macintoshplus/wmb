@@ -95,7 +95,7 @@ class Workflow
     public function __construct()
     {
         $this->nodes = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->executions = new \Doctrine\Common\Collections\ArrayCollection();
+        //$this->executions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -251,39 +251,41 @@ class Workflow
      * @param \JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution $executions
      * @return Workflow
      */
-    public function addExecution(\JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution $executions)
-    {
-        $this->executions[] = $executions;
+    // public function addExecution(\JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution $executions)
+    // {
+    //     $this->executions[] = $executions;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * Remove executions
      *
      * @param \JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution $executions
      */
-    public function removeExecution(\JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution $executions)
-    {
-        $this->executions->removeElement($executions);
-    }
+    // public function removeExecution(\JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution $executions)
+    // {
+    //     $this->executions->removeElement($executions);
+    // }
 
     /**
      * Get executions
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getExecutions()
+    // public function getExecutions()
+    // {
+    //     return $this->executions;
+    // }
+    
+    
+    public function preUpdate()
     {
-        return $this->executions;
-    }
-    
-    
-    public function preUpdate() {
         $this->setUpdatedAt(new \DateTime());
     }
     
-    public function prePersist(){
+    public function prePersist()
+    {
         $this->setCreatedAt(new \DateTime());
     }
 
