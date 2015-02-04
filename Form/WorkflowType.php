@@ -16,16 +16,6 @@ class WorkflowType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('version')
-            ->add('parent')
-            ->add('publishedAt')
-            ->add('publishedBy')
-            ->add('archivedAt')
-            ->add('archivedBy')
-            ->add('createdAt')
-            ->add('createdBy')
-            ->add('updatedAt')
-            ->add('updatedBy')
             ->add('rolesForUpdate', 'collection', array(
                 'type'=> 'text',
                 'options'=>array('required'=>false),
