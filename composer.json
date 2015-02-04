@@ -25,5 +25,5 @@
     "autoload": {
         "psr-0": { "JbNahan\\Bundle\\WorkflowMangerBundle": "" }
     },
-    "target-dir": "JbNahan/Bundle/WorkflowMangerBundle"
+    "target-dir": "JbNahan/Bundle/WorkflowManagerBundle"
 }
