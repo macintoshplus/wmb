@@ -16,11 +16,7 @@
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "1.2.*",
         "twig/extensions": "1.0.*",
-        "jms/serializer-bundle": "0.13.*",
-        "friendsofsymfony/rest-bundle": "1.4.*",
-        "nelmio/api-doc-bundle": "2.5.*",
-        "willdurand/hateoas-bundle": "0.4.*",
-        "knplabs/knp-paginator-bundle": "2.4.*"
+        "jms/serializer-bundle": "0.13.*"
     },
     "require-dev": {
         "atoum/atoum": "master-dev",
