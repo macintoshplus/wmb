@@ -1,6 +1,7 @@
 JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow:
     type: entity
     table: workflow
+    repositoryClass: JbNahan\Bundle\WorkflowManagerBundle\Repository\WorkflowRepository
     id:
         id:
             type: integer

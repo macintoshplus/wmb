@@ -4,8 +4,6 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-use InExtenso\Bundle\MgedBundle\Entity\GedTreeSearch;
-
 /**
  * ExecutionRepository
  *

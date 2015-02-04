@@ -149,7 +149,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  int $workflowVersion
      * @return Workflow
      * @throws WorkflowDefinitionStorageInterfaceException
-     * @throws DbException
+     * 
      */
     public function loadById( $workflowId, $workflowName = '', $workflowVersion = 0 )
     {
@@ -266,7 +266,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  int $workflowVersion
      * @return Workflow
      * @throws WorkflowDefinitionStorageInterfaceException
-     * @throws DbException
+     * 
      */
     public function loadByName( $workflowName, $workflowVersion = 0 )
     {
@@ -526,7 +526,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *
      * @param  string $workflowName
      * @return int
-     * @throws DbException
+     * 
      * @todo Ajouter la gestion des wf publié ou non
      */
     protected function getCurrentVersionNumber( $workflowName )
@@ -587,5 +587,27 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         {
             return $defaultValue;
         }
+    }
+
+    /**
+     * @param DefinitionSearch $param
+     * @return DoctrineCollection
+     */
+    public function getDefinitionForCurrentUser(Entity\DefinitionSearch $param)
+    {
+      $userRoles = $this->security->getToken()->getUser()->getRoles();
+      $param->setRolesForUpdate($userRoles);
+
+      return $this->getQbDefinition($param)->getQuery()->getResult();
+    }
+
+    public function getQbDefinition(Entity\DefinitionSearch $param)
+    {
+      return $this->getRepository()->getQbWithSearch($param);
+    }
+
+    private function getRepository()
+    {
+      return $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow');
     }
 }
