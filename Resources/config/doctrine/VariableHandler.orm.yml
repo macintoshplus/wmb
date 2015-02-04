@@ -1,0 +1,26 @@
+JbNahan\Bundle\WorkflowManagerBundle\Entity\VariableHandler:
+    type: entity
+    table: variable_handler
+    id:
+        workflowId:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: workflow_id
+        class:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+            id: true
+    fields:
+        variable:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            comment: ''
+    lifecycleCallbacks: {  }

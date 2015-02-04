@@ -1,0 +1,43 @@
+<?php
+
+namespace JbNahan\Bundle\WorkflowManagerBundle\Tests\Units\Model;
+
+use atoum\AtoumBundle\Test\Units;
+use Buzz\Browser;
+use Mock;
+
+
+class WorkflowNodeDisableUserCancellable extends Units\Test
+{
+	public function test_init()
+	{
+		$controller = new \atoum\mock\controller();
+		$controller->__construct = function() {};
+
+		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+		//$repo->getMockController()->getExecutionById = array();
+		//$entityManager->getMockController()->getRepository = $repo;
+
+		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+
+		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+
+		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+		$mockExecute->getMockController()->getId = 1;
+
+		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeDisableUserCancellable();
+		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+
+
+		$node->activate($mockExecute);
+
+		$this->assert->boolean($mockExecute->isCancellable())->isTrue();
+
+		$this->assert->boolean($node->execute($mockExecute))->isTrue();
+
+		$this->assert->boolean($mockExecute->isCancellable())->isFalse();
+
+	}
+}

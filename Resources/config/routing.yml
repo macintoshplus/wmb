@@ -1,0 +1,3 @@
+jb_nahan_workflow_manager_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: JbNahanWorkflowManagerBundle:Default:index }

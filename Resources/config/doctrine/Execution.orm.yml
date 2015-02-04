@@ -1,0 +1,120 @@
+JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution:
+    type: entity
+    table: execution
+    repositoryClass: JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: id
+            generator:
+                strategy: IDENTITY
+    fields:
+        workflow:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: workflow_id
+        name:
+            type: string
+            length: 255
+            nullable: true
+            column: name
+        parent:
+            type: integer
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: parent
+        startedAt:
+            type: datetime
+            nullable: false
+            column: started_at
+        startedBy:
+            type: string
+            length: 255
+            nullable: true
+            column: started_by
+        updatedAt:
+            type: datetime
+            nullable: true
+            column: updated_at
+        updatedBy:
+            type: string
+            length: 255
+            nullable: true
+            column: updated_by
+        cancellable:
+            type: boolean
+            nullable: false
+            default: 1
+            column: cancellable
+        canceledAt:
+            type: datetime
+            nullable: true
+            column: canceled_at
+        canceledBy:
+            type: string
+            length: 255
+            nullable: true
+            column: canceled_by
+        endAt:
+            type: datetime
+            nullable: true
+            column: end_at
+        endBy:
+            type: string
+            length: 255
+            nullable: true
+            column: end_by
+        suspendedAt:
+            type: datetime
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: suspended_at
+        suspendedStep:
+            type: text
+            nullable: true
+        variables:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+            column: variables
+        waitingFor:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+            column: waiting_for
+        threads:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+            column: threads
+        nextThreadId:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: next_thread_id
+        roles:
+            type: json_array
+            nullable: true
+
+    lifecycleCallbacks:
+        prePersist: [ prePersist ]
+        preUpdate: [ preUpdate ]
+    oneToMany:
+        states:
+            targetEntity: ExecutionState
+            mappedBy: execution

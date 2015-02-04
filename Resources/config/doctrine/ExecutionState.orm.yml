@@ -1,0 +1,51 @@
+JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState:
+    type: entity
+    table: execution_state
+    id:
+        execution:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: execution_id
+            associationKey: true
+        node:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: node_id
+    fields:
+        nodeState:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+            column: node_state
+        nodeActivatedFrom:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+            column: node_activated_from
+        nodeThreadId:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: node_thread_id
+    lifecycleCallbacks: {  }
+    manyToOne:
+        execution:
+            targetEntity: Execution
+            cascade: {  }
+            mappedBy: null
+            inversedBy: states
+            joinColumns:
+                execution_id:
+                    referencedColumnName: id
+            orphanRemoval: false

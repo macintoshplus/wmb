@@ -1,0 +1,33 @@
+{
+    "name": "jbnahan/workflow-manager-bundle",
+    "description": "Avanced workflow manager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jean-Baptiste Nahan",
+            "email": "jbnahan@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.4",
+        "symfony/symfony": ">2.3",
+        "symfony/swiftmailer-bundle": "2.3.*",
+        "doctrine/orm": "~2.2,>=2.2.3",
+        "doctrine/doctrine-bundle": "1.2.*",
+        "twig/extensions": "1.0.*",
+        "jms/serializer-bundle": "0.13.*",
+        "friendsofsymfony/rest-bundle": "1.4.*",
+        "nelmio/api-doc-bundle": "2.5.*",
+        "willdurand/hateoas-bundle": "0.4.*",
+        "knplabs/knp-paginator-bundle": "2.4.*"
+    },
+    "require-dev": {
+        "atoum/atoum": "master-dev",
+        "atoum/atoum-bundle": "1.1.*@dev"
+    },
+    "autoload": {
+        "psr-0": { "JbNahan\\Bundle\\WorkflowMangerBundle": "" }
+    },
+    "target-dir": "JbNahan/Bundle/WorkflowMangerBundle"
+}

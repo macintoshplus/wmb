@@ -1,0 +1,82 @@
+JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow:
+    type: entity
+    table: workflow
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: id
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: false
+            length: 255
+            fixed: false
+            column: name
+        version:
+            type: integer
+            nullable: false
+            unsigned: false
+            column: version
+        parent:
+            type: integer
+            nullable: true
+        publishedAt:
+            type: datetime
+            nullable: true
+            column: published_at
+        publishedBy:
+            type: string
+            length: 255
+            nullable: true
+            column: published_by
+        archivedAt:
+            type: datetime
+            nullable: true
+            column: archived_at
+        archivedBy:
+            type: string
+            length: 255
+            nullable: true
+            column: archived_by
+        createdAt:
+            type: datetime
+            nullable: false
+            column: created_at
+        createdBy:
+            type: string
+            length: 255
+            nullable: true
+            column: created_by
+        updatedAt:
+            type: datetime
+            nullable: true
+            column: updated_at
+        updatedBy:
+            type: string
+            length: 255
+            nullable: true
+            column: updated_by
+        rolesForUpdate:
+            type: json_array
+            nullable: true
+            column: roles_for_update
+        rolesForUse:
+            type: json_array
+            nullable: true
+            column: roles_for_use
+    lifecycleCallbacks:
+        prePersist: [ prePersist ]
+        preUpdate: [ preUpdate ]
+    oneToMany:
+        nodes:
+            targetEntity: Node
+            mappedBy: workflow
+        executions:
+            targetEntity: Execution
+            mappedBy: workflow

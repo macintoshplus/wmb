@@ -1,0 +1,30 @@
+parameters:
+    jb_nahan_workflow_manager.workflow_definition_database.class: JbNahan\Bundle\WorkflowManagerBundle\Manager\WorkflowDatabaseDefinitionStorage
+    jb_nahan_workflow_manager.workflow_execution_database_factory.class: JbNahan\Bundle\WorkflowManagerBundle\Factory\WorkflowDatabaseExecutionFactory
+    jb_nahan_workflow_manager.workflow_node_factory.class: JbNahan\Bundle\WorkflowManagerBundle\Factory\WorkflowNodeFactory
+
+services:
+    jb_nahan_workflow_manager.workflow_definition_database:
+        class: %jb_nahan_workflow_manager.workflow_definition_database.class%
+        arguments: [@doctrine.orm.default_entity_manager, @security.context, @mailer, @jb_nahan.twig_string]
+
+    jb_nahan.definition_manager:
+        alias: jb_nahan_workflow_manager.workflow_definition_database
+
+    jb_nahan_workflow_manager.workflow_execution_database_factory:
+        class: %jb_nahan_workflow_manager.workflow_execution_database_factory.class%
+        arguments: [@doctrine.orm.default_entity_manager, @jb_nahan.definition_manager, @security.context]
+
+    jb_nahan.execution_factory:
+        alias: jb_nahan_workflow_manager.workflow_execution_database_factory
+
+    jb_nahan.node_factory:
+        class: %jb_nahan_workflow_manager.workflow_node_factory.class%
+        arguments: [ @mailer, @jb_nahan.twig_string ]
+
+    jb_nahan.twig_string_loader:
+        class: "Twig_Loader_String"
+
+    jb_nahan.twig_string:
+        class: %twig.class%
+        arguments: [@jb_nahan.twig_string_loader, %twig.options%]

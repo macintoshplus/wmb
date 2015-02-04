@@ -1,0 +1,47 @@
+JbNahan\Bundle\WorkflowManagerBundle\Entity\NodeConnection:
+    type: entity
+    table: node_connection
+    repositoryClass: JbNahan\Bundle\WorkflowManagerBundle\Repository\NodeConnectionRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: id
+            generator:
+                strategy: IDENTITY
+    # fields:
+    #     incomingNodeId:
+    #         type: integer
+    #         nullable: false
+    #         unsigned: false
+    #         comment: ''
+    #         column: incoming_node_id
+    #     outgoingNodeId:
+    #         type: integer
+    #         nullable: false
+    #         unsigned: false
+    #         comment: ''
+    #         column: outgoing_node_id
+    lifecycleCallbacks: {  }
+    manyToOne:
+        incomingNode:
+            targetEntity: Node
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                incoming_node_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        outgoingNode:
+            targetEntity: Node
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                outgoing_node_id:
+                    referencedColumnName: id
+            orphanRemoval: false
