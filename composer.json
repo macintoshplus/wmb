@@ -23,7 +23,7 @@
         "atoum/atoum-bundle": "1.1.*@dev"
     },
     "autoload": {
-        "psr-0": { "JbNahan\\Bundle\\WorkflowMangerBundle": "" }
+        "psr-0": { "JbNahan\\Bundle\\WorkflowManagerBundle": "" }
     },
     "target-dir": "JbNahan/Bundle/WorkflowManagerBundle"
 }
