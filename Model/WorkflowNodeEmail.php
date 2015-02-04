@@ -44,6 +44,80 @@ class WorkflowNodeEmail extends WorkflowNode
         parent::__construct( $configuration );
     }
 
+    /**
+     * @param string
+     * @return WorkflowNodeEmail
+     */
+    public function setFrom($from)
+    {
+        $this->configuration['from'] = $from;
+        
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFrom()
+    {
+        return $this->configuration['from'];
+    }
+
+    /**
+     * @param string
+     * @return WorkflowNodeEmail
+     */
+    public function setTo($to)
+    {
+        $this->configuration['to'] = $to;
+        
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTo()
+    {
+        return $this->configuration['to'];
+    }
+
+    /**
+     * @param string
+     * @return WorkflowNodeEmail
+     */
+    public function setSubject($subject)
+    {
+        $this->configuration['subject'] = $subject;
+        
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->configuration['subject'];
+    }
+
+    public function setBody($body)
+    {
+        $this->configuration['body'] = $body;
+        
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->configuration['body'];
+    }
+
     public function execute( WorkflowExecution $execution )
     {
 
