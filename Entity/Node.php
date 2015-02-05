@@ -30,9 +30,9 @@ class Node
     private $states;
 
     /**
-     * @var \JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow
+     * @var \JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition
      */
-    private $workflow;
+    private $definition;
 
     /**
      * Constructor
@@ -132,26 +132,26 @@ class Node
     }
 
     /**
-     * Set workflow
+     * Set definition
      *
-     * @param \JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow $workflow
+     * @param \JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition $definition
      * @return Node
      */
-    public function setWorkflow(\JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow $workflow = null)
+    public function setDefinition(\JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition $definition = null)
     {
-        $this->workflow = $workflow;
+        $this->definition = $definition;
 
         return $this;
     }
 
     /**
-     * Get workflow
+     * Get definition
      *
-     * @return \JbNahan\Bundle\WorkflowManagerBundle\Entity\Workflow 
+     * @return \JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition 
      */
-    public function getWorkflow()
+    public function getDefinition()
     {
-        return $this->workflow;
+        return $this->definition;
     }
     /**
      * @var string

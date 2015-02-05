@@ -21,8 +21,6 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeComputeExecutionName;
 
-
-
 /**
  * Workflow definition storage handler that saves and loads workflow
  * definitions to and from a database.
@@ -48,9 +46,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *
      * @var array(string=>mixed)
      */
-    protected $properties = array(
-      'options' => null
-    );
+    protected $properties = array('options' => null);
 
     /**
      * Construct a new database definition handler.
@@ -59,7 +55,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *
      * @param EntityManager $entityManager
      */
-    public function __construct( EntityManager $entityManager, SecurityContextInterface $security, Swift_Mailer $mailer, Twig_Environment $twig )
+    public function __construct(EntityManager $entityManager, SecurityContextInterface $security, Swift_Mailer $mailer, Twig_Environment $twig)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
@@ -78,15 +74,15 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *         If the given property could not be found.
      * @ignore
      */
-    public function __get( $propertyName )
+    public function __get($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'options':
                 return $this->properties[$propertyName];
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -100,13 +96,12 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *         If the value for the property options is not an WorkflowDatabaseOptions object.
      * @ignore
      */
-    public function __set( $propertyName, $propertyValue )
+    public function __set($propertyName, $propertyValue)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'options':
-                if ( !( $propertyValue instanceof WorkflowDatabaseOptions ) )
-                {
+                if (!($propertyValue instanceof WorkflowDatabaseOptions)) {
                     throw new BaseValueException(
                         $propertyName,
                         $propertyValue,
@@ -115,7 +110,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
                 }
                 break;
             default:
-                throw new BasePropertyNotFoundException( $propertyName );
+                throw new BasePropertyNotFoundException($propertyName);
         }
         $this->properties[$propertyName] = $propertyValue;
     }
@@ -127,9 +122,9 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @return bool
      * @ignore
      */
-    public function __isset( $propertyName )
+    public function __isset($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'options':
                 return true;
@@ -151,23 +146,18 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @throws WorkflowDefinitionStorageInterfaceException
      * 
      */
-    public function loadById( $workflowId, $workflowName = '', $workflowVersion = 0 )
+    public function loadById($workflowId, $workflowName = '', $workflowVersion = 0)
     {
         // Query the database for the name and version of the workflow.
-        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow');
+        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
         $workflowsDb = $repo->findById($workflowId);
         if (!empty($workflowsDb)) {
             $workflowDb = $workflowsDb[0];
-        }
-        else
-        {
-            throw new WorkflowDefinitionStorageInterfaceException(
-              'Could not load workflow definition.'
-            );
+        } else {
+            throw new WorkflowDefinitionStorageInterfaceException('Could not load workflow definition.');
         }
 
-        if ( empty( $workflowName ) || $workflowVersion == 0 )
-        {
+        if (empty($workflowName) || $workflowVersion == 0) {
             $workflowName    = $workflowDb->getName();
             $workflowVersion = $workflowDb->getVersion();
         }
@@ -176,34 +166,23 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $nodesDb = $workflowDb->getNodes();
 
         foreach ($nodesDb as $nodeDb) {
-          $configuration = self::unserialize($nodeDb->getConfiguration(), null);
-          if ( is_null( $configuration ) )
-            {
-                $configuration = self::getDefaultConfiguration( $nodeDb->getClass() );
+            $configuration = self::unserialize($nodeDb->getConfiguration(), null);
+            if (is_null($configuration)) {
+                  $configuration = self::getDefaultConfiguration($nodeDb->getClass());
             }
-          //création de l'objet
-          $classname = $nodeDb->getClass();
-          $nodeDbId = $nodeDb->getId();
+            //création de l'objet
+            $classname = $nodeDb->getClass();
+            $nodeDbId = $nodeDb->getId();
 
-          $nodes[$nodeDbId] = new $classname($configuration);
-          $nodes[$nodeDbId]->setName($nodeDb->getName());
+            $nodes[$nodeDbId] = new $classname($configuration);
+            $nodes[$nodeDbId]->setName($nodeDb->getName());
 
-          if ($nodes[$nodeDbId] instanceof WorkflowNodeFinally &&
-                !isset( $finallyNode ) )
-            {
+            if ($nodes[$nodeDbId] instanceof WorkflowNodeFinally && !isset($finallyNode)) {
                 $finallyNode = $nodes[$nodeDbId];
-            }
-
-            else if ($nodes[$nodeDbId] instanceof WorkflowNodeEnd &&
-                     !isset( $defaultEndNode ) )
-            {
+            } else if ($nodes[$nodeDbId] instanceof WorkflowNodeEnd && !isset($defaultEndNode)) {
                 $defaultEndNode = $nodes[$nodeDbId];
-            }
-
-            else if ($nodes[$nodeDbId] instanceof WorkflowNodeStart &&
-                     !isset( $startNode ) )
-            {
-               $startNode = $nodes[$nodeDbId];
+            } else if ($nodes[$nodeDbId] instanceof WorkflowNodeStart && !isset($startNode)) {
+                $startNode = $nodes[$nodeDbId];
             }
             if ($nodes[$nodeDbId] instanceof WorkflowNodeEmail) {
                 $nodes[$nodeDbId]->setMailer($this->mailer);
@@ -216,33 +195,25 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
 
         
 
-        if ( !isset( $startNode ) || !isset( $defaultEndNode ) )
-        {
-            throw new WorkflowDefinitionStorageInterfaceException(
-              'Could not load workflow definition.'
-            );
+        if (!isset($startNode) || !isset($defaultEndNode)) {
+            throw new WorkflowDefinitionStorageInterfaceException('Could not load workflow definition.');
         }
 
         //chargement des connections
         $connectionRepo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:NodeConnection');
         $connectionsDb = $connectionRepo->getConnectionByWorkflowId($workflowId);
 
-        foreach ( $connectionsDb as $connection )
-        {
-            $nodes[$connection->getIncomingNode()->getId()]->addOutNode(
-              $nodes[$connection->getOutgoingNode()->getId()]
-            );
+        foreach ($connectionsDb as $connection) {
+            $nodes[$connection->getIncomingNode()->getId()]->addOutNode($nodes[$connection->getOutgoingNode()->getId()]);
         }
 
-        if ( !isset( $finallyNode ) ||
-             count( $finallyNode->getInNodes() ) > 0 )
-        {
+        if (!isset($finallyNode) || count($finallyNode->getInNodes()) > 0) {
             $finallyNode = null;
         }
 
 
         //création du wf
-        $workflow = new Workflow( $workflowName, $startNode, $defaultEndNode, $finallyNode );
+        $workflow = new Workflow($workflowName, $startNode, $defaultEndNode, $finallyNode);
         $workflow->definitionStorage = $this;
         $workflow->id = (int)$workflowId;
         $workflow->version = (int)$workflowVersion;
@@ -268,16 +239,15 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @throws WorkflowDefinitionStorageInterfaceException
      * 
      */
-    public function loadByName( $workflowName, $workflowVersion = 0 )
+    public function loadByName($workflowName, $workflowVersion = 0)
     {
 
         // Load the current version of the workflow.
-        if ( $workflowVersion == 0 )
-        {
-            $workflowVersion = $this->getCurrentVersionNumber( $workflowName );
+        if ($workflowVersion == 0) {
+            $workflowVersion = $this->getCurrentVersionNumber($workflowName);
         }
         
-        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow');
+        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
         $qb = $repo->createQueryBuilder('w');
         $qb->select('w.id')
         ->where('w.name = :name')
@@ -286,20 +256,17 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         ->setParameter('version', $workflowVersion);
 
 
-        $result = $qb->getQuery()->getResult( \PDO::FETCH_ASSOC );
+        $result = $qb->getQuery()->getResult(\PDO::FETCH_ASSOC);
         
-        if ( $result !== false && isset( $result[0] ) )
-        {
+        if ($result !== false && isset($result[0])) {
             return $this->loadById(
-              $result[0]['id'],
-              $workflowName,
-              $workflowVersion
+                $result[0]['id'],
+                $workflowName,
+                $workflowVersion
             );
-        }
-        else
-        {
+        } else {
             throw new WorkflowDefinitionStorageInterfaceException(
-              'Could not load workflow definition.'
+                'Could not load workflow definition.'
             );
         }
     }
@@ -311,45 +278,43 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @return Workflow
      * @throws WorkflowDefinitionStorageInterfaceException
      */
-    public function save( Workflow $workflow )
+    public function save(Workflow $workflow)
     {
         // Verify the workflow.
         $workflow->verify();
 
         $id = $workflow->id;
         if (false !== $id) {
-            $dbDefinitions = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow')->findById($id);
+            $dbDefinitions = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition')->findById($id);
             if (empty($dbDefinitions)) {
                 $id = false;
             } else {
                 $dbDefinition = $dbDefinitions[0];
                 $token = $this->security->getToken();
-                $dbDefinition->setUpdatedBy( (is_object($token))? $token->getUsername():'Anonymous');
+                $dbDefinition->setUpdatedBy((is_object($token))? $token->getUsername():'Anonymous');
             }
         }
         //Si le WF est chargé depuis la DB effacement des connexions et des nodes
         $nodeRepo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Node');
         $connectionRepo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:NodeConnection');
-        if (isset($dbDefinition) ) {
-          $connectionsDb = $connectionRepo->getConnectionByWorkflowId($dbDefinition->getId());
+        if (isset($dbDefinition)) {
+            $connectionsDb = $connectionRepo->getConnectionByWorkflowId($dbDefinition->getId());
 
-          foreach ( $connectionsDb as $oldConnectionDb )
-          {
-              $this->entityManager->remove($oldConnectionDb);
-          }
+            foreach ($connectionsDb as $oldConnectionDb) {
+                $this->entityManager->remove($oldConnectionDb);
+            }
 
-          $dbNodes = $nodeRepo->findBy(array('workflow'=>$dbDefinition->getId()));
-          foreach ( $dbNodes as $oldNodeDb )
-          {
-              $this->entityManager->remove($oldNodeDb);
-          }
+            $dbNodes = $nodeRepo->findBy(array('workflow'=>$dbDefinition->getId()));
+            foreach ($dbNodes as $oldNodeDb) {
+                $this->entityManager->remove($oldNodeDb);
+            }
         }
 
         //Le WF est nouveau
         if (false === $id) {
-            $dbDefinition = new Entity\Workflow();
+            $dbDefinition = new Entity\Definition();
             $token = $this->security->getToken();
-            $dbDefinition->setCreatedBy( (is_object($token))? $token->getUsername():'Anonymous');
+            $dbDefinition->setCreatedBy((is_object($token))? $token->getUsername():'Anonymous');
         }
 
         //Set des propriétés
@@ -387,25 +352,18 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         }
 
         foreach ($nodes as $key => $node) {
-            foreach ( $node->getOutNodes() as $outNode )
-            {
+            foreach ($node->getOutNodes() as $outNode) {
                 $incomingNodeDb = null;
                 $outgoingNodeDb = null;
 
-                foreach ( $nodeMap as $_id => $_node )
-                {
-                    if ( $_node['node'] === $node )
-                    {
+                foreach ($nodeMap as $_id => $_node) {
+                    if ($_node['node'] === $node) {
                         $incomingNodeDb = $_node['db'];
-                    }
-
-                    else if ( $_node['node'] === $outNode )
-                    {
+                    } else if ($_node['node'] === $outNode) {
                         $outgoingNodeDb = $_node['db'];
                     }
 
-                    if ( $incomingNodeDb !== NULL && $outgoingNodeDb !== NULL )
-                    {
+                    if ($incomingNodeDb !== null && $outgoingNodeDb !== null) {
                         break;
                     }
                 }
@@ -439,14 +397,14 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         /*
         NON REIMPLEMENTE
         // Write variable handler rows.
-        foreach ( $workflow->getVariableHandlers() as $variable => $class )
+        foreach ($workflow->getVariableHandlers() as $variable => $class)
         {
             $query = $this->db->createInsertQuery();
 
-            $query->insertInto( $this->db->quoteIdentifier( $this->options['prefix'] . 'variable_handler' ) )
-                  ->set( $this->db->quoteIdentifier( 'workflow_id' ), $query->bindValue( (int)$workflow->id ) )
-                  ->set( $this->db->quoteIdentifier( 'variable' ), $query->bindValue( $variable ) )
-                  ->set( $this->db->quoteIdentifier( 'class' ), $query->bindValue( $class ) );
+            $query->insertInto($this->db->quoteIdentifier($this->options['prefix'] . 'variable_handler'))
+                  ->set($this->db->quoteIdentifier('workflow_id'), $query->bindValue((int)$workflow->id))
+                  ->set($this->db->quoteIdentifier('variable'), $query->bindValue($variable))
+                  ->set($this->db->quoteIdentifier('class'), $query->bindValue($class));
 
             $statement = $query->prepare();
             $statement->execute();
@@ -462,7 +420,8 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param int $workfowId
      * @throws \Exception si un test ne passe pas
      */
-    public function cloneById($workflowId){
+    public function cloneById($workflowId)
+    {
         throw new Exception("TODO !!!");
         
     }
@@ -474,11 +433,11 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function publishById($workflowId)
     {
-        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow');
+        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
         $wfs = $repo->findById($workflowId);
 
         if (empty($wfs)) {
-          throw new \Exception("Unable to load defition id : " . $workflowId);
+            throw new \Exception("Unable to load defition id : " . $workflowId);
         }
         $wf = $wfs[0];
 
@@ -498,13 +457,13 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $this->entityManager->flush();
 
         //Archive le parent si présent
-        if ( 0 === $wf->getParent() || null === $wf->getParent()) {
+        if (0 === $wf->getParent() || null === $wf->getParent()) {
             return;
         }
 
         $wfParents = $repo->findById($wf->getParent());
         if (empty($wfParents)) {
-          return;
+            return;
         }
         
         $wfParent = $wfParents[0];
@@ -529,9 +488,9 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * 
      * @todo Ajouter la gestion des wf publié ou non
      */
-    protected function getCurrentVersionNumber( $workflowName )
+    protected function getCurrentVersionNumber($workflowName)
     {
-        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow');
+        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
         $qb = $repo->createQueryBuilder('w');
 
         $qb->select('MAX(w.version) as version')
@@ -540,12 +499,9 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
 
         $result = $qb->getQuery()->getResult(\PDO::FETCH_ASSOC);
         
-        if ( $result !== false && isset( $result[0]['version'] ) && $result[0]['version'] !== null )
-        {
+        if ($result !== false && isset($result[0]['version']) && $result[0]['version'] !== null) {
             return $result[0]['version'];
-        }
-        else
-        {
+        } else {
             return 0;
         }
 
@@ -558,12 +514,11 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  mixed $var
      * @return string
      */
-    public static function serialize( $var )
+    public static function serialize($var)
     {
-        $var = serialize( $var );
+        $var = serialize($var);
 
-        if ( $var == 'a:0:{}' || $var == 'N;' )
-        {
+        if ($var == 'a:0:{}' || $var == 'N;') {
             return '';
         }
 
@@ -577,14 +532,11 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  mixed  $defaultValue
      * @return mixed
      */
-    public static function unserialize( $serializedVar, $defaultValue = array() )
+    public static function unserialize($serializedVar, $defaultValue = array())
     {
-        if ( !empty( $serializedVar ) )
-        {
-            return unserialize( $serializedVar );
-        }
-        else
-        {
+        if (!empty($serializedVar)) {
+            return unserialize($serializedVar);
+        } else {
             return $defaultValue;
         }
     }
@@ -595,19 +547,19 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function getDefinitionForCurrentUser(Entity\DefinitionSearch $param)
     {
-      $userRoles = $this->security->getToken()->getUser()->getRoles();
-      $param->setRolesForUpdate($userRoles);
+        $userRoles = $this->security->getToken()->getUser()->getRoles();
+        $param->setRolesForUpdate($userRoles);
 
-      return $this->getQbDefinition($param)->getQuery()->getResult();
+        return $this->getQbDefinition($param)->getQuery()->getResult();
     }
 
     public function getQbDefinition(Entity\DefinitionSearch $param)
     {
-      return $this->getRepository()->getQbWithSearch($param);
+        return $this->getRepository()->getQbWithSearch($param);
     }
 
     private function getRepository()
     {
-      return $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Workflow');
+        return $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
     }
 }

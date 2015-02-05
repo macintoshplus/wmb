@@ -21,7 +21,7 @@ class DefinitionListCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $repo = $this->getContainer()->get('doctrine')->getRepository('JbNahanWorkflowManagerBundle:Workflow');
+        $repo = $this->getContainer()->get('doctrine')->getRepository('JbNahanWorkflowManagerBundle:Definition');
         $wfs = $repo->findAll();
         $table = $this->getHelperSet()->get('table');
 

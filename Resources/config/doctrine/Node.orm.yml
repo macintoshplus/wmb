@@ -38,8 +38,8 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Node:
             column: configuration
     lifecycleCallbacks: {  }
     manyToOne:
-        workflow:
-            targetEntity: Workflow
+        definition:
+            targetEntity: Definition
             cascade: {  }
             mappedBy: null
             inversedBy: nodes
