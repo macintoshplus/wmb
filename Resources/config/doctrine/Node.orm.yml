@@ -12,12 +12,6 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Node:
             generator:
                 strategy: IDENTITY
     fields:
-        # workflowId:
-        #     type: integer
-        #     nullable: false
-        #     unsigned: false
-        #     comment: ''
-        #     column: workflow_id
         name:
             type: string
             nullable: true

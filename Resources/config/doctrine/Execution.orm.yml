@@ -13,12 +13,12 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution:
             generator:
                 strategy: IDENTITY
     fields:
-        workflow:
+        definition:
             type: integer
             nullable: false
             unsigned: false
             comment: ''
-            column: workflow_id
+            column: definition_id
         name:
             type: string
             length: 255

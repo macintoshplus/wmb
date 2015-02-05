@@ -2,13 +2,13 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\VariableHandler:
     type: entity
     table: variable_handler
     id:
-        workflowId:
+        definition:
             type: integer
             nullable: false
             unsigned: false
             comment: ''
             id: true
-            column: workflow_id
+            column: definition_id
         class:
             type: string
             nullable: false
