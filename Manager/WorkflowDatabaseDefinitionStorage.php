@@ -339,7 +339,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
             } */
             //if (false === $nodeId) {
             $dbNode = new Entity\Node();
-            $dbNode->setWorkflow($dbDefinition);
+            $dbNode->setDefinition($dbDefinition);
             $dbNode->setName($node->getName());
             //}
             //Set data

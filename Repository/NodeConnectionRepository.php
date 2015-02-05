@@ -19,7 +19,7 @@ class NodeConnectionRepository extends EntityRepository
     public function getConnectionByWorkflowId($workflowId){
         $queryBuilder = $this->createQueryBuilder('r');
         $queryBuilder->leftJoin('JbNahan\Bundle\WorkflowManagerBundle\Entity\Node', 'n', \Doctrine\ORM\Query\Expr\Join::WITH, 'r.incomingNode = n.id')
-                    ->where('n.workflow = :idwf')
+                    ->where('n.definition = :idwf')
                     ->setParameter('idwf', $workflowId)
                     ->orderBy('r.id');
 

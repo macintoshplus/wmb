@@ -19,7 +19,7 @@ class DefinitionType extends AbstractType
             ->add('rolesForUpdate', 'collection', array(
                 'type'=> 'text',
                 'options'=>array('required'=>false),
-                'required' => true,
+                'required' => false,
                 'cascade_validation'=>false,
                 'allow_add'=>true,
                 'prototype_name'=>'__name_value__',
@@ -30,7 +30,7 @@ class DefinitionType extends AbstractType
             ->add('rolesForUse', 'collection', array(
                 'type'=> 'text',
                 'options'=>array('required'=>false),
-                'required' => true,
+                'required' => false,
                 'cascade_validation'=>false,
                 'allow_add'=>true,
                 'prototype_name'=>'__name_value__',

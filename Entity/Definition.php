@@ -459,7 +459,12 @@ class Definition
      */
     public function setRolesForUpdate($rolesForUpdate)
     {
-        $this->rolesForUpdate = $rolesForUpdate;
+        $filter = array_filter($rolesForUpdate);
+        if (0 === count($filter)) {
+            $filter = null;
+        }
+        $this->rolesForUpdate = $filter;
+
 
         return $this;
     }
@@ -482,7 +487,11 @@ class Definition
      */
     public function setRolesForUse($rolesForUse)
     {
-        $this->rolesForUse = $rolesForUse;
+        $filter = array_filter($rolesForUse);
+        if (0 === count($filter)) {
+            $filter = null;
+        }
+        $this->rolesForUse = $filter;
 
         return $this;
     }
