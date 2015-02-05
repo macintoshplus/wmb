@@ -79,7 +79,7 @@ class WorkflowNodeAction extends WorkflowNode
      * </ul>
      *
      * @param mixed $configuration
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function __construct( $configuration )
     {

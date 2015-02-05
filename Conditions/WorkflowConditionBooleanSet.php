@@ -30,7 +30,7 @@ abstract class WorkflowConditionBooleanSet implements WorkflowConditionInterface
      * The format of $conditions must be array( WorkflowConditionInterface )
      *
      * @param array $conditions
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function __construct( array $conditions )
     {
@@ -38,7 +38,7 @@ abstract class WorkflowConditionBooleanSet implements WorkflowConditionInterface
         {
             if ( !$condition instanceof WorkflowConditionInterface )
             {
-                throw new WorkflowDefinitionStorageInterfaceException(
+                throw new WorkflowDefinitionStorageException(
                   'Array does not contain (only) WorkflowConditionInterface objects.'
                 );
             }

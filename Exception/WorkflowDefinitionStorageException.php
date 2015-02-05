@@ -7,7 +7,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Exception;
  * related to saving or loading a workflow definition occurs.
  *
  */
-class WorkflowDefinitionStorageInterfaceException extends WorkflowException
+class WorkflowDefinitionStorageException extends WorkflowException
 {
 }
 

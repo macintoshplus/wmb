@@ -2,7 +2,7 @@
 
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
-use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageInterfaceException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageException;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 
 /**

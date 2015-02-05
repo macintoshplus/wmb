@@ -13,7 +13,7 @@ interface WorkflowDefinitionStorageInterface
      * @param  string  $workflowName
      * @param  int $workflowVersion
      * @return Workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function loadByName( $workflowName, $workflowVersion = 0 );
 
@@ -21,7 +21,7 @@ interface WorkflowDefinitionStorageInterface
      * Save a workflow definition to the database.
      *
      * @param  Workflow $workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function save( Workflow $workflow );
 }

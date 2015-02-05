@@ -2,7 +2,7 @@
 
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
-use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageInterfaceException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageException;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 
 /**
@@ -44,7 +44,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
      * @param  string $workflowName
      * @param  int    $workflowVersion
      * @return Workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function loadByName( $workflowName, $workflowVersion = 0 )
     {
@@ -74,7 +74,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
                     $message .= $error->message;
                 }
 
-                throw new WorkflowDefinitionStorageInterfaceException(
+                throw new WorkflowDefinitionStorageException(
                   sprintf(
                     'Could not load workflow "%s" (version %d) from "%s".%s',
 
@@ -88,7 +88,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         }
         else
         {
-            throw new WorkflowDefinitionStorageInterfaceException(
+            throw new WorkflowDefinitionStorageException(
               sprintf(
                 'Could not read file "%s".',
                 $filename
@@ -157,7 +157,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
 
         if ( !isset( $startNode ) || !isset( $defaultEndNode ) )
         {
-            throw new WorkflowDefinitionStorageInterfaceException(
+            throw new WorkflowDefinitionStorageException(
               'Could not load workflow definition.'
             );
         }
@@ -246,7 +246,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
      * Save a workflow definition to a file.
      *
      * @param  Workflow $workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function save( Workflow $workflow )
     {
