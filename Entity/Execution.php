@@ -17,7 +17,7 @@ class Execution
     /**
      * @var integer
      */
-    private $workflow;
+    private $definition;
 
     /**
      * @var integer
@@ -133,26 +133,26 @@ class Execution
     }
 
     /**
-     * Set workflow
+     * Set definition
      *
-     * @param integer $workflow
+     * @param integer $definition
      * @return Execution
      */
-    public function setWorkflow($workflow)
+    public function setDefinition($definition)
     {
-        $this->workflow = $workflow;
+        $this->definition = $definition;
 
         return $this;
     }
 
     /**
-     * Get workflow
+     * Get definition
      *
      * @return integer 
      */
-    public function getWorkflow()
+    public function getDefinition()
     {
-        return $this->workflow;
+        return $this->definition;
     }
 
     /**
