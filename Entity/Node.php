@@ -27,7 +27,7 @@ class Node
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $states;
+    //private $states;
 
     /**
      * @var \JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition
@@ -39,7 +39,7 @@ class Node
      */
     public function __construct()
     {
-        $this->states = new \Doctrine\Common\Collections\ArrayCollection();
+        //$this->states = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -104,32 +104,32 @@ class Node
      * @param \JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState $states
      * @return Node
      */
-    public function addState(\JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState $states)
-    {
-        $this->states[] = $states;
+    // public function addState(\JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState $states)
+    // {
+    //     $this->states[] = $states;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * Remove states
      *
      * @param \JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState $states
      */
-    public function removeState(\JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState $states)
-    {
-        $this->states->removeElement($states);
-    }
+    // public function removeState(\JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionState $states)
+    // {
+    //     $this->states->removeElement($states);
+    // }
 
     /**
      * Get states
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getStates()
-    {
-        return $this->states;
-    }
+    // public function getStates()
+    // {
+    //     return $this->states;
+    // }
 
     /**
      * Set definition

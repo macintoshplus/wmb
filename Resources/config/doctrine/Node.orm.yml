@@ -41,10 +41,10 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Node:
                 workflow_id:
                     referencedColumnName: id
             orphanRemoval: false
-    oneToMany:
-        states:
-            targetEntity: ExecutionState
-            mappedBy: node
+    # oneToMany:
+    #     states:
+    #         targetEntity: ExecutionState
+    #         mappedBy: node
     # manyToMany:
     #     outgoingNodes:
     #         targetEntity: Node
