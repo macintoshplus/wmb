@@ -12,7 +12,7 @@ class VariableHandler
     /**
      * @var integer
      */
-    private $workflowId;
+    private $definition;
 
     /**
      * @var string
@@ -26,26 +26,26 @@ class VariableHandler
 
 
     /**
-     * Set workflowId
+     * Set definition
      *
-     * @param integer $workflowId
+     * @param integer $definition
      * @return VariableHandler
      */
-    public function setWorkflowId($workflowId)
+    public function setDefinition($definition)
     {
-        $this->workflowId = $workflowId;
+        $this->definition = $definition;
 
         return $this;
     }
 
     /**
-     * Get workflowId
+     * Get definition
      *
      * @return integer 
      */
-    public function getWorkflowId()
+    public function getDefinition()
     {
-        return $this->workflowId;
+        return $this->definition;
     }
 
     /**
