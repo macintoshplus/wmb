@@ -2,6 +2,8 @@
 
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+
 /**
  * WorkflowNodeExternalCounter class
  *
@@ -31,6 +33,50 @@ class WorkflowNodeExternalCounter extends WorkflowNode
         }
         
         parent::__construct( $configuration );
+    }
+
+    /**
+     * @return string
+     */
+    public function getVarName()
+    {
+        return $this->configuration['var_name'];
+    }
+
+    /**
+     * @param string $varName
+     * @return WorkflowNodeExternalCounter
+     */
+    public function setVarName($varName)
+    {
+        if (!is_string($varName)) {
+            throw new BaseValueException('var_name', $varName, 'WorkflowNodeExternalCounter');
+        }
+        $this->configuration['var_name'] = $var_name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCounterName()
+    {
+        return $this->configuration['counter_name'];
+    }
+
+    /**
+     * @param string $counterName
+     * @return WorkflowNodeExternalCounter
+     */
+    public function setCounterName($counterName)
+    {
+        if (!is_string($counterName)) {
+            throw new BaseValueException('counter_name', $counterName, 'WorkflowNodeExternalCounter');
+        }
+        $this->configuration['counter_name'] = $counterName;
+
+        return $this;
     }
 
 	/**

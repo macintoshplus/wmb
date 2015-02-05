@@ -55,6 +55,17 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch
 	}
 
 	/**
+	 * @param string $internalName
+	 * @return WorkflowNodeReviewUniqueForm
+	 */
+	public function setInternalName($internalName)
+	{
+		$this->configuration['internal_name'] = $internalName;
+
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getReviewData(WorkflowExecution $execution) {
@@ -75,6 +86,17 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch
 	public function getRoles()
 	{
 		return $this->configuration['roles'];
+	}
+
+	/**
+	 * @param array $roles
+	 * @return WorkflowNodeReviewUniqueForm
+	 */
+	public function setRoles(array $roles = null)
+	{
+		$this->configuration['roles'] = $roles;
+
+		return $this;
 	}
 
 	/**

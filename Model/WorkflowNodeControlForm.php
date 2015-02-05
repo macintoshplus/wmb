@@ -56,6 +56,17 @@ class WorkflowNodeControlForm extends WorkflowNodeConditionalBranch
 	}
 
 	/**
+	 * @param string $internalName
+	 * @return WorkflowNodeControlForm
+	 */
+	public function setInternalName($internalName)
+	{
+		$this->configuration['internal_name'] = $internalName;
+
+		return $this;
+	}
+
+	/**
 	 * @return \DateTime|null
 	 */
 	public function getOutDate()

@@ -4,6 +4,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use \Twig_Environment;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 
 /**
  * WorkflowNodeSetExecutionUser class
@@ -28,6 +29,50 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
             $configuration['field_internal_name'] = null;
         }
         parent::__construct( $configuration );
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormInternalName()
+    {
+        return $this->configuration['form_internal_name'];
+    }
+
+    /**
+     * @param string $formInternalName
+     * @return WorkflowNodeSetExecutionUser
+     */
+    public function setFormInternalName($formInternalName)
+    {
+        if (!is_string($formInternalName)) {
+            throw new BaseValueException('form_internal_name', $formInternalName, 'WorkflowNodeSetExecutionUser');
+        }
+        $this->configuration['form_internal_name'] = $formInternalName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFieldInternalName()
+    {
+        return $this->configuration['field_internal_name'];
+    }
+
+    /**
+     * @param string $fieldInternalName
+     * @return WorkflowNodeSetExecutionUser
+     */
+    public function setFieldInternalName($fieldInternalName)
+    {
+        if (!is_string($fieldInternalName)) {
+            throw new BaseValueException('field_internal_name', $fieldInternalName, 'WorkflowNodeSetExecutionUser');
+        }
+        $this->configuration['field_internal_name'] = $fieldInternalName;
+
+        return $this;
     }
 
     /**

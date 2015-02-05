@@ -4,6 +4,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 
 /**
  * WorkflowNodeForm class
@@ -65,6 +66,17 @@ class WorkflowNodeForm extends WorkflowNode
 	}
 
 	/**
+	 * @param string $name
+	 * @return WorkflowNodeForm
+	 */
+	public function setInternalName($name)
+	{
+		$this->configuration['internal_name'] = $name;
+
+		return $this;
+	}
+
+	/**
 	 * Return true if auto continue is disabled
 	 * @return boolean
 	 */
@@ -82,12 +94,64 @@ class WorkflowNodeForm extends WorkflowNode
 	{
 		return $this->configuration['min_response'];
 	}
+
+	/**
+	 * @param integer $min
+	 * @return WorkflowNodeForm
+	 */
+	public function setMinResponse($min)
+	{
+		if (!is_integer($min)) {
+			throw new BaseValueException( 'max_response', $min, 'WorkflowNodeForm' );
+		}
+		$this->configuration['min_response'] = $min;
+
+		return $this;
+	}
+
 	/**
 	 * @return false|integer
 	 */
 	public function getMaxResponse()
 	{
 		return $this->configuration['max_response'];
+	}
+
+	/**
+	 * @param integer|false $max
+	 * @return WorkflowNodeForm
+	 */
+	public function setMaxResponse($max)
+	{
+		if ((!is_integer($max) && !is_bool($max)) || (is_bool($max) && false !== $max)) {
+			throw new BaseValueException( 'max_response', $max, 'WorkflowNodeForm' );
+		}
+		$this->configuration['max_response'] = $max;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return boolean
+	 */
+	public function getAutoContinue()
+	{
+		return $this->configuration['auto_continue'];
+	}
+
+	/**
+	 * @param boolean $autoContinue
+	 * @return WorkflowNodeForm
+	 */
+	public function setAutoContinue($autoContinue)
+	{
+		if (!is_bool($autoContinue)) {
+			throw new BaseValueException( 'auto_continue', $autoContinue, 'WorkflowNodeForm' );
+		}
+		$this->configuration['auto_continue'] = $autoContinue;
+
+		return $this;
 	}
 	
 	/**
@@ -96,6 +160,17 @@ class WorkflowNodeForm extends WorkflowNode
 	public function getRoles()
 	{
 		return $this->configuration['roles'];
+	}
+
+	/**
+	 * @param array $roles
+	 * @return WorkflowNodeForm
+	 */
+	public function setRoles(array $roles = null)
+	{
+		$this->configuration['roles'] = $roles;
+
+		return $this;
 	}
 
 	/**
