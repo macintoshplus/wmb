@@ -7,6 +7,10 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use \Twig_Environment;
 use \Swift_Mailer;
+
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BasePropertyNotFoundException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
@@ -433,7 +437,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function publishById($workflowId)
     {
-        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
+        $repo = $this->getRepository();
         $wfs = $repo->findById($workflowId);
 
         if (empty($wfs)) {
@@ -556,6 +560,36 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
     public function getQbDefinition(Entity\DefinitionSearch $param)
     {
         return $this->getRepository()->getQbWithSearch($param);
+    }
+
+    /**
+     * @param integer $id
+     * @return DoctrineCollection
+     */
+    public function getById($id)
+    {
+        return $this->getRepository()->findOneById($id);
+    }
+
+    public function getByIdIfGranted($id, $type)
+    {
+        $wfDefinition = $this->getById($id);
+
+        if (!$wfDefinition instanceof Entity\Definition) {
+            throw new NotFoundHttpException("Definition Id ". $id . " is not found");
+        }
+
+        if (false === $this->security->isGranted($type, $wfDefinition)) {
+            throw new AccessDeniedException('Unauthorised access!');
+        }
+
+        return $wfDefinition;
+    }
+
+    public function getTypeForDefinition($id)
+    {
+        $def = $this->loadById($id);
+        return $def->getFormType();
     }
 
     private function getRepository()

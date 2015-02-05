@@ -416,7 +416,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
         foreach ( $this->nodes as $node ) {
             if ( $node instanceof WorkflowNodeForm ) {
                 $name = $node->getName();
-                $list[$node->getInternalName()] = (null !== $name)?:'Form '.$node->getInternalName();
+                $list[$node->getInternalName()] = (null !== $name)? $name:'Form '.$node->getInternalName();
             }
         }
         return $list;
