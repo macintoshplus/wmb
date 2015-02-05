@@ -1,6 +1,6 @@
 JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition:
     type: entity
-    table: workflow
+    table: definition
     repositoryClass: JbNahan\Bundle\WorkflowManagerBundle\Repository\DefinitionRepository
     id:
         id:
