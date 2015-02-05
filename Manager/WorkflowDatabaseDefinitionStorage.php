@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use \Twig_Environment;
 use \Swift_Mailer;
-use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageInterfaceException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BasePropertyNotFoundException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExecution;
@@ -143,7 +143,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  string  $workflowName
      * @param  int $workflowVersion
      * @return Workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      * 
      */
     public function loadById($workflowId, $workflowName = '', $workflowVersion = 0)
@@ -154,7 +154,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         if (!empty($workflowsDb)) {
             $workflowDb = $workflowsDb[0];
         } else {
-            throw new WorkflowDefinitionStorageInterfaceException('Could not load workflow definition.');
+            throw new WorkflowDefinitionStorageException('Could not load workflow definition.');
         }
 
         if (empty($workflowName) || $workflowVersion == 0) {
@@ -196,7 +196,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         
 
         if (!isset($startNode) || !isset($defaultEndNode)) {
-            throw new WorkflowDefinitionStorageInterfaceException('Could not load workflow definition.');
+            throw new WorkflowDefinitionStorageException('Could not load workflow definition.');
         }
 
         //chargement des connections
@@ -236,7 +236,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  string  $workflowName
      * @param  int $workflowVersion
      * @return Workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      * 
      */
     public function loadByName($workflowName, $workflowVersion = 0)
@@ -265,7 +265,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
                 $workflowVersion
             );
         } else {
-            throw new WorkflowDefinitionStorageInterfaceException(
+            throw new WorkflowDefinitionStorageException(
                 'Could not load workflow definition.'
             );
         }
@@ -276,7 +276,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *
      * @param  Workflow $workflow
      * @return Workflow
-     * @throws WorkflowDefinitionStorageInterfaceException
+     * @throws WorkflowDefinitionStorageException
      */
     public function save(Workflow $workflow)
     {
