@@ -1,5 +1,5 @@
 services:
-    jb_nahan.form.defintion:
+    jb_nahan.form.definition:
         class: JbNahan\Bundle\WorkflowManagerBundle\Form\DefinitionType
         arguments: ["@security.context"]
         tags:
