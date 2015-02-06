@@ -423,6 +423,43 @@ class Workflow implements Countable, WorkflowVisitableInterface
     }
 
     /**
+     * @return array
+     */
+    public function getEmailParamaters()
+    {
+        $list = array();
+        foreach ( $this->nodes as $node ) {
+            if ( $node instanceof WorkflowNodeEmail ) {
+                $config = array('name' => $node->getName());
+                $config['to'] = $node->getTo();
+                $config['from'] = $node->getFrom();
+                $config['subject'] = $node->getSubject();
+                $config['body'] = $node->getBody();
+                $list[$node->getId()] = $config;
+            }
+        }
+        return $list;
+    }
+    /**
+     * @return array
+     */
+    public function getDateParameters()
+    {
+        $list = array();
+        foreach ( $this->nodes as $node ) {
+            if ( $node instanceof WorkflowNodeEmail ) {
+                $config = array('name' => $node->getName());
+                $config['to'] = $node->getTo();
+                $config['from'] = $node->getFrom();
+                $config['subject'] = $node->getSubject();
+                $config['body'] = $node->getBody();
+                $list[$node->getId()] = $config;
+            }
+        }
+        return $list;
+    }
+
+    /**
      * Returns true when the workflow has sub workflows
      * (ie. when it contains WorkflowNodeSubWorkflow nodes)
      * and false otherwise.

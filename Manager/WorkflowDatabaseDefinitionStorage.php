@@ -592,6 +592,18 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         return $def->getFormType();
     }
 
+    public function getEmailForDefinition($id)
+    {
+        $def = $this->loadById($id);
+        return $def->getEmailParamaters();
+    }
+
+    public function getDateForDefinition($id)
+    {
+        $def = $this->loadById($id);
+        return $def->getDateParameters();
+    }
+
     private function getRepository()
     {
         return $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
