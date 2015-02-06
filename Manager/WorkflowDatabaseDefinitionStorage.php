@@ -607,6 +607,17 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         return $def->getEmailParamaters();
     }
 
+    /**
+     * @param integer $id
+     * @param integer $nodeid
+     * @param array   $param
+     */
+    public function setEmailParameterForDefinition($id, $nodeid, array $param)
+    {
+        $def = $this->loadById($id);
+        $def->setEmailParamaters($nodeid, $param);
+        $this->save($def);
+    }
 
     /**
      * @param integer $id
