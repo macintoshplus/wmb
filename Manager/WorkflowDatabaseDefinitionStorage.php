@@ -308,7 +308,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
                 $this->entityManager->remove($oldConnectionDb);
             }
 
-            $dbNodes = $nodeRepo->findBy(array('workflow'=>$dbDefinition->getId()));
+            $dbNodes = $nodeRepo->findBy(array('definition'=>$dbDefinition->getId()));
             foreach ($dbNodes as $oldNodeDb) {
                 $this->entityManager->remove($oldNodeDb);
             }
@@ -604,7 +604,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
     public function getEmailForDefinition($id)
     {
         $def = $this->loadById($id);
-        return $def->getEmailParamaters();
+        return $def->getEmailParameters();
     }
 
     /**
@@ -615,7 +615,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
     public function setEmailParameterForDefinition($id, $nodeid, array $param)
     {
         $def = $this->loadById($id);
-        $def->setEmailParamaters($nodeid, $param);
+        $def->setEmailParameters($nodeid, $param);
         $this->save($def);
     }
 

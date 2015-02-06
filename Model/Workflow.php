@@ -406,7 +406,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
     /**
      * @return array
      */
-    public function getEmailParamaters()
+    public function getEmailParameters()
     {
         $list = array();
         foreach ($this->nodes as $node) {
@@ -426,11 +426,14 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * @param integer $nodeid
      * @param array   $param
      */
-    public function setEmailParamaters($nodeid, array $param)
+    public function setEmailParameters($nodeid, array $param)
     {
         //Si le tableau de paramètre n'a pas toutes les clées
         if (4 !== count(array_intersect_key($param, array('to'=>null,'from'=>null,'body'=>null,'subject'=>null)))) {
             throw new \Exception("Invalid param values !");
+        }
+        if (!is_integer($nodeid)) {
+            $nodeid = intval($nodeid);
         }
 
         $nodes = $this->nodes;
@@ -444,8 +447,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
                 return;
             }
         }
+
         throw new \Exception("Unable to set email parameters for node id ".$nodeid." (node not found or not type Email)");
-        
     }
     /**
      * @return array
