@@ -85,37 +85,28 @@ class Workflow implements Countable, WorkflowVisitableInterface
      *                                            that is executed when a workflow
      *                                            execution is cancelled.
      */
-    public function __construct( $name, WorkflowNodeStart $startNode = null, WorkflowNodeEnd $endNode = null, WorkflowNodeFinally $finallyNode = null )
+    public function __construct($name, WorkflowNodeStart $startNode = null, WorkflowNodeEnd $endNode = null, WorkflowNodeFinally $finallyNode = null)
     {
         $this->name = $name;
 
         // Create a new WorkflowNodeStart object, if necessary.
-        if ( $startNode === null )
-        {
+        if (null === $startNode) {
             $this->properties['startNode'] = new WorkflowNodeStart;
-        }
-        else
-        {
+        } else {
             $this->properties['startNode'] = $startNode;
         }
 
         // Create a new WorkflowNodeEnd object, if necessary.
-        if ( $endNode === null )
-        {
+        if (null === $endNode) {
             $this->properties['endNode'] = new WorkflowNodeEnd;
-        }
-        else
-        {
+        } else {
             $this->properties['endNode'] = $endNode;
         }
 
         // Create a new WorkflowNodeFinally object, if necessary.
-        if ( $finallyNode === null )
-        {
+        if (null === $finallyNode) {
             $this->properties['finallyNode'] = new WorkflowNodeFinally;
-        }
-        else
-        {
+        } else {
             $this->properties['finallyNode'] = $finallyNode;
         }
     }
@@ -130,10 +121,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * @return mixed Value of the property or null.
      * @ignore
      */
-    public function __get( $propertyName )
+    public function __get($propertyName)
     {
-        switch ( $propertyName ) 
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
             case 'id':
             case 'name':
@@ -144,12 +134,12 @@ class Workflow implements Countable, WorkflowVisitableInterface
                 return $this->properties[$propertyName];
 
             case 'nodes':
-                $visitor = new WorkflowVisitorNodeCollector( $this );
+                $visitor = new WorkflowVisitorNodeCollector($this);
 
                 return $visitor->getNodes();
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -177,14 +167,12 @@ class Workflow implements Countable, WorkflowVisitableInterface
      *         If the value for the property version is not an integer.
      * @ignore
      */
-    public function __set( $propertyName, $val )
+    public function __set($propertyName, $val)
     {
-        switch ( $propertyName ) 
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
-                if ( !( $val instanceof WorkflowDefinitionStorageInterface ) )
-                {
-                    throw new BaseValueException( $propertyName, $val, 'WorkflowDefinitionStorageInterface' );
+                if (!($val instanceof WorkflowDefinitionStorageInterface)) {
+                    throw new BaseValueException($propertyName, $val, 'WorkflowDefinitionStorageInterface');
                 }
 
                 $this->properties['definitionStorage'] = $val;
@@ -192,9 +180,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
                 return;
 
             case 'id':
-                if ( !( is_int( $val ) ) )
-                {
-                    throw new BaseValueException( $propertyName, $val, 'integer' );
+                if (!(is_int($val))) {
+                    throw new BaseValueException($propertyName, $val, 'integer');
                 }
 
                 $this->properties['id'] = $val;
@@ -202,9 +189,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
                 return;
 
             case 'name':
-                if ( !( is_string( $val ) ) )
-                {
-                    throw new BaseValueException( $propertyName, $val, 'string' );
+                if (!(is_string($val))) {
+                    throw new BaseValueException($propertyName, $val, 'string');
                 }
 
                 $this->properties['name'] = $val;
@@ -215,14 +201,11 @@ class Workflow implements Countable, WorkflowVisitableInterface
             case 'endNode':
             case 'finallyNode':
             case 'nodes':
-                throw new BasePropertyPermissionException(
-                  $propertyName, BasePropertyPermissionException::READ
-                );
+                throw new BasePropertyPermissionException($propertyName, BasePropertyPermissionException::READ);
 
             case 'version':
-                if ( !( is_int( $val ) ) )
-                {
-                    throw new BaseValueException( $propertyName, $val, 'integer' );
+                if (!is_int($val)) {
+                    throw new BaseValueException($propertyName, $val, 'integer');
                 }
 
                 $this->properties['version'] = $val;
@@ -230,7 +213,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
                 return;
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
  
     /**
@@ -240,9 +223,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * @return bool True is the property is set, otherwise false.
      * @ignore
      */
-    public function __isset( $propertyName )
+    public function __isset($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'definitionStorage':
             case 'id':
@@ -381,9 +364,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
     public function count()
     {
         $visitor = new WorkflowVisitor;
-        $this->accept( $visitor );
+        $this->accept($visitor);
 
-        return count( $visitor );
+        return count($visitor);
     }
 
     /**
@@ -395,10 +378,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
      */
     public function isInteractive()
     {
-        foreach ( $this->nodes as $node ) 
-        {
-            if ( $node instanceof WorkflowNodeInput || $node instanceof WorkflowNodeForm )
-            {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeInput || $node instanceof WorkflowNodeForm) {
                 return true;
             }
         }
@@ -413,8 +394,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
     public function getFormType()
     {
         $list = array();
-        foreach ( $this->nodes as $node ) {
-            if ( $node instanceof WorkflowNodeForm ) {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeForm) {
                 $name = $node->getName();
                 $list[$node->getInternalName()] = (null !== $name)? $name:'Form '.$node->getInternalName();
             }
@@ -428,8 +409,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
     public function getEmailParamaters()
     {
         $list = array();
-        foreach ( $this->nodes as $node ) {
-            if ( $node instanceof WorkflowNodeEmail ) {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeEmail) {
                 $config = array('name' => $node->getName());
                 $config['to'] = $node->getTo();
                 $config['from'] = $node->getFrom();
@@ -446,13 +427,10 @@ class Workflow implements Countable, WorkflowVisitableInterface
     public function getDateParameters()
     {
         $list = array();
-        foreach ( $this->nodes as $node ) {
-            if ( $node instanceof WorkflowNodeEmail ) {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeControlForm) {
                 $config = array('name' => $node->getName());
-                $config['to'] = $node->getTo();
-                $config['from'] = $node->getFrom();
-                $config['subject'] = $node->getSubject();
-                $config['body'] = $node->getBody();
+                $config['date'] = $node->getOutDate();
                 $list[$node->getId()] = $config;
             }
         }
@@ -468,10 +446,8 @@ class Workflow implements Countable, WorkflowVisitableInterface
      */
     public function hasSubWorkflows()
     {
-        foreach ( $this->nodes as $node )
-        {
-            if ( $node instanceof WorkflowNodeSubWorkflow )
-            {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeSubWorkflow) {
                 return true;
             }
         }
@@ -487,7 +463,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
      */
     public function reset()
     {
-        $this->accept( new WorkflowVisitorReset );
+        $this->accept(new WorkflowVisitorReset);
     }
 
     /**
@@ -500,7 +476,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
      */
     public function verify()
     {
-        $this->accept( new WorkflowVisitorVerification );
+        $this->accept(new WorkflowVisitorVerification);
     }
 
     /**
@@ -509,10 +485,10 @@ class Workflow implements Countable, WorkflowVisitableInterface
      *
      * @param WorkflowVisitor $visitor
      */
-    public function accept( WorkflowVisitor $visitor )
+    public function accept(WorkflowVisitor $visitor)
     {
-        $visitor->visit( $this );
-        $this->properties['startNode']->accept( $visitor );
+        $visitor->visit($this);
+        $this->properties['startNode']->accept($visitor);
     }
 
     /**
@@ -525,27 +501,21 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * @param string $className
      * @throws WorkflowInvalidWorkflowException if $className does not contain the name of a valid class implementing WorkflowVariableHandler
      */
-    public function addVariableHandler( $variableName, $className )
+    public function addVariableHandler($variableName, $className)
     {
-        if ( class_exists( $className ) )
-        {
-            $class = new ReflectionClass( $className );
+        if (class_exists($className)) {
+            $class = new ReflectionClass($className);
 
-            if ( $class->implementsInterface( 'WorkflowVariableHandler' ) )
-            {
+            if ($class->implementsInterface('WorkflowVariableHandler')) {
                 $this->variableHandlers[$variableName] = $className;
-            }
-            else
-            {
+            } else {
                 throw new WorkflowInvalidWorkflowException(
-                  sprintf( 'Class "%s" does not implement the WorkflowVariableHandler interface.', $className )
+                    sprintf('Class "%s" does not implement the WorkflowVariableHandler interface.', $className)
                 );
             }
-        }
-        else
-        {
+        } else {
             throw new WorkflowInvalidWorkflowException(
-              sprintf( 'Class "%s" not found.', $className )
+                sprintf('Class "%s" not found.', $className)
             );
         }
     }
@@ -559,11 +529,10 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * @param string $variableName
      * @return boolean
      */
-    public function removeVariableHandler( $variableName )
+    public function removeVariableHandler($variableName)
     {
-        if ( isset( $this->variableHandlers[$variableName] ) )
-        {
-            unset( $this->variableHandlers[$variableName] );
+        if (isset($this->variableHandlers[$variableName])) {
+            unset($this->variableHandlers[$variableName]);
             return true;
         }
 
@@ -574,18 +543,17 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * Sets handlers for multiple variables.
      *
      * The format of $variableHandlers is
-     * array( 'variableName' => WorkflowVariableHandler )
+     * array('variableName' => WorkflowVariableHandler)
      *
      * @throws WorkflowInvalidWorkflowException if $className does not contain the name of a valid class implementing WorkflowVariableHandler
      * @param array $variableHandlers
      */
-    public function setVariableHandlers( array $variableHandlers )
+    public function setVariableHandlers(array $variableHandlers)
     {
         $this->variableHandlers = array();
 
-        foreach ( $variableHandlers as $variableName => $className )
-        {
-            $this->addVariableHandler( $variableName, $className );
+        foreach ($variableHandlers as $variableName => $className) {
+            $this->addVariableHandler($variableName, $className);
         }
     }
 
@@ -593,7 +561,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
      * Returns the variable handlers.
      *
      * The format of the returned array is
-     * array( 'variableName' => WorkflowVariableHandler )
+     * array('variableName' => WorkflowVariableHandler)
      *
      * @return array
      */
@@ -602,4 +570,3 @@ class Workflow implements Countable, WorkflowVisitableInterface
         return $this->variableHandlers;
     }
 }
-

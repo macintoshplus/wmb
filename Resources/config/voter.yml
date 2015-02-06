@@ -1,0 +1,6 @@
+services:
+    jb_nahan.security.access.definition_voter:
+        class:      JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\DefinitionVoter
+        public:     false
+        tags:
+           - { name: security.voter }
