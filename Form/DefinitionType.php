@@ -4,10 +4,30 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Security\Core\SecurityContext;
 
+/**
+ * Definition Type
+ */
 class DefinitionType extends AbstractType
 {
+
+    /**
+     * @var SecurityContext $security
+     */
+    private $security;
+
+    /**
+     * @param SecurityContext $security
+     */
+    public function __construct(SecurityContext $security)
+    {
+        $this->security = $security;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -16,7 +36,17 @@ class DefinitionType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('rolesForUpdate', 'collection', array(
+        ;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preSetData'));
+    }
+    
+    public function preSetData(FormEvent $event)
+    {
+        $form = $event->getForm();
+        if (false === $this->security->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+        $form->add('rolesForUpdate', 'collection', array(
                 'type'=> 'text',
                 'options'=>array('required'=>false),
                 'required' => false,
@@ -37,10 +67,9 @@ class DefinitionType extends AbstractType
                 'allow_delete' => true,
                 'error_bubbling'=>false/*,
                 'by_reference'=>false*/
-            ))
-        ;
+            ));
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */

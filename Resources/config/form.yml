@@ -1,0 +1,6 @@
+services:
+	jb_nahan.form.defintion:
+		class:
+		arguments: ["@security.context"]
+		tags:
+			- { name: form.type, alias: jb_nahan_definition }
