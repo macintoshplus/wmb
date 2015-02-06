@@ -586,18 +586,32 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         return $wfDefinition;
     }
 
+    /**
+     * @param integer $id
+     * @return array
+     */
     public function getTypeForDefinition($id)
     {
         $def = $this->loadById($id);
         return $def->getFormType();
     }
 
+
+    /**
+     * @param integer $id
+     * @return array
+     */
     public function getEmailForDefinition($id)
     {
         $def = $this->loadById($id);
         return $def->getEmailParamaters();
     }
 
+
+    /**
+     * @param integer $id
+     * @return array
+     */
     public function getDateForDefinition($id)
     {
         $def = $this->loadById($id);
