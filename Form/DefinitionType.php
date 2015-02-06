@@ -85,6 +85,6 @@ class DefinitionType extends AbstractType
      */
     public function getName()
     {
-        return 'jbnahan_bundle_workflowmanagerbundle_definition';
+        return 'jb_nahan_definition';
     }
 }
