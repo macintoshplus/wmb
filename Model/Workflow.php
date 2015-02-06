@@ -429,7 +429,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
     public function setEmailParameters($nodeid, array $param)
     {
         //Si le tableau de paramètre n'a pas toutes les clées
-        if (4 !== count(array_intersect_key($param, array('to'=>null,'from'=>null,'body'=>null,'subject'=>null)))) {
+        if (4 !== count(array_intersect_key($param, array('to'=>null, 'from'=>null, 'body'=>null, 'subject'=>null)))) {
             throw new \Exception("Invalid param values !");
         }
         if (!is_integer($nodeid)) {
