@@ -467,6 +467,29 @@ class Workflow implements Countable, WorkflowVisitableInterface
     }
 
     /**
+     * @param integer  $nodeid
+     * @param DateTime $param
+     */
+    public function setDateParameters($nodeid, \DateTime $date)
+    {
+        
+        if (!is_integer($nodeid)) {
+            $nodeid = intval($nodeid);
+        }
+
+        $nodes = $this->nodes;
+        foreach ($nodes as $node) {
+            if ($node instanceof WorkflowNodeControlForm && $node->getId() === $nodeid) {
+                $node->setOutDate($date);
+
+                return;
+            }
+        }
+
+        throw new \Exception("Unable to set date parameters for node id ".$nodeid." (node not found or not type ControlForm)");
+    }
+
+    /**
      * Returns true when the workflow has sub workflows
      * (ie. when it contains WorkflowNodeSubWorkflow nodes)
      * and false otherwise.

@@ -57,4 +57,50 @@ class Workflow extends Units\Test
 		$this->assert->string($nodeEmail->getBody())->isEqualTo($config['body']);
 		$this->assert->string($nodeEmail->getSubject())->isEqualTo($config['subject']);
 	}
+
+	public function test_get_date()
+	{
+		$workflow = new \JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+		$nodeAction = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('Action1');
+		
+		$config = array('internal_name'=>'me@me.fr', 'out_date'=>new \DateTime('2015-02-01'));
+		$nodeControl = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm($config);
+		$nodeControl->setName('test date');
+
+		$workflow->startNode->addOutNode($nodeAction);
+		$nodeAction->addOutNode($nodeControl);
+		$nodeControl->addSelectOutNode($workflow->endNode, $workflow->endNode);
+
+		$arr = $workflow->getDateParameters();
+		//var_dump($arr);
+		$this->assert->array($arr)->hasSize(1)->hasKey(4);
+	}
+
+
+	public function test_set_date()
+	{
+		$workflow = new \JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+		$nodeAction = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('Action1');
+		
+		$config = array('internal_name'=>'me@me.fr', 'out_date'=>new \DateTime('2015-02-01'));
+		$nodeControl = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm($config);
+		$nodeControl->setName('test date');
+
+		$workflow->startNode->addOutNode($nodeAction);
+		$nodeAction->addOutNode($nodeControl);
+		$nodeControl->addSelectOutNode($workflow->endNode, $workflow->endNode);
+
+		$arr = $workflow->getDateParameters();
+		//var_dump($arr);
+		$this->assert->array($arr)->hasSize(1)->hasKey(4);
+
+		$date = new \DateTime('2012-03-15');
+		$workflow->setDateParameters(4, $date);
+		$this->assert->datetime($nodeControl->getOutDate())->isEqualTo($date);
+
+		$this->assert->exception(function() use ($workflow) {
+			$workflow->setDateParameters('22', new \DateTime('2012-03-15'));
+		})->hasMessage('Unable to set date parameters for node id 22 (node not found or not type ControlForm)');
+		
+	}
 }
