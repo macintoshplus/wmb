@@ -428,6 +428,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
      */
     public function setEmailParameters($nodeid, array $param)
     {
+        if (null !== $this->publishedAt) {
+            throw new \Exception("Unable to alter published definition");
+        }
         //Si le tableau de paramètre n'a pas toutes les clées
         if (4 !== count(array_intersect_key($param, array('to'=>null, 'from'=>null, 'body'=>null, 'subject'=>null)))) {
             throw new \Exception("Invalid param values !");
@@ -472,6 +475,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
      */
     public function setDateParameters($nodeid, \DateTime $date)
     {
+        if (null !== $this->publishedAt) {
+            throw new \Exception("Unable to alter published definition");
+        }
         
         if (!is_integer($nodeid)) {
             $nodeid = intval($nodeid);

@@ -426,7 +426,18 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function cloneById($workflowId)
     {
-        throw new Exception("TODO !!!");
+        $def = $this->loadById($workflowId);
+
+        if (null === $def->getPublishedAt()) {
+            throw new \Exception("Unable to clone a unpublushed definition");
+        }
+
+        $def->setParent($workflowId);
+        $def->id = null;
+        $def->setPublishedAt(null);
+        $def->setPublishedBy(null);
+        $def->setArchivedAt(null);
+        $def->setArchivedBy(null);
         
     }
 
@@ -507,7 +518,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         if (count($result)) {
             throw new \Exception("Unable to unpublish used definition");
         }
-        
+
         $token = $this->security->getToken();
         $user = (is_object($token))? $token->getUsername():'Anonymous';
 
