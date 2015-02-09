@@ -440,7 +440,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $repo = $this->getRepository();
         $wf = $repo->findOneById($workflowId);
 
-        if (null ===$wfs) {
+        if (null ===$wf) {
             throw new \Exception("Unable to load defition id : " . $workflowId);
         }
 
@@ -483,6 +483,65 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $this->entityManager->flush();
     }
 
+
+    /**
+     * Publie la définition du workflow passé en argument et archive la version parente.
+     * @param int $workflowId
+     * @throws \Exception si déjà publié
+     */
+    public function unpublishById($workflowId)
+    {
+        $repo = $this->getRepository();
+        $wf = $repo->findOneById($workflowId);
+
+        if (null ===$wf) {
+            throw new \Exception("Unable to load defition id : " . $workflowId);
+        }
+
+        //vérif si déjà publié
+        if (null === $wf->getPublishedAt()) {
+            throw new \Exception("Unable to unpublish definition");
+        }
+
+        $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->findBy(array('definition'=>$workflowId));
+        if (count($result)) {
+            throw new \Exception("Unable to unpublish used definition");
+        }
+        
+        $token = $this->security->getToken();
+        $user = (is_object($token))? $token->getUsername():'Anonymous';
+
+            
+        $wf->setPublishedAt(null);
+        $wf->setPublishedBy(null);
+
+        $this->entityManager->persist($wf);
+        $this->entityManager->flush();
+
+        //Archive le parent si présent
+        if (0 === $wf->getParent() || null === $wf->getParent()) {
+            return;
+        }
+
+        $wfParents = $repo->findById($wf->getParent());
+        if (empty($wfParents)) {
+            return;
+        }
+        
+        $wfParent = $wfParents[0];
+
+        //Ne fait rien si déjà archivé
+        if (null === $wfParent->getArchivedAt()) {
+            return;
+        }
+
+        $wfParent->setArchivedAt(null);
+        $wfParent->setArchivedBy(null);
+
+        $this->entityManager->persist($wfParent);
+        $this->entityManager->flush();
+    }
+
     /**
      * Returns the current version number for a given workflow name.
      *
@@ -493,7 +552,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     protected function getCurrentVersionNumber($workflowName)
     {
-        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
+        $repo = $this->getRepository();
         $qb = $repo->createQueryBuilder('w');
 
         $qb->select('MAX(w.version) as version')
