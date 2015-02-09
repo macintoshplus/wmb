@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DefinitionSearchType extends AbstractType
 {
-        /**
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
@@ -21,12 +21,16 @@ class DefinitionSearchType extends AbstractType
             ->add('publishedAt')
             ->add('isPublished', 'choice', array(
                 'choices'=>array(true=>'Oui',false=>'Non'),
-                'empty_value'=>'Tout'))
+                'empty_value'=>'Tout',
+                'empty_data'=>null,
+                'required'=>false))
             ->add('publishedBy')
             ->add('archivedAt')
             ->add('isArchived', 'choice', array(
                 'choices'=>array(true=>'Oui',false=>'Non'),
-                'empty_value'=>'Tout'))
+                'empty_value'=>'Tout',
+                'empty_data'=>null,
+                'required'=>false))
             ->add('archivedBy')
             ->add('createdAt')
             ->add('createdBy')

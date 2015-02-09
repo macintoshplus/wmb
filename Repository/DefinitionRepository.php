@@ -42,13 +42,13 @@ class DefinitionRepository extends EntityRepository
             
         }
 
-        if (null !== $param->isPublished()) {
+        if (null !== $param->getIsPublished()) {
             //c'est publié
-            if (is_bool($param->isPublished()) && true === $param->isPublished()) {
+            if (true == $param->getIsPublished()) {
                 $qb->andWhere($qb->expr()->isNotNull('w.publishedAt'));
             }
             //c'est pas publié
-            if (is_bool($param->isPublished()) && false === $param->isPublished()) {
+            if (false == $param->getIsPublished()) {
                 $qb->andWhere($qb->expr()->isNull('w.publishedAt'));
             }
             
@@ -62,13 +62,13 @@ class DefinitionRepository extends EntityRepository
             
         }
         
-        if (null !== $param->isArchived()) {
+        if (null !== $param->getIsArchived()) {
             //c'est archivé
-            if (is_bool($param->isArchived()) && true === $param->isArchived()) {
+            if (true == $param->getIsArchived()) {
                 $qb->andWhere($qb->expr()->isNotNull('w.archivedAt'));
             }
             //c'est pas archivé
-            if (is_bool($param->isArchived()) && false === $param->isArchived()) {
+            if (false == $param->getIsArchived()) {
                 $qb->andWhere($qb->expr()->isNull('w.archivedAt'));
             }
             

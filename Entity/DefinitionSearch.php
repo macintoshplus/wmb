@@ -285,7 +285,7 @@ class DefinitionSearch
      *
      * @return Boolean 
      */
-    public function isPublished()
+    public function getIsPublished()
     {
         return $this->isPublished;
     }
@@ -378,7 +378,7 @@ class DefinitionSearch
      *
      * @return Boolean 
      */
-    public function isArchived()
+    public function getIsArchived()
     {
         return $this->isArchived;
     }

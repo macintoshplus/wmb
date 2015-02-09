@@ -443,7 +443,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $result = $repo->findBy(array('parent'=>$workflowId, 'publishedAt'=>null));
 
         if (0 < count($result)) {
-            throw new \Exception("Unable to clone this definition. Another version exist.");
+            throw new \Exception("Unable to clone this definition. Another draft version exist.");
         }
 
         $newVersion = $def->version + 1;
