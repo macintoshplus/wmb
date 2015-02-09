@@ -422,23 +422,49 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * Il vérifie : Si une autre copie non publié existe => fail
      * La définition parente ne doit pas être archivée
      * @param int $workfowId
+     * @return integer
      * @throws \Exception si un test ne passe pas
      */
     public function cloneById($workflowId)
     {
         $def = $this->loadById($workflowId);
 
-        if (null === $def->getPublishedAt()) {
-            throw new \Exception("Unable to clone a unpublushed definition");
+        if (!$def->isPublished()) {
+            throw new \Exception("Unable to clone a unpublished definition");
+        }
+
+
+        if ($def->isArchived()) {
+            throw new \Exception("Unable to clone a archived definition");
+        }
+
+        $repo = $this->getRepository();
+
+        $result = $repo->findBy(array('parent'=>$workflowId, 'publishedAt'=>null));
+
+        if (0 < count($result)) {
+            throw new \Exception("Unable to clone this definition. Another version exist.");
+        }
+
+        $newVersion = $def->version + 1;
+
+        $result = $repo->findBy(array('parent'=>$workflowId, 'version'=>$newVersion));
+
+        if (0 < count($result)) {
+            throw new \Exception("Unable to clone this definition. Another version ".($newVersion)." exists. Please clone the last version.");
         }
 
         $def->setParent($workflowId);
-        $def->id = null;
+        $def->id = false;
+        $def->version = $newVersion;
         $def->setPublishedAt(null);
         $def->setPublishedBy(null);
         $def->setArchivedAt(null);
         $def->setArchivedBy(null);
-        
+
+        $this->save($def);
+
+        return $def->id;
     }
 
     /**

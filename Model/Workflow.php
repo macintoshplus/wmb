@@ -180,7 +180,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
                 return;
 
             case 'id':
-                if (!(is_int($val))) {
+                if (!(is_int($val)) && false !== $val) {
                     throw new BaseValueException($propertyName, $val, 'integer');
                 }
 
@@ -478,7 +478,7 @@ class Workflow implements Countable, WorkflowVisitableInterface
         if (null !== $this->publishedAt) {
             throw new \Exception("Unable to alter published definition");
         }
-        
+
         if (!is_integer($nodeid)) {
             $nodeid = intval($nodeid);
         }
