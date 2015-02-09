@@ -32,7 +32,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
  *       )
  *     )
  *   )
- * );
+ *);
  * ?>
  * </code>
  *
@@ -71,21 +71,19 @@ class WorkflowNodeSubWorkflow extends WorkflowNode
      *
      * @param mixed $configuration
      */
-    public function __construct( $configuration )
+    public function __construct($configuration)
     {
-        if ( is_string( $configuration ) )
-        {
-            $configuration = array( 'workflow' => $configuration );
+        if (is_string($configuration)) {
+            $configuration = array('workflow' => $configuration);
         }
 
-        if ( !isset( $configuration['variables'] ) )
-        {
+        if (!isset($configuration['variables'])) {
             $configuration['variables'] = array(
-              'in' => array(), 'out' => array()
+                'in' => array(), 'out' => array()
             );
         }
 
-        parent::__construct( $configuration );
+        parent::__construct($configuration);
     }
 
     /**
@@ -96,35 +94,31 @@ class WorkflowNodeSubWorkflow extends WorkflowNode
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
-        if ( $execution->definitionStorage === null )
-        {
+        if ($execution->definitionStorage === null) {
             throw new WorkflowExecutionException(
-              'No WorkflowDefinitionStorage implementation available.'
+                'No WorkflowDefinitionStorage implementation available.'
             );
         }
 
-        $workflow = $execution->definitionStorage->loadByName( $this->configuration['workflow'] );
+        $workflow = $execution->definitionStorage->loadByName($this->configuration['workflow']);
 
         // Sub Workflow is not interactive.
-        if ( !$workflow->isInteractive() && !$workflow->hasSubWorkflows() )
-        {
-            $subExecution = $execution->getSubExecution( null, false );
+        if (!$workflow->isInteractive() && !$workflow->hasSubWorkflows()) {
+            $subExecution = $execution->getSubExecution(null, false);
             $subExecution->workflow = $workflow;
 
             $this->passVariables(
-              $execution, $subExecution, $this->configuration['variables']['in']
+                $execution, $subExecution, $this->configuration['variables']['in']
             );
 
             $subExecution->start();
-        }
+        } else {
         // Sub Workflow is interactive.
-        else
-        {
+        
             // Sub Workflow is to be started.
-            if ( $this->state == 0 )
-            {
+            if ($this->state == 0) {
                 $subExecution = $execution->getSubExecution();
                 $subExecution->workflow = $workflow;
 
@@ -132,43 +126,38 @@ class WorkflowNodeSubWorkflow extends WorkflowNode
                   $execution, $subExecution, $this->configuration['variables']['in']
                 );
 
-                $subExecution->start( $execution->getId() );
+                $subExecution->start($execution->getId());
 
                 $this->state = $subExecution->getId();
-            }
+            } else {
             // Sub Workflow is to be resumed.
-            else
-            {
-                $subExecution = $execution->getSubExecution( $this->state );
+                $subExecution = $execution->getSubExecution($this->state);
                 $subExecution->workflow = $workflow;
-                $subExecution->resume( $execution->getVariables() );
+                $subExecution->resume($execution->getVariables());
             }
         }
 
         // Execution of Sub Workflow was cancelled.
-        if ( $subExecution->isCancelled() )
-        {
-            $execution->cancel( $this );
+        if ($subExecution->isCancelled()) {
+            $execution->cancel($this);
         }
 
         // Execution of Sub Workflow has ended.
-        if ( $subExecution->hasEnded() )
-        {
+        if ($subExecution->hasEnded()) {
             $this->passVariables(
-              $subExecution, $execution, $this->configuration['variables']['out']
+                $subExecution, $execution, $this->configuration['variables']['out']
             );
 
-            $this->activateNode( $execution, $this->outNodes[0] );
+            $this->activateNode($execution, $this->outNodes[0]);
 
             $this->state = 0;
 
-            return parent::execute( $execution );
+            return parent::execute($execution);
         }
 
         // Execution of Sub Workflow has been suspended.
-        foreach ( $subExecution->getWaitingFor() as $variableName => $data )
-        {
-            $execution->addWaitingFor( $this, $variableName, $data['condition'] );
+        foreach ($subExecution->getWaitingFor() as $variableName => $data) {
+            $execution->addWaitingFor($this, $variableName, $data['condition']);
         }
 
         return false;
@@ -181,27 +170,25 @@ class WorkflowNodeSubWorkflow extends WorkflowNode
      * @return array
      * @ignore
      */
-    public static function configurationFromXML( \DOMElement $element )
+    public static function configurationFromXML(\DOMElement $element)
     {
         $configuration = array(
-          'workflow'  => $element->getAttribute( 'subWorkflowName' ),
-          'variables' => array(
+            'workflow'  => $element->getAttribute('subWorkflowName'),
+            'variables' => array(
             'in' => array(), 'out' => array()
-          )
+            )
         );
 
-        $xpath = new \DOMXPath( $element->ownerDocument );
-        $in    = $xpath->query( 'in/variable', $element );
-        $out   = $xpath->query( 'out/variable', $element );
+        $xpath = new \DOMXPath($element->ownerDocument);
+        $in    = $xpath->query('in/variable', $element);
+        $out   = $xpath->query('out/variable', $element);
 
-        foreach ( $in as $variable )
-        {
-            $configuration['variables']['in'][$variable->getAttribute( 'name' )] = $variable->getAttribute( 'as' );
+        foreach ($in as $variable) {
+            $configuration['variables']['in'][$variable->getAttribute('name')] = $variable->getAttribute('as');
         }
 
-        foreach ( $out as $variable )
-        {
-            $configuration['variables']['out'][$variable->getAttribute( 'name' )] = $variable->getAttribute( 'as' );
+        foreach ($out as $variable) {
+            $configuration['variables']['out'][$variable->getAttribute('name')] = $variable->getAttribute('as');
         }
 
         return $configuration;
@@ -213,41 +200,37 @@ class WorkflowNodeSubWorkflow extends WorkflowNode
      * @param DOMElement $element
      * @ignore
      */
-    public function configurationToXML( \DOMElement $element )
+    public function configurationToXML(\DOMElement $element)
     {
-        $element->setAttribute( 'subWorkflowName', $this->configuration['workflow'] );
+        $element->setAttribute('subWorkflowName', $this->configuration['workflow']);
 
-        if ( !empty( $this->configuration['variables']['in'] ) )
-        {
+        if (!empty($this->configuration['variables']['in'])) {
             $in = $element->appendChild(
-              $element->ownerDocument->createElement( 'in' )
+                $element->ownerDocument->createElement('in')
             );
 
-            foreach ( $this->configuration['variables']['in'] as $fromName => $toName )
-            {
+            foreach ($this->configuration['variables']['in'] as $fromName => $toName) {
                 $variable = $in->appendChild(
-                  $in->ownerDocument->createElement( 'variable' )
+                    $in->ownerDocument->createElement('variable')
                 );
 
-                $variable->setAttribute( 'name', $fromName );
-                $variable->setAttribute( 'as', $toName );
+                $variable->setAttribute('name', $fromName);
+                $variable->setAttribute('as', $toName);
             }
         }
 
-        if ( !empty( $this->configuration['variables']['out'] ) )
-        {
+        if (!empty($this->configuration['variables']['out'])) {
             $out = $element->appendChild(
-              $element->ownerDocument->createElement( 'out' )
+                $element->ownerDocument->createElement('out')
             );
 
-            foreach ( $this->configuration['variables']['out'] as $fromName => $toName )
-            {
+            foreach ($this->configuration['variables']['out'] as $fromName => $toName) {
                 $variable = $out->appendChild(
-                  $out->ownerDocument->createElement( 'variable' )
+                    $out->ownerDocument->createElement('variable')
                 );
 
-                $variable->setAttribute( 'name', $fromName );
-                $variable->setAttribute( 'as', $toName );
+                $variable->setAttribute('name', $fromName);
+                $variable->setAttribute('as', $toName);
             }
         }
     }
@@ -272,11 +255,10 @@ class WorkflowNodeSubWorkflow extends WorkflowNode
      * @throws WorkflowExecutionException if a variable that is to be passed does not exist.
      * @ignore
      */
-    protected function passVariables( WorkflowExecution $from, WorkflowExecution $to, array $variables )
+    protected function passVariables(WorkflowExecution $from, WorkflowExecution $to, array $variables)
     {
-        foreach ( $variables as $fromName => $toName )
-        {
-            $to->setVariable( $toName, $from->getVariable( $fromName ) );
+        foreach ($variables as $fromName => $toName) {
+            $to->setVariable($toName, $from->getVariable($fromName));
         }
     }
 }
