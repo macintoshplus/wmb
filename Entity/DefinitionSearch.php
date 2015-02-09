@@ -378,7 +378,7 @@ class DefinitionSearch
      *
      * @return Boolean 
      */
-    public function isisArchived()
+    public function isArchived()
     {
         return $this->isArchived;
     }

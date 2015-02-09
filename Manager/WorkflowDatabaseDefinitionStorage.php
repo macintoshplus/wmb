@@ -451,7 +451,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $result = $repo->findBy(array('parent'=>$workflowId, 'version'=>$newVersion));
 
         if (0 < count($result)) {
-            throw new \Exception("Unable to clone this definition. Another version ".($newVersion)." exists. Please clone the last version.");
+            throw new \Exception("Unable to clone this definition. Please clone the last version.");
         }
 
         $def->setParent($workflowId);

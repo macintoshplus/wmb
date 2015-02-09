@@ -39,13 +39,17 @@ class DefinitionRepository extends EntityRepository
                 $qb->andWhere('w.publishedAt = :datepublish')
                     ->setParameter('datepublish', $param->getPublishedAt());
             }
+            
+        }
+
+        if (null !== $param->isPublished()) {
             //c'est publié
-            if (is_bool($param->getPublishedAt()) && true === $param->getPublishedAt()) {
-                $qb->andWhere($qb->expr->isNotNull('w.publishedAt'));
+            if (is_bool($param->isPublished()) && true === $param->isPublished()) {
+                $qb->andWhere($qb->expr()->isNotNull('w.publishedAt'));
             }
             //c'est pas publié
-            if (is_bool($param->getPublishedAt()) && false === $param->getPublishedAt()) {
-                $qb->andWhere($qb->expr->isNull('w.publishedAt'));
+            if (is_bool($param->isPublished()) && false === $param->isPublished()) {
+                $qb->andWhere($qb->expr()->isNull('w.publishedAt'));
             }
             
         }
@@ -55,13 +59,17 @@ class DefinitionRepository extends EntityRepository
                 $qb->andWhere('w.archivedAt = :datearchive')
                     ->setParameter('datearchive', $param->getArchivedAt());
             }
+            
+        }
+        
+        if (null !== $param->isArchived()) {
             //c'est archivé
-            if (is_bool($param->getArchivedAt()) && true === $param->getArchivedAt()) {
-                $qb->andWhere($qb->expr->isNotNull('w.archivedAt'));
+            if (is_bool($param->isArchived()) && true === $param->isArchived()) {
+                $qb->andWhere($qb->expr()->isNotNull('w.archivedAt'));
             }
             //c'est pas archivé
-            if (is_bool($param->getArchivedAt()) && false === $param->getArchivedAt()) {
-                $qb->andWhere($qb->expr->isNull('w.archivedAt'));
+            if (is_bool($param->isArchived()) && false === $param->isArchived()) {
+                $qb->andWhere($qb->expr()->isNull('w.archivedAt'));
             }
             
         }

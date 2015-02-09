@@ -21,12 +21,12 @@ class DefinitionSearchType extends AbstractType
             ->add('publishedAt')
             ->add('isPublished', 'choice', array(
                 'choices'=>array(true=>'Oui',false=>'Non'),
-                'empty_value'=>''))
+                'empty_value'=>'Tout'))
             ->add('publishedBy')
             ->add('archivedAt')
             ->add('isArchived', 'choice', array(
                 'choices'=>array(true=>'Oui',false=>'Non'),
-                'empty_value'=>''))
+                'empty_value'=>'Tout'))
             ->add('archivedBy')
             ->add('createdAt')
             ->add('createdBy')
