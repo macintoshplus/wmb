@@ -438,12 +438,11 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
     public function publishById($workflowId)
     {
         $repo = $this->getRepository();
-        $wfs = $repo->findById($workflowId);
+        $wf = $repo->findOneById($workflowId);
 
-        if (empty($wfs)) {
+        if (null ===$wfs) {
             throw new \Exception("Unable to load defition id : " . $workflowId);
         }
-        $wf = $wfs[0];
 
         //vérif pas déjà publié
         if (null !== $wf->getPublishedAt()) {
@@ -571,6 +570,11 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         return $this->getRepository()->findOneById($id);
     }
 
+    public function flush()
+    {
+        $this->entityManager->flush();
+    }
+
     public function getByIdIfGranted($id, $type)
     {
         $wfDefinition = $this->getById($id);
@@ -628,6 +632,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $def = $this->loadById($id);
         return $def->getDateParameters();
     }
+
 
     private function getRepository()
     {
