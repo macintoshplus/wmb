@@ -458,9 +458,9 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $def->id = false;
         $def->version = $newVersion;
         $def->setPublishedAt(null);
-        $def->setPublishedBy(null);
+        //$def->setPublishedBy(null);
         $def->setArchivedAt(null);
-        $def->setArchivedBy(null);
+        //$def->setArchivedBy(null);
 
         $this->save($def);
 
