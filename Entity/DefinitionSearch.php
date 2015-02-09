@@ -52,6 +52,9 @@ class DefinitionSearch
      */
     private $publishedAt;
 
+
+    private $isPublished;
+
     /**
      * @var string
      */
@@ -61,6 +64,9 @@ class DefinitionSearch
      * @var \DateTime
      */
     private $archivedAt;
+
+
+    private $isArchived;
 
     /**
      * @var string
@@ -262,6 +268,29 @@ class DefinitionSearch
     }
 
     /**
+     * Set isPublished
+     *
+     * @param Boolean $isPublished
+     * @return Workflow
+     */
+    public function setIsPublished($isPublished)
+    {
+        $this->isPublished = $isPublished;
+
+        return $this;
+    }
+
+    /**
+     * Get isPublished
+     *
+     * @return Boolean 
+     */
+    public function isPublished()
+    {
+        return $this->isPublished;
+    }
+
+    /**
      * Set publishedAt
      *
      * @param \DateTime $publishedAt
@@ -330,6 +359,29 @@ class DefinitionSearch
         return $this->archivedAt;
     }
 
+
+    /**
+     * Set isArchived
+     *
+     * @param Boolean $isArchived
+     * @return Workflow
+     */
+    public function setIsArchived($isArchived)
+    {
+        $this->isArchived = $isArchived;
+
+        return $this;
+    }
+
+    /**
+     * Get isArchived
+     *
+     * @return Boolean 
+     */
+    public function isisArchived()
+    {
+        return $this->isArchived;
+    }
     /**
      * Set archivedBy
      *
