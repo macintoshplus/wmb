@@ -1,5 +1,6 @@
 parameters:
     jb_nahan_workflow_manager.workflow_definition_database.class: JbNahan\Bundle\WorkflowManagerBundle\Manager\WorkflowDatabaseDefinitionStorage
+    jb_nahan_workflow_manager.workflow_execution.class: JbNahan\Bundle\WorkflowManagerBundle\Manager\ExecutionManager
     jb_nahan_workflow_manager.workflow_execution_database_factory.class: JbNahan\Bundle\WorkflowManagerBundle\Factory\WorkflowDatabaseExecutionFactory
     jb_nahan_workflow_manager.workflow_node_factory.class: JbNahan\Bundle\WorkflowManagerBundle\Factory\WorkflowNodeFactory
 
@@ -10,6 +11,13 @@ services:
 
     jb_nahan.definition_manager:
         alias: jb_nahan_workflow_manager.workflow_definition_database
+
+    jb_nahan_workflow_manager.workflow_execution:
+        class: %jb_nahan_workflow_manager.workflow_execution.class%
+        arguments: [@doctrine.orm.default_entity_manager, @security.context]
+
+    jb_nahan.execution_manager:
+        alias: jb_nahan_workflow_manager.workflow_execution
 
     jb_nahan_workflow_manager.workflow_execution_database_factory:
         class: %jb_nahan_workflow_manager.workflow_execution_database_factory.class%

@@ -3,6 +3,7 @@
 namespace JbNahan\Bundle\WorkflowManagerBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use JbNahan\Bundle\WorkflowManagerBundle\Entity\ExecutionSearch;
 
 /**
  * ExecutionRepository
@@ -24,5 +25,17 @@ class ExecutionRepository extends EntityRepository
         ->setParameter('id', $executionId);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param ExecutionSearch $param
+     * @return QueryBuilder
+     */
+    public function getQbSearch(ExecutionSearch $param)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+
+        return $qb;
     }
 }
