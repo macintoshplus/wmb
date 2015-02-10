@@ -49,12 +49,39 @@ class ExecutionRepository extends EntityRepository
                 $expr .= ($expr===''? '':' OR ') . 'e.roles like \'%'.$role.'%\'';
             }
             $list = implode("','", $param->getDefinitionList());
-            $qb->andWhere('((' . $expr . ') OR ( e.definition IN (\'' . $list . '\')))');
+            $qb->andWhere('((' . $expr . ') OR ( e.definition IN (\'-1\',\'' . $list . '\')))');
             //$qb->orWhere($qb->expr()->in('e.definition', $param->getDefinitionList()));
 
         }
 
         //Partie recherche
+
+        if (null !== $param->getName()) {
+            $qb->andWhere($qb->expr()->like('e.name', $qb->expr()->litteral('%'.$param->getName().'%')));
+        }
+
+
+        if (null !== $param->getIsEnded()) {
+            if (true == $param->getIsEnded()) {
+                $qb->andWhere($qb->expr()->isNotNull('e.endAt'));
+            }
+            //c'est pas publié
+            if (false == $param->getIsEnded()) {
+                $qb->andWhere($qb->expr()->isNull('e.endAt'));
+            }
+        }
+
+        if (null !== $param->getIsCanceled()) {
+            if (true == $param->getIsCanceled()) {
+                $qb->andWhere($qb->expr()->isNotNull('e.canceledAt'));
+            }
+            //c'est pas publié
+            if (false == $param->getIsCanceled()) {
+                $qb->andWhere($qb->expr()->isNull('e.canceledAt'));
+            }
+        }
+
+
         return $qb;
     }
 }

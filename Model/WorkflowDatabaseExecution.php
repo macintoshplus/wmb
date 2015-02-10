@@ -44,7 +44,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
       'definitionStorage' => null,
       'workflow' => null,
       'options' => null
-    );
+   );
 
     /**
      * Construct a new database execution.
@@ -55,11 +55,10 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      * @param  int          $executionId
      * @throws WorkflowExecutionException
      */
-    public function __construct ( EntityManagerInterface $entityManager, WorkflowDefinitionStorageInterface $definitionService, SecurityContextInterface $security, $executionId = null )
+    public function __construct(EntityManagerInterface $entityManager, WorkflowDefinitionStorageInterface $definitionService, SecurityContextInterface $security, $executionId = null)
     {
-        if ( $executionId !== null && !is_int( $executionId ) )
-        {
-            throw new WorkflowExecutionException( '$executionId must be an integer.' );
+        if ($executionId !== null && !is_int($executionId)) {
+            throw new WorkflowExecutionException('$executionId must be an integer.');
         }
 
         $this->entityManager = $entityManager;
@@ -67,9 +66,8 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         $this->properties['definitionStorage'] = $definitionService;
         $this->properties['options'] = new WorkflowDatabaseOptions;
 
-        if ( is_int( $executionId ) )
-        {
-            $this->loadExecution( $executionId );
+        if (is_int($executionId)) {
+            $this->loadExecution($executionId);
         }
     }
 
@@ -82,9 +80,9 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      *         If the given property could not be found.
      * @ignore
      */
-    public function __get( $propertyName )
+    public function __get($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'definitionStorage':
             case 'workflow':
@@ -92,7 +90,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
                 return $this->properties[$propertyName];
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -106,25 +104,25 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      *         If the value for the property options is not an WorkflowDatabaseOptions object.
      * @ignore
      */
-    public function __set( $propertyName, $propertyValue )
+    public function __set($propertyName, $propertyValue)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'definitionStorage':
             case 'workflow':
-                return parent::__set( $propertyName, $propertyValue );
+                return parent::__set($propertyName, $propertyValue);
             case 'options':
-                if ( !( $propertyValue instanceof WorkflowDatabaseOptions ) )
+                if (!($propertyValue instanceof WorkflowDatabaseOptions))
                 {
                     throw new BaseValueException(
                         $propertyName,
                         $propertyValue,
                         'WorkflowDatabaseOptions'
-                    );
+                   );
                 }
                 break;
             default:
-                throw new BasePropertyNotFoundException( $propertyName );
+                throw new BasePropertyNotFoundException($propertyName);
         }
         $this->properties[$propertyName] = $propertyValue;
     }
@@ -136,9 +134,9 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      * @return bool
      * @ignore
      */
-    public function __isset( $propertyName )
+    public function __isset($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'definitionStorage':
             case 'workflow':
@@ -154,17 +152,17 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      *
      * @param  int $parentId
      */
-    protected function doStart( $parentId )
+    protected function doStart($parentId)
     {
 
         $execution = new Entity\Execution();
 
 
-        $execution->setWorkflow((int)$this->workflow->id);
+        $execution->setDefinition((int)$this->workflow->id);
         $execution->setParent((int)$parentId);
-        $execution->setVariables(WorkflowDatabaseDefinitionStorage::serialize( $this->variables ));
-        $execution->setWaitingfor(WorkflowDatabaseDefinitionStorage::serialize( $this->waitingFor ));
-        $execution->setThreads(WorkflowDatabaseDefinitionStorage::serialize( $this->threads ));
+        $execution->setVariables(WorkflowDatabaseDefinitionStorage::serialize($this->variables));
+        $execution->setWaitingfor(WorkflowDatabaseDefinitionStorage::serialize($this->waitingFor));
+        $execution->setThreads(WorkflowDatabaseDefinitionStorage::serialize($this->threads));
         $execution->setNextThreadId((int)$this->nextThreadId);
         $execution->setCancellable($this->isCancellable());
         $token = $this->security->getToken();
@@ -183,28 +181,26 @@ class WorkflowDatabaseExecution extends WorkflowExecution
     protected function doSuspend()
     {
 
-        $this->cleanupTable( 'execution_state' );
+        $this->cleanupTable('execution_state');
         $this->entityManager->flush();
 
         $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->getExecutionById($this->id);
-        if ( $result === false || empty( $result ) )
+        if ($result === false || empty($result))
         {
-            throw new WorkflowExecutionException(
-              'Could not Suspend execution.'
-            );
+            throw new WorkflowExecutionException('Could not Suspend execution.');
         }
         $execution = $result[0];
         
-        $execution->setVariables(WorkflowDatabaseDefinitionStorage::serialize( $this->variables ));
-        $execution->setWaitingfor(WorkflowDatabaseDefinitionStorage::serialize( $this->waitingFor ));
-        $execution->setThreads(WorkflowDatabaseDefinitionStorage::serialize( $this->threads ));
+        $execution->setVariables(WorkflowDatabaseDefinitionStorage::serialize($this->variables));
+        $execution->setWaitingfor(WorkflowDatabaseDefinitionStorage::serialize($this->waitingFor));
+        $execution->setThreads(WorkflowDatabaseDefinitionStorage::serialize($this->threads));
         $execution->setNextThreadId((int)$this->nextThreadId);
         $execution->setSuspendedAt(new \DateTime());
         $execution->setName($this->getName());
         $execution->setCancellable($this->isCancellable());
         $execution->setRoles($this->getRoles());
         $description = '';
-        foreach ( $this->activatedNodes as $node )
+        foreach ($this->activatedNodes as $node)
         {
             if (null !== $node->getName()) {
                 $description .= (empty($description)? '':', ') . $node->getName();
@@ -212,8 +208,8 @@ class WorkflowDatabaseExecution extends WorkflowExecution
             $state = new Entity\ExecutionState();
             $state->setExecution($execution);
             $state->setNode($node->getId());
-            $state->setNodeState(WorkflowDatabaseDefinitionStorage::serialize( $node->getState() ) );
-            $state->setNodeActivatedFrom(WorkflowDatabaseDefinitionStorage::serialize( $node->getActivatedFrom() ) );
+            $state->setNodeState(WorkflowDatabaseDefinitionStorage::serialize($node->getState()));
+            $state->setNodeActivatedFrom(WorkflowDatabaseDefinitionStorage::serialize($node->getActivatedFrom()));
             $state->setNodeThreadId((int)$node->getThreadId());
             $execution->addState($state);
 
@@ -245,11 +241,11 @@ class WorkflowDatabaseExecution extends WorkflowExecution
 
         //traite la fin : annulée | fin de l'éxécution
         $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->getExecutionById($this->id);
-        if ( $result === false || empty( $result ) )
+        if ($result === false || empty($result))
         {
             throw new WorkflowExecutionException(
               'Could not End execution.'
-            );
+           );
         }
 
         $token = $this->security->getToken();
@@ -257,8 +253,8 @@ class WorkflowDatabaseExecution extends WorkflowExecution
 
         $execution = $result[0];
         $execution->setSuspendedAt(null);
-        if ( !$this->isCancelled() ) {
-            $this->cleanupTable( 'execution_state' );
+        if (!$this->isCancelled()) {
+            $this->cleanupTable('execution_state');
             $execution->setSuspendedStep(null);
             $execution->setEndAt(new \DateTime());
             $execution->setEndBy($user);
@@ -276,9 +272,9 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      * @param  int $id
      * @return WorkflowExecution
      */
-    protected function doGetSubExecution( $id = null )
+    protected function doGetSubExecution($id = null)
     {
-        return new WorkflowDatabaseExecution( $this->entityManager, $this->properties['definitionStorage'], $id );
+        return new WorkflowDatabaseExecution($this->entityManager, $this->properties['definitionStorage'], $id);
     }
 
     /**
@@ -286,7 +282,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      *
      * @param  string $tableName
      */
-    protected function cleanupTable( $tableName )
+    protected function cleanupTable($tableName)
     {
         $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->getExecutionById($this->getId());
 
@@ -306,15 +302,15 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      * @param int $executionId  ID of the execution to load.
      * @throws WorkflowExecutionException
      */
-    protected function loadExecution( $executionId )
+    protected function loadExecution($executionId)
     {
         $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->getExecutionById($executionId);
 
-        if ( $result === false || empty( $result ) )
+        if ($result === false || empty($result))
         {
             throw new WorkflowExecutionException(
               'Could not load execution state.'
-            );
+           );
         }
         
         $wf = $result[0];
@@ -324,38 +320,38 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         $this->roles = $wf->getRoles();
         $this->setCancellable($wf->getCancellable());
         $this->setName($wf->getName());
-        $this->threads = WorkflowDatabaseDefinitionStorage::unserialize( $wf->getThreads() );
-        $this->variables = WorkflowDatabaseDefinitionStorage::unserialize( $wf->getVariables() );
-        $this->waitingFor = WorkflowDatabaseDefinitionStorage::unserialize( $wf->getWaitingFor() );
+        $this->threads = WorkflowDatabaseDefinitionStorage::unserialize($wf->getThreads());
+        $this->variables = WorkflowDatabaseDefinitionStorage::unserialize($wf->getVariables());
+        $this->waitingFor = WorkflowDatabaseDefinitionStorage::unserialize($wf->getWaitingFor());
 
         $active = array();
 
 
-        //foreach ( $result as $row )
+        //foreach ($result as $row)
         foreach ($wf->getStates() as $state)
         {
             $active[$state->getNode()] = array(
               'activated_from' => WorkflowDatabaseDefinitionStorage::unserialize($state->getNodeActivatedFrom()),
               'state' => WorkflowDatabaseDefinitionStorage::unserialize($state->getNodeState(), null),
               'thread_id' => $state->getNodeThreadId()
-            );
+           );
         }
 
         $workflowId     = $wf->getWorkflow();
-        $this->workflow = $this->properties['definitionStorage']->loadById( $workflowId );
+        $this->workflow = $this->properties['definitionStorage']->loadById($workflowId);
 
-        foreach ( $this->workflow->nodes as $node )
+        foreach ($this->workflow->nodes as $node)
         {
             $nodeId = $node->getId();
 
-            if ( isset( $active[$nodeId] ) )
+            if (isset($active[$nodeId]))
             {
-                $node->setActivationState( WorkflowNode::WAITING_FOR_EXECUTION );
-                $node->setThreadId( $active[$nodeId]['thread_id'] );
-                $node->setState( $active[$nodeId]['state'], null );
-                $node->setActivatedFrom( $active[$nodeId]['activated_from'] );
+                $node->setActivationState(WorkflowNode::WAITING_FOR_EXECUTION);
+                $node->setThreadId($active[$nodeId]['thread_id']);
+                $node->setState($active[$nodeId]['state'], null);
+                $node->setActivatedFrom($active[$nodeId]['activated_from']);
 
-                $this->activate( $node, false );
+                $this->activate($node, false);
             }
         }
 

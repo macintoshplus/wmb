@@ -74,7 +74,7 @@ class DefinitionVoter implements VoterInterface
             case self::VIEW:
                 // the data object could have for example a method isPrivate()
                 // which checks the Boolean attribute $private
-                if (null === $entity->getRolesForUse() || 0 < count(array_intersect($user->getRoles(), $entity->getRolesForUse()))) {
+                if (null === $entity->getRolesForUse() || 0 === count($entity->getRolesForUse()) || 0 < count(array_intersect($user->getRoles(), $entity->getRolesForUse()))) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;

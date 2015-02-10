@@ -59,6 +59,7 @@ class ExecutionSearchType extends AbstractType
                 'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
             ))
             ->add('isCanceled', 'choice', array(
+                'label'=>'Is canceled ?',
                 'choices'=>array(true=>'Oui',false=>'Non'),
                 'empty_value'=>'Tout',
                 'empty_data'=>null,
@@ -71,6 +72,7 @@ class ExecutionSearchType extends AbstractType
                 'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
             ))
             ->add('isEnded', 'choice', array(
+                'label'=>'Is ended ?',
                 'choices'=>array(true=>'Oui',false=>'Non'),
                 'empty_value'=>'Tout',
                 'empty_data'=>null,
