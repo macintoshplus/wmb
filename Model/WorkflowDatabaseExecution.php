@@ -331,7 +331,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
             );
         }
 
-        $workflowId     = $wf->getWorkflow();
+        $workflowId     = $wf->getDefinition();
         $this->workflow = $this->properties['definitionStorage']->loadById($workflowId);
 
         foreach ($this->workflow->nodes as $node) {
