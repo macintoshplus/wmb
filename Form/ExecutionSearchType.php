@@ -18,15 +18,15 @@ class ExecutionSearchType extends AbstractType
     /**
      * @var SecurityContext $security
      */
-    private $security;
+    //private $security;
 
     /**
      * @param SecurityContext $security
      */
-    public function __construct(SecurityContext $security)
+    /*public function __construct(SecurityContext $security)
     {
         $this->security = $security;
-    }
+    }*/
 
     /**
      * @param FormBuilderInterface $builder
@@ -35,7 +35,50 @@ class ExecutionSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
+            ->add('name', 'text', array('required'=>false))
+            ->add('definition', 'text', array('required'=>false))
+            ->add('startedAt', 'date', array(
+                'required'=>false,
+                'format'=>'dd/MM/yyyy',
+                'input'=>'datetime',
+                'widget'=>'single_text',
+                'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
+            ))
+            ->add('startedAtEnd', 'date', array(
+                'required'=>false,
+                'format'=>'dd/MM/yyyy',
+                'input'=>'datetime',
+                'widget'=>'single_text',
+                'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
+            ))
+            ->add('canceledAt', 'date', array(
+                'required'=>false,
+                'format'=>'dd/MM/yyyy',
+                'input'=>'datetime',
+                'widget'=>'single_text',
+                'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
+            ))
+            ->add('canceledAtEnd', 'date', array(
+                'required'=>false,
+                'format'=>'dd/MM/yyyy',
+                'input'=>'datetime',
+                'widget'=>'single_text',
+                'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
+            ))
+            ->add('endAt', 'date', array(
+                'required'=>false,
+                'format'=>'dd/MM/yyyy',
+                'input'=>'datetime',
+                'widget'=>'single_text',
+                'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
+            ))
+            ->add('endAtEnd', 'date', array(
+                'required'=>false,
+                'format'=>'dd/MM/yyyy',
+                'input'=>'datetime',
+                'widget'=>'single_text',
+                'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
+            ))
         ;
         
     }

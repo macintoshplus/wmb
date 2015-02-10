@@ -26,6 +26,7 @@ class ExecutionSearch
      * @var \DateTime
      */
     private $startedAt;
+    private $startedAtEnd;
 
     /**
      * @var \DateTime
@@ -51,6 +52,7 @@ class ExecutionSearch
      * @var \DateTime
      */
     private $canceledAt;
+    private $canceledAtEnd;
 
     /**
      * @var string
@@ -61,6 +63,7 @@ class ExecutionSearch
      * @var \DateTime
      */
     private $endAt;
+    private $endAtEnd;
 
     /**
      * @var string
@@ -179,6 +182,29 @@ class ExecutionSearch
     }
 
     /**
+     * Set startedAtEnd
+     *
+     * @param \DateTime $startedAtEnd
+     * @return ExecutionSearch
+     */
+    public function setStartedAtEnd($startedAtEnd)
+    {
+        $this->startedAtEnd = $startedAtEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get startedAtEnd
+     *
+     * @return \DateTime 
+     */
+    public function getStartedAtEnd()
+    {
+        return $this->startedAtEnd;
+    }
+
+    /**
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
@@ -294,6 +320,29 @@ class ExecutionSearch
     }
 
     /**
+     * Set canceledAtEnd
+     *
+     * @param \DateTime $canceledAtEnd
+     * @return ExecutionSearch
+     */
+    public function setCanceledAtEnd($canceledAtEnd)
+    {
+        $this->canceledAtEnd = $canceledAtEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get canceledAtEnd
+     *
+     * @return \DateTime 
+     */
+    public function getCanceledAtEnd()
+    {
+        return $this->canceledAtEnd;
+    }
+
+    /**
      * Set canceledBy
      *
      * @param string $canceledBy
@@ -337,6 +386,29 @@ class ExecutionSearch
     public function getEndAt()
     {
         return $this->endAt;
+    }
+
+    /**
+     * Set endAtEnd
+     *
+     * @param \DateTime $endAtEnd
+     * @return ExecutionSearch
+     */
+    public function setEndAtEnd($endAtEnd)
+    {
+        $this->endAtEnd = $endAtEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get endAtEnd
+     *
+     * @return \DateTime 
+     */
+    public function getEndAtEnd()
+    {
+        return $this->endAtEnd;
     }
 
     /**
