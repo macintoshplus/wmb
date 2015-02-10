@@ -58,6 +58,11 @@ class ExecutionSearchType extends AbstractType
                 'widget'=>'single_text',
                 'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
             ))
+            ->add('isCanceled', 'choice', array(
+                'choices'=>array(true=>'Oui',false=>'Non'),
+                'empty_value'=>'Tout',
+                'empty_data'=>null,
+                'required'=>false))
             ->add('canceledAtEnd', 'date', array(
                 'required'=>false,
                 'format'=>'dd/MM/yyyy',
@@ -65,6 +70,11 @@ class ExecutionSearchType extends AbstractType
                 'widget'=>'single_text',
                 'attr'=>array('class'=>'datepicker', 'autocomplete'=>'OFF')
             ))
+            ->add('isEnded', 'choice', array(
+                'choices'=>array(true=>'Oui',false=>'Non'),
+                'empty_value'=>'Tout',
+                'empty_data'=>null,
+                'required'=>false))
             ->add('endAt', 'date', array(
                 'required'=>false,
                 'format'=>'dd/MM/yyyy',

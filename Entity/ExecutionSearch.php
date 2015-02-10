@@ -18,6 +18,11 @@ class ExecutionSearch
     private $definition;
 
     /**
+     * @var array
+     */
+    private $definitionList;
+
+    /**
      * @var integer
      */
     private $parent;
@@ -53,6 +58,7 @@ class ExecutionSearch
      */
     private $canceledAt;
     private $canceledAtEnd;
+    private $isCanceled;
 
     /**
      * @var string
@@ -64,6 +70,7 @@ class ExecutionSearch
      */
     private $endAt;
     private $endAtEnd;
+    private $isEnded;
 
     /**
      * @var string
@@ -133,6 +140,29 @@ class ExecutionSearch
     public function getDefinition()
     {
         return $this->definition;
+    }
+
+    /**
+     * Set definitionList
+     *
+     * @param integer $definitionList
+     * @return ExecutionSearch
+     */
+    public function setDefinitionList($definitionList)
+    {
+        $this->definitionList = $definitionList;
+
+        return $this;
+    }
+
+    /**
+     * Get definitionList
+     *
+     * @return integer 
+     */
+    public function getDefinitionList()
+    {
+        return $this->definitionList;
     }
 
     /**
@@ -297,6 +327,29 @@ class ExecutionSearch
     }
 
     /**
+     * Set isCanceled
+     *
+     * @param Boolean $isCanceled
+     * @return ExecutionSearch
+     */
+    public function setIsCanceled($isCanceled)
+    {
+        $this->isCanceled = $isCanceled;
+
+        return $this;
+    }
+
+    /**
+     * Get isCanceled
+     *
+     * @return Boolean 
+     */
+    public function getIsCanceled()
+    {
+        return $this->isCanceled;
+    }
+
+    /**
      * Set canceledAt
      *
      * @param \DateTime $canceledAt
@@ -363,6 +416,29 @@ class ExecutionSearch
     public function getCanceledBy()
     {
         return $this->canceledBy;
+    }
+
+    /**
+     * Set isEnded
+     *
+     * @param Boolean $isEnded
+     * @return ExecutionSearch
+     */
+    public function setIsEnded($isEnded)
+    {
+        $this->isEnded = $isEnded;
+
+        return $this;
+    }
+
+    /**
+     * Get isEnded
+     *
+     * @return Boolean 
+     */
+    public function getIsEnded()
+    {
+        return $this->isEnded;
     }
 
     /**
