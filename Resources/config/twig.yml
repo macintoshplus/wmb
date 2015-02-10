@@ -2,3 +2,5 @@ service:
     jb_nahan_workflow_manager.twig_extension:
         class: JbNahan\Bundle\WorkflowManagerBundle\Twig\Extension\JbNahanWmTwigExtension
         arguments: [@jb_nahan.definition_manager]
+        tags:
+        	- { name: twig.extension }
