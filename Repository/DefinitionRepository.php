@@ -33,6 +33,16 @@ class DefinitionRepository extends EntityRepository
             $qb->andWhere('(' . $expr . ')');
 
         }
+        //Limite aux roles
+        if (is_array($param->getRolesForUse()) && 0 < count($param->getRolesForUse())) { //
+            $expr = '';
+            foreach ($param->getRolesForUse() as $role) {
+                $expr .= ($expr===''? '':' OR ') . 'w.rolesForUse like \'%'.$role.'%\'';
+            }
+
+            $qb->andWhere('(' . $expr . ')');
+
+        }
         
         if (null !== $param->getPublishedAt()) {
             if ($param->getPublishedAt() instanceof \DateTime) {

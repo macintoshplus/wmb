@@ -17,7 +17,8 @@ class ExecutionRepository extends EntityRepository
      * @param int $workflowId
      * @return ArrayCollection
      */
-    public function getExecutionById($executionId){
+    public function getExecutionById($executionId)
+    {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e, s')
         ->leftJoin('e.states', 's')
@@ -35,7 +36,24 @@ class ExecutionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('e');
 
+        //Partie obligatoire
 
+        //Limite aux roles
+        if (is_array($param->getDefinitionList()) &&
+            0 < count($param->getDefinitionList()) &&
+            is_array($param->getRoles()) &&
+            0 < count($param->getRoles())) { //
+            
+            $expr = '';
+            foreach ($param->getRoles() as $role) {
+                $expr .= ($expr===''? '':' OR ') . 'e.roles like \'%'.$role.'%\'';
+            }
+
+            $qb->andWhere($qb->expr()->or('(' . $expr . ')', $qb->expr()->in('e.definition', $param->getDefinitionList())));
+
+        }
+
+        //Partie recherche
         return $qb;
     }
 }

@@ -18,7 +18,7 @@ class ExecutionManager
     /**
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager, SecurityContextInterace $security)
+    public function __construct(EntityManager $entityManager, SecurityContextInterface $security)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
