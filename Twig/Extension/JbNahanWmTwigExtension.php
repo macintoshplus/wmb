@@ -26,7 +26,7 @@ class JbNahanWmTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('definition', array($this, 'definitionName')),
+            new \Twig_SimpleFilter('definition', array($this, 'definitionNameFilter')),
         );
     }
 
@@ -43,7 +43,11 @@ class JbNahanWmTwigExtension extends \Twig_Extension
      */
     public function definitionNameFilter($id)
     {
-        
+        $obj = $this->defManager->getById($id);
+        if (null === $obj) {
+            return $id;
+        }
+        return $obj->getName();
     }
 
 

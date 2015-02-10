@@ -4,3 +4,9 @@ services:
         public:     false
         tags:
            - { name: security.voter }
+
+    jb_nahan.security.access.execution_voter:
+        class:      JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\ExecutionVoter
+        public:     false
+        tags:
+           - { name: security.voter }
