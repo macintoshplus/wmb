@@ -35,6 +35,7 @@ class ExecutionRepository extends EntityRepository
     public function getQbSearch(ExecutionSearch $param)
     {
         $qb = $this->createQueryBuilder('e');
+        //$qb->leftJoin('JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition', 'd', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.definition = d.id');
 
         //Partie obligatoire
 
