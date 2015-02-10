@@ -655,7 +655,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
     public function getDefinitionListId(Entity\DefinitionSearch $param)
     {
         $list = array();
-        $result = $this->getQbDefinition($param);
+        $result = $this->getQbDefinition($param)->getQuery()->getResult();
         foreach ($result as $def) {
             $list[] = $def->getId();
         }

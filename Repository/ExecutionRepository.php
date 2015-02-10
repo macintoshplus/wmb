@@ -43,13 +43,14 @@ class ExecutionRepository extends EntityRepository
             0 < count($param->getDefinitionList()) &&
             is_array($param->getRoles()) &&
             0 < count($param->getRoles())) { //
-            
+
             $expr = '';
             foreach ($param->getRoles() as $role) {
                 $expr .= ($expr===''? '':' OR ') . 'e.roles like \'%'.$role.'%\'';
             }
-
-            $qb->andWhere($qb->expr()->or('(' . $expr . ')', $qb->expr()->in('e.definition', $param->getDefinitionList())));
+            $list = implode("','", $param->getDefinitionList());
+            $qb->andWhere('((' . $expr . ') OR ( e.definition IN (\'' . $list . '\')))');
+            //$qb->orWhere($qb->expr()->in('e.definition', $param->getDefinitionList()));
 
         }
 
