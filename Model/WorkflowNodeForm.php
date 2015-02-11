@@ -256,7 +256,11 @@ class WorkflowNodeForm extends WorkflowNode
                 }
                 
             }
-
+            //reset id
+            foreach ($responses as $key => $response) {
+                $responses[$key]->setId($key);
+            }
+            
             $execution->setVariable($formName, $responses);
             //supprime la réponses
             $execution->unsetVariable($formNameResponse);
