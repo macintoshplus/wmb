@@ -6,8 +6,6 @@ use JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitor;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExecution;
 
-
-
 abstract class WorkflowNode implements WorkflowVisitableInterface
 {
     /**
@@ -33,14 +31,14 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
     /**
      * The incoming nodes of this node.
      *
-     * @var array( int => WorkflowNode )
+     * @var array(int => WorkflowNode)
      */
     protected $inNodes = array();
 
     /**
      * The outgoing nodes of this node.
      *
-     * @var array( int => WorkflowNode )
+     * @var array(int => WorkflowNode)
      */
     protected $outNodes = array();
 
@@ -99,7 +97,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * This functionality is implemented as an array to make it possible
      * to have the storage engines unaware of the node classes.
      *
-     * @var array( config key => config value )
+     * @var array(config key => config value)
      */
     protected $configuration;
 
@@ -151,10 +149,9 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      *
      * @param mixed $configuration
      */
-    public function __construct( $configuration = null )
+    public function __construct($configuration = null)
     {
-        if ( $configuration !== null )
-        {
+        if ($configuration !== null) {
             $this->configuration = $configuration;
         }
 
@@ -171,19 +168,15 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @throws WorkflowInvalidWorkflowException if the operation violates the constraints of the nodes involved.
      * @return WorkflowNode
      */
-    public function addInNode( WorkflowNode $node )
+    public function addInNode(WorkflowNode $node)
     {
         // Check whether the node is already an incoming node of this node.
-        if ( in_array( $node, $this->inNodes ) === false )
-        {
+        if (in_array($node, $this->inNodes) === false) {
             // Add this node as an outgoing node to the other node.
-            if ( !self::$internalCall )
-            {
+            if (!self::$internalCall) {
                 self::$internalCall = true;
-                $node->addOutNode( $this );
-            }
-            else
-            {
+                $node->addOutNode($this);
+            } else {
                 self::$internalCall = false;
             }
 
@@ -204,30 +197,37 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @throws WorkflowInvalidWorkflowException if the operation violates the constraints of the nodes involved.
      * @return boolean
      */
-    public function removeInNode( WorkflowNode $node )
+    public function removeInNode(WorkflowNode $node)
     {
-        $index = array_search( $node, $this->inNodes, true );
+        $index = array_search($node, $this->inNodes, true);
 
-        if ( $index !== false )
-        {
+        if ($index !== false) {
             // Remove this node as an outgoing node from the other node.
-            if ( !self::$internalCall )
-            {
+            if (!self::$internalCall) {
                 self::$internalCall = true;
-                $node->removeOutNode( $this );
-            }
-            else
-            {
+                $node->removeOutNode($this);
+            } else {
                 self::$internalCall = false;
             }
 
-            unset( $this->inNodes[$index] );
+            unset($this->inNodes[$index]);
             $this->numInNodes--;
 
             return true;
         }
 
         return false;
+    }
+
+    public function removeAllInNode()
+    {
+        foreach ($this->inNodes as $node) {
+            $result = $this->removeInNode($node);
+            if (false === $result) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -240,19 +240,15 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @throws WorkflowInvalidWorkflowException if the operation violates the constraints of the nodes involved.
      * @return WorkflowNode
      */
-    public function addOutNode( WorkflowNode $node )
+    public function addOutNode(WorkflowNode $node)
     {
         // Check whether the other node is already an outgoing node of this node.
-        if ( in_array($node, $this->outNodes) === false )
-        {
+        if (in_array($node, $this->outNodes) === false) {
             // Add this node as an incoming node to the other node.
-            if ( !self::$internalCall )
-            {
+            if (!self::$internalCall) {
                 self::$internalCall = true;
-                $node->addInNode( $this );
-            }
-            else
-            {
+                $node->addInNode($this);
+            } else {
                 self::$internalCall = false;
             }
 
@@ -273,30 +269,37 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @throws WorkflowInvalidWorkflowException if the operation violates the constraints of the nodes involved.
      * @return boolean
      */
-    public function removeOutNode( WorkflowNode $node )
+    public function removeOutNode(WorkflowNode $node)
     {
         $index = array_search($node, $this->outNodes, true);
 
-        if ( $index !== false )
-        {
+        if ($index !== false) {
             // Remove this node as an incoming node from the other node.
-            if ( !self::$internalCall )
-            {
+            if (!self::$internalCall) {
                 self::$internalCall = true;
-                $node->removeInNode( $this );
-            }
-            else
-            {
+                $node->removeInNode($this);
+            } else {
                 self::$internalCall = false;
             }
 
-            unset( $this->outNodes[$index] );
+            unset($this->outNodes[$index]);
             $this->numOutNodes--;
 
             return true;
         }
 
         return false;
+    }
+
+    public function removeAllOutNode()
+    {
+        foreach ($this->outNodes as $node) {
+            $result = $this->removeOutNode($node);
+            if (false === $result) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -316,7 +319,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param int $id
      * @ignore
      */
-    public function setId( $id )
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -339,11 +342,9 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param int $activationState
      * @ignore
      */
-    public function setActivationState( $activationState )
+    public function setActivationState($activationState)
     {
-        if ( $activationState == self::WAITING_FOR_ACTIVATION ||
-             $activationState == self::WAITING_FOR_EXECUTION )
-        {
+        if ($activationState == self::WAITING_FOR_ACTIVATION || $activationState == self::WAITING_FOR_EXECUTION) {
             $this->activationState = $activationState;
         }
     }
@@ -395,7 +396,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param mixed $state
      * @ignore
      */
-    public function setState( $state )
+    public function setState($state)
     {
         $this->state = $state;
     }
@@ -417,7 +418,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param array $activatedFrom
      * @ignore
      */
-    public function setActivatedFrom( array $activatedFrom )
+    public function setActivatedFrom(array $activatedFrom)
     {
         $this->activatedFrom = $activatedFrom;
     }
@@ -439,7 +440,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param int $threadId
      * @ignore
      */
-    public function setThreadId( $threadId )
+    public function setThreadId($threadId)
     {
         $this->threadId = $threadId;
     }
@@ -455,45 +456,41 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      */
     public function verify()
     {
-        $type = str_replace( 'WorkflowNode', '', get_class( $this ) );
+        $type = str_replace('WorkflowNode', '', get_class($this));
 
-        if ( $this->minInNodes !== false && $this->numInNodes < $this->minInNodes )
-        {
+        if ($this->minInNodes !== false && $this->numInNodes < $this->minInNodes) {
             throw new WorkflowInvalidWorkflowException(
-              sprintf(
-                'Node of type "%s" has less incoming nodes than required.',
-                $type
-              )
+                sprintf(
+                    'Node of type "%s" has less incoming nodes than required.',
+                    $type
+                )
             );
         }
 
-        if ( $this->maxInNodes !== false && $this->numInNodes > $this->maxInNodes )
-        {
+        if ($this->maxInNodes !== false && $this->numInNodes > $this->maxInNodes) {
             throw new WorkflowInvalidWorkflowException(
-              sprintf(
-                'Node of type "%s" has more incoming nodes than allowed.',
-                $type
-              )
+                sprintf(
+                    'Node of type "%s" has more incoming nodes than allowed.',
+                    $type
+                )
             );
         }
 
-        if ( $this->minOutNodes !== false && $this->numOutNodes < $this->minOutNodes )
-        {
+        if ($this->minOutNodes !== false && $this->numOutNodes < $this->minOutNodes) {
             throw new WorkflowInvalidWorkflowException(
-              sprintf(
-                'Node of type "%s" has less outgoing nodes than required.',
-                $type
-              )
+                sprintf(
+                    'Node of type "%s" has less outgoing nodes than required.',
+                    $type
+                )
             );
         }
 
-        if ( $this->maxOutNodes !== false && $this->numOutNodes > $this->maxOutNodes )
-        {
+        if ($this->maxOutNodes !== false && $this->numOutNodes > $this->maxOutNodes) {
             throw new WorkflowInvalidWorkflowException(
-              sprintf(
-                'Node of type "%s" has more outgoing nodes than allowed.',
-                $type
-              )
+                sprintf(
+                    'Node of type "%s" has more outgoing nodes than allowed.',
+                    $type
+                )
             );
         }
     }
@@ -503,13 +500,11 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      *
      * @param WorkflowVisitor $visitor
      */
-    public function accept( WorkflowVisitor $visitor )
+    public function accept(WorkflowVisitor $visitor)
     {
-        if ( $visitor->visit( $this ) )
-        {
-            foreach ( $this->outNodes as $outNode )
-            {
-                $outNode->accept( $visitor );
+        if ($visitor->visit($this)) {
+            foreach ($this->outNodes as $outNode) {
+                $outNode->accept($visitor);
             }
         }
     }
@@ -528,19 +523,17 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param int $threadId
      * @ignore
      */
-    public function activate( WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0 )
+    public function activate(WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0)
     {
-        if ( $this->activationState === self::WAITING_FOR_ACTIVATION )
-        {
+        if ($this->activationState === self::WAITING_FOR_ACTIVATION) {
             $this->activationState = self::WAITING_FOR_EXECUTION;
-            $this->setThreadId( $threadId );
+            $this->setThreadId($threadId);
 
-            if ( $activatedFrom !== null )
-            {
-                $this->activatedFrom[] = get_class( $activatedFrom );
+            if ($activatedFrom !== null) {
+                $this->activatedFrom[] = get_class($activatedFrom);
             }
 
-            $execution->activate( $this );
+            $execution->activate($this);
         }
     }
 
@@ -550,9 +543,9 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param WorkflowExecution $execution
      * @param WorkflowNode $node
      */
-    protected function activateNode( WorkflowExecution $execution, WorkflowNode $node )
+    protected function activateNode(WorkflowExecution $execution, WorkflowNode $node)
     {
-        $node->activate( $execution, $this, $this->getThreadId() );
+        $node->activate($execution, $this, $this->getThreadId());
     }
 
     /**
@@ -584,7 +577,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
         $this->activationState = self::WAITING_FOR_ACTIVATION;
         $this->activatedFrom = array();
@@ -599,7 +592,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param DOMElement $element
      * @ignore
      */
-    public static function configurationFromXML( \DOMElement $element )
+    public static function configurationFromXML(\DOMElement $element)
     {
     }
 
@@ -609,7 +602,7 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      * @param DOMElement $element
      * @ignore
      */
-    public function configurationToXML( \DOMElement $element )
+    public function configurationToXML(\DOMElement $element)
     {
     }
 
@@ -621,19 +614,17 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
      */
     public function __toString()
     {
-        //return get_class( $this );
-        $className = get_class( $this );
+        //return get_class($this);
+        $className = get_class($this);
         $elements = explode('\\', $className);
         $type = $elements[count($elements)-1];
 
-        $type   = str_replace( 'WorkflowNode', '', $type );
-        $max    = strlen( $type );
+        $type   = str_replace('WorkflowNode', '', $type);
+        $max    = strlen($type);
         $string = '';
 
-        for ( $i = 0; $i < $max; $i++ )
-        {
-            if ( $i > 0 && ord( $type[$i] ) >= 65 && ord( $type[$i] ) <= 90 )
-            {
+        for ($i = 0; $i < $max; $i++) {
+            if ($i > 0 && ord($type[$i]) >= 65 && ord($type[$i]) <= 90) {
                 $string .= ' ';
             }
 
@@ -659,6 +650,6 @@ abstract class WorkflowNode implements WorkflowVisitableInterface
         $this->state         = null;
         $this->threadId      = null;
 
-        $this->setActivationState( self::WAITING_FOR_ACTIVATION );
+        $this->setActivationState(self::WAITING_FOR_ACTIVATION);
     }
 }

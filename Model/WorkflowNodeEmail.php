@@ -137,7 +137,15 @@ class WorkflowNodeEmail extends WorkflowNode
         $body = $this->twig->render($this->configuration['body'], $variables);
 
         if ('user' === $this->configuration['to']) {
-            $toDef = 'jean-baptiste.nahan@inextenso.fr';
+            $array = $execution->getRoles();
+            if (null === $array || 0 === count($array)) {
+                throw new \Exception("Unable to use 'user' in 'to' email field");
+            }
+
+            $toDef = '';
+            foreach ($array as $user) {
+                $toDef .= (('' === $toDef)? '':', ').$user->getEmail();
+            }
         } else {
             $toDef = $this->configuration['to'];
         }
