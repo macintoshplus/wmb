@@ -618,4 +618,22 @@ class Execution
     {
         return $this->roles;
     }
+
+    /**
+     * return true if username si in roles
+     * @param string $username
+     * @return boolean
+     */
+    public function hasRoleUsername($username)
+    {
+        if (null === $this->roles || 0 === count($this->roles)) {
+            return false;
+        }
+        foreach ($this->roles as $role) {
+            if ($role->getUsername() === $username) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

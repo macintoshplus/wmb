@@ -5,6 +5,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowVisitableInterface;
 
 class ExecutionVoter implements VoterInterface
 {
@@ -74,7 +75,7 @@ class ExecutionVoter implements VoterInterface
             case self::VIEW:
                 // the data object could have for example a method isPrivate()
                 // which checks the Boolean attribute $private
-                if (null === $entity->getRoles() || 0 === count($entity->getRoles()) || in_array($user->getUsername(), $user->getRoles(), $entity->getRoles())) {
+                if (null === $entity->getRoles() || 0 === count($entity->getRoles()) || $entity->hasRoleUsername($user->getUsername())) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;

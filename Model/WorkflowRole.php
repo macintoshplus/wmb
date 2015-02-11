@@ -2,7 +2,9 @@
 
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
-class WorkflowRole implements WorkflowRoleInterface
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRolesInterface;
+
+class WorkflowRole implements WorkflowRolesInterface
 {
     protected $username;
 

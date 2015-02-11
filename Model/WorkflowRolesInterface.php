@@ -7,4 +7,5 @@ interface WorkflowRolesInterface
     public function getUsername();
 
     public function getEmail();
+
 }
