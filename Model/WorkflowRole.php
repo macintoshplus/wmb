@@ -45,4 +45,9 @@ class WorkflowRole implements WorkflowRoleInterface
     {
         return $this->email;
     }
+
+    public function __toString()
+    {
+        return $this->getUsername();
+    }
 }

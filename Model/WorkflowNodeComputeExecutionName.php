@@ -14,20 +14,19 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 class WorkflowNodeComputeExecutionName extends WorkflowNode
 {
 
-	private $twig;
+    private $twig;
 
     /**
      * @param array $configuration
      */
-	public function __construct( array $configuration = null )
+    public function __construct(array $configuration = null)
     {
 
-        if ( !isset( $configuration['template'] ) )
-        {
+        if (!isset($configuration['template'])) {
             $configuration['template'] = "Execution name {{execution_id}}";
         }
 
-        parent::__construct( $configuration );
+        parent::__construct($configuration);
     }
 
     /**
@@ -51,25 +50,33 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
 
         return $this;
     }
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
 
-        if ( !isset( $this->twig ) ){
-        	throw new \Exception("Enable to use this node if twig service is not set");
+        if (!isset($this->twig)) {
+            throw new \Exception("Enable to use this node if twig service is not set");
         }
 
         $array = $execution->getVariables();
         $array['execution_id'] = $execution->getId();
         $array['workflow_name'] = $execution->workflow->name;
         $array['workflow_id'] = $execution->workflow->id;
-
+        $array['users_name'] = '';
+        if (null !== $execution->getRoles() && 0 < count($execution->getRoles())) {
+            $roles = $execution->getRoles();
+            $name = '';
+            foreach ($roles as $role) {
+                $name .= (('' === $name)? '':', ').$role->__toString();
+            }
+            $array['users_name'] = $name;
+        }
         $name = $this->twig->render($this->configuration['template'], $array);
 
         $execution->setName($name);
 
-		$this->activateNode( $execution, $this->outNodes[0] );
+        $this->activateNode($execution, $this->outNodes[0]);
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
 
     }
 
@@ -79,7 +86,6 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
      */
     public function setTwig(Twig_Environment $twig)
     {
-    	$this->twig = $twig;
+        $this->twig = $twig;
     }
-
-} // END class WorkflowNodeEmail 
+}
