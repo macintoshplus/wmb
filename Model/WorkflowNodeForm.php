@@ -232,11 +232,9 @@ class WorkflowNodeForm extends WorkflowNode
             
             $responses = $this->getResponses($execution);
             //Si un ID est fourni, il l'extrait
-            if (array_key_exists('id', $response)) {
+            if (null !== $response->getId()) {
                 //récupère la clée
-                $key = $response['id'];
-                //supprime la clé des données (s'en est pas une)
-                unset($response['id']);
+                $key = $response->getId();
 
                 //si aucune données n'est présente pour cette clé, elle est effacé.
                 if (!array_key_exists($key, $responses)) {
