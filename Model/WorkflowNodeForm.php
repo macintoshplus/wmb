@@ -216,13 +216,17 @@ class WorkflowNodeForm extends WorkflowNode
 
         //Vérifie si une réponse a été fournie
 		if ($execution->hasVariable($formNameResponse)) {
+			$response = $execution->getVariable($formNameResponse);
+			if (!is_subclass_of($response, 'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface')) {
+				throw new \Exception("Response object not implement WorkflowNodeFormResponseInterface");
+			}
 			//Vérifie si il y a une review, si oui, il supprime
 			if ($execution->hasVariable($formNameReview)) {
 				$execution->unsetVariable($formNameReview);
 			}
 			
 			//Déplace les données
-			$response = $execution->getVariable($formNameResponse);
+			
 			$responses = $this->getResponses($execution);
 			//Si un ID est fourni, il l'extrait
 			if (array_key_exists('id', $response)) {
