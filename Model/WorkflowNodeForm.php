@@ -235,11 +235,14 @@ class WorkflowNodeForm extends WorkflowNode
             if (null !== $response->getId()) {
                 //récupère la clée
                 $key = $response->getId();
+                $response->setUpdatedAt(new \DateTime());
 
                 //si aucune données n'est présente pour cette clé, elle est effacé.
                 if (!array_key_exists($key, $responses)) {
                     unset($key);
                 }
+            } else {
+                $response->setAnsweredAt(new \DateTime());
             }
 
             //si une réponse possible, il ajoute les données en remplaçant celle eventuellement présente

@@ -13,11 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 class JbNahanWmTwigExtension extends \Twig_Extension
 {
 
-    private $defManager;
+    private $container;
 
-    public function __construct($defManager)
+    public function __construct($container)
     {
-        $this->defManager = $defManager;
+        $this->container = $container;
     }
     /**
      * get filters list
@@ -43,7 +43,7 @@ class JbNahanWmTwigExtension extends \Twig_Extension
      */
     public function definitionNameFilter($id)
     {
-        $obj = $this->defManager->getById($id);
+        $obj = $this->container->get('jb_nahan.definition_manager')->getById($id);
         if (null === $obj) {
             return $id;
         }

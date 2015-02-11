@@ -7,7 +7,7 @@ parameters:
 services:
     jb_nahan_workflow_manager.workflow_definition_database:
         class: %jb_nahan_workflow_manager.workflow_definition_database.class%
-        arguments: [@doctrine.orm.default_entity_manager, @security.context, @mailer, @jb_nahan.twig_string]
+        arguments: [@doctrine.orm.default_entity_manager, @security.context, @mailer, @twig]
 
     jb_nahan.definition_manager:
         alias: jb_nahan_workflow_manager.workflow_definition_database
@@ -28,11 +28,13 @@ services:
 
     jb_nahan.node_factory:
         class: %jb_nahan_workflow_manager.workflow_node_factory.class%
-        arguments: [ @mailer, @jb_nahan.twig_string ]
+        arguments: [ @mailer, @twig ]
 
     jb_nahan.twig_string_loader:
-        class: "Twig_Loader_String"
+        class: Twig_Loader_String
+        tags:
+            - { name: twig.loader }
 
-    jb_nahan.twig_string:
-        class: %twig.class%
-        arguments: [@jb_nahan.twig_string_loader, %twig.options%]
+    # jb_nahan.twig_string:
+    #     class: %twig.class%
+    #     arguments: [@jb_nahan.twig_string_loader, %twig.options%]
