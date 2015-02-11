@@ -41,16 +41,14 @@ class ExecutionRepository extends EntityRepository
 
         //Limite aux roles
         if (is_array($param->getDefinitionList()) &&
-            0 < count($param->getDefinitionList()) &&
-            is_array($param->getRoles()) &&
-            0 < count($param->getRoles())) { //
+            is_array($param->getRoles())) { //
 
             $expr = '';
             foreach ($param->getRoles() as $role) {
                 $expr .= ($expr===''? '':' OR ') . 'e.roles like \'%'.$role.'%\'';
             }
-            $list = implode("','", $param->getDefinitionList());
-            $qb->andWhere('((' . $expr . ') OR ( e.definition IN (\'-1\',\'' . $list . '\')))');
+            $list = (0 === count($param->getDefinitionList()))? '':", '" . implode("','", $param->getDefinitionList()) . "'";
+            $qb->andWhere('((' . $expr . ') OR ( e.definition IN (\'-1\'' . $list . ')))');
             //$qb->orWhere($qb->expr()->in('e.definition', $param->getDefinitionList()));
 
         }
