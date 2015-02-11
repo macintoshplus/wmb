@@ -108,7 +108,7 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution:
             comment: ''
             column: next_thread_id
         roles:
-            type: json_array
+            type: array
             nullable: true
 
     lifecycleCallbacks:

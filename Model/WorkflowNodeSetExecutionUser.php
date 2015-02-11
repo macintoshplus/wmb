@@ -20,7 +20,7 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
     /**
      * @param array $configuration
      */
-	public function __construct( array $configuration )
+    public function __construct(array $configuration)
     {
         if (!isset($configuration['form_internal_name'])) {
             $configuration['form_internal_name'] = null;
@@ -28,7 +28,7 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
         if (!isset($configuration['field_internal_name'])) {
             $configuration['field_internal_name'] = null;
         }
-        parent::__construct( $configuration );
+        parent::__construct($configuration);
     }
 
     /**
@@ -90,31 +90,34 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
      * @param WorkflowExecution $execution
      * @return boolean
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
 
-        if ( null === $this->configuration['form_internal_name'] ){
+        if (null === $this->configuration['form_internal_name']) {
             throw new \Exception("Unable to use this node if form internal name is not set");
         }
 
-        if ( null === $this->configuration['field_internal_name'] ){
+        if (null === $this->configuration['field_internal_name']) {
             throw new \Exception("Unable to use this node if field internal name is not set");
         }
 
         $roles = $this->getRolesFromForm($execution);
-        if (is_string($roles)) {
-            $roles = array($roles);
-        } 
+        if (null !== $roles) {
+            if (!($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRoleInterface)) {
+                throw new \Exception("Unable to set user on execution");
+            }
 
-        $execution->setRoles($roles);
+            $execution->setRoles(array($roles));
+        }
 
-		$this->activateNode( $execution, $this->outNodes[0] );
+        $this->activateNode($execution, $this->outNodes[0]);
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
 
     }
 
-    public function verify() {
+    public function verify()
+    {
         parent::verify();
 
         if (null === $this->configuration['form_internal_name']) {
@@ -126,5 +129,4 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
         }
         
     }
-
-} // END class WorkflowNodeEmail 
+}

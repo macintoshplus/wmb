@@ -13,35 +13,31 @@ use \Twig_Environment;
  **/
 class WorkflowNodeEmail extends WorkflowNode
 {
-	private $mailer;
+    private $mailer;
 
-	private $twig;
+    private $twig;
 
     /**
      * @param array $configuration
      */
-	public function __construct( array $configuration = null )
+    public function __construct(array $configuration = null)
     {
 
-        if ( !isset( $configuration['from'] ) )
-        {
+        if (!isset( $configuration['from'])) {
             $configuration['from'] = 'exemple@toto.fr';
         }
-        if ( !isset( $configuration['to'] ) )
-        {
+        if (!isset( $configuration['to'])) {
             $configuration['to'] = 'exemple@toto.fr';
         }
-        if ( !isset( $configuration['subject'] ) )
-        {
+        if (!isset( $configuration['subject'])) {
             $configuration['subject'] = 'Email from Workflow';
         }
 
-        if ( !isset( $configuration['body'] ) )
-        {
+        if (!isset( $configuration['body'])) {
             $configuration['body'] = "Hello,\nThis is a email send by Workflow.\n\nBye";
         }
 
-        parent::__construct( $configuration );
+        parent::__construct($configuration);
     }
 
     /**
@@ -118,14 +114,14 @@ class WorkflowNodeEmail extends WorkflowNode
         return $this->configuration['body'];
     }
 
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
 
-        if ( !isset( $this->mailer ) ){
-        	throw new \Exception("Enable to use this node if mailer service is not set");
+        if (!isset( $this->mailer)) {
+            throw new \Exception("Enable to use this node if mailer service is not set");
         }
-        if ( !isset( $this->twig ) ){
-        	throw new \Exception("Enable to use this node if twig service is not set");
+        if (!isset( $this->twig)) {
+            throw new \Exception("Enable to use this node if twig service is not set");
         }
 
         $variables = $execution->getVariables();
@@ -140,22 +136,29 @@ class WorkflowNodeEmail extends WorkflowNode
         $subject = $this->twig->render($this->configuration['subject'], $variables);
         $body = $this->twig->render($this->configuration['body'], $variables);
 
+        if ('user' === $this->configuration['to']) {
+            $toDef = 'jean-baptiste.nahan@inextenso.fr';
+        } else {
+            $toDef = $this->configuration['to'];
+        }
+        
+
         $message = \Swift_Message::newInstance()
         ->setSubject($subject)
         ->setFrom($this->configuration['from'])
-        ->setTo($this->configuration['to'])
+        ->setTo($toDef)
         ->setBody($body) ;
         
-		$recipient = array();
-		$sent = $this->mailer->send($message, $recipient);
+        $recipient = array();
+        $sent = $this->mailer->send($message, $recipient);
 
-		if (!empty($recipient)) {
-			return false;
-		}
+        if (!empty($recipient)) {
+            return false;
+        }
 
-		$this->activateNode( $execution, $this->outNodes[0] );
+        $this->activateNode($execution, $this->outNodes[0]);
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
 
     }
     /**
@@ -164,7 +167,7 @@ class WorkflowNodeEmail extends WorkflowNode
      */
     public function setMailer(Swift_Mailer $mailer)
     {
-    	$this->mailer = $mailer;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -173,7 +176,6 @@ class WorkflowNodeEmail extends WorkflowNode
      */
     public function setTwig(Twig_Environment $twig)
     {
-    	$this->twig = $twig;
+        $this->twig = $twig;
     }
-
-} // END class WorkflowNodeEmail 
+}
