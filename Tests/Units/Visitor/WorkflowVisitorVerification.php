@@ -259,6 +259,11 @@ class WorkflowVisitorVerification extends Units\Test
 
 		$this->assert->variable($wf->accept($verif))->isNull();
 
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
 	}
 
 	public function test_different_form_and_conditional()
