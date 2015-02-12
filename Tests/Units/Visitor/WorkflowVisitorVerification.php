@@ -211,7 +211,8 @@ class WorkflowVisitorVerification extends Units\Test
 		        'roles'=>null
 	        ));
 		$form2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array(
-			  	'internal_name'=>'form12'
+			  	'internal_name'=>'form12',
+			  	'out_date'=>new \DateTime()
 		    ));
 
 		$wf->startNode->addOutNode($form1);
@@ -276,6 +277,10 @@ class WorkflowVisitorVerification extends Units\Test
 			  	'form_internal_name'=>'form1',
 		        'field_internal_name'=>'test'
 		    ));
+		$condition = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual('test1');
+		$end = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
+		$elseEnd = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
+        $form2->addSelectOutNode($end, $elseEnd, $condition);
 
 		$wf->startNode->addOutNode($form1);
 		$form1->addOutNode($form2);
@@ -284,10 +289,8 @@ class WorkflowVisitorVerification extends Units\Test
 
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
-		$this->assert->exception(function () use ($verif, $wf) {
-			$wf->accept($verif);
-		})->isInstanceOf('\JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-		->message->match('#WorkflowNodeConditionalFormValue \(id [0-9]*\) use a existant internal name \'form1\'#');
+		
+		$this->assert->variable($wf->accept($verif))->isNull();
 
 	}
 
@@ -309,17 +312,21 @@ class WorkflowVisitorVerification extends Units\Test
 		        'field_internal_name'=>'test'
 		    ));
 
+		$condition = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual('test1');
+		$elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintElse');
+		$merge = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSimpleMerge();
+		$merge->addOutNode($wf->endNode);
+		$elseNode->addOutNode($merge);
+
+        $form2->addSelectOutNode($merge, $elseNode, $condition);
+
 		$wf->startNode->addOutNode($form1);
 		$form1->addOutNode($form2);
 
-		$form2->addOutNode($wf->endNode);
-
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
-		$this->assert->exception(function () use ($verif, $wf) {
-			$wf->accept($verif);
-		})->isInstanceOf('\JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-		->message->match('#WorkflowNodeConditionalFormValue \(id [0-9]*\) use a inexistant internal name \'form12\'#');
+		
+		$this->assert->variable($wf->accept($verif))->isNull();
 
 	}
 
@@ -348,11 +355,8 @@ class WorkflowVisitorVerification extends Units\Test
 
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
-		$this->assert->exception(function () use ($verif, $wf) {
-			$wf->accept($verif);
-		})->isInstanceOf('\JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-		->message->match('#WorkflowNodeAddExecutionUser \(id [0-9]*\) use a inexistant internal name \'form12\'#');
-
+		$this->assert->variable($wf->accept($verif))->isNull();
+		
 	}
 
 
@@ -379,11 +383,8 @@ class WorkflowVisitorVerification extends Units\Test
 
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
-		$this->assert->exception(function () use ($verif, $wf) {
-			$wf->accept($verif);
-		})->isInstanceOf('\JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-		->message->match('#WorkflowNodeSetExecutionUser \(id [0-9]*\) use a inexistant internal name \'form12\'#');
-
+		$this->assert->variable($wf->accept($verif))->isNull();
+		
 	}
 
 
@@ -402,18 +403,20 @@ class WorkflowVisitorVerification extends Units\Test
 			  	'internal_name'=>'form1'
 		    ));
 
+		$elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintElse');
+		$merge = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSimpleMerge();
+		$merge->addOutNode($wf->endNode);
+		$elseNode->addOutNode($merge);
+
+		$form2->addSelectOutNode($merge, $elseNode);
+
 		$wf->startNode->addOutNode($form1);
 		$form1->addOutNode($form2);
 
-		$form2->addOutNode($wf->endNode);
-
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
-		$this->assert->exception(function () use ($verif, $wf) {
-			$wf->accept($verif);
-		})->isInstanceOf('\JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-		->message->match('#WorkflowNodeReviewUniqueForm \(id [0-9]*\) use a inexistant internal name \'form12\'#');
-
+		$this->assert->variable($wf->accept($verif))->isNull();
+		
 	}
 
 
@@ -429,20 +432,22 @@ class WorkflowVisitorVerification extends Units\Test
 		        'roles'=>null
 	        ));
 		$form2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array(
-			  	'internal_name'=>'form1'
+			  	'internal_name'=>'form1',
+			  	'out_date'=>new \DateTime()
 		    ));
+
+		$elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintElse');
+		$merge = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSimpleMerge();
+		$merge->addOutNode($wf->endNode);
+		$elseNode->addOutNode($merge);
+		$form2->addSelectOutNode($merge, $elseNode);
 
 		$wf->startNode->addOutNode($form1);
 		$form1->addOutNode($form2);
 
-		$form2->addOutNode($wf->endNode);
-
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
-		$this->assert->exception(function () use ($verif, $wf) {
-			$wf->accept($verif);
-		})->isInstanceOf('\JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-		->message->match('#WorkflowNodeControlForm \(id [0-9]*\) use a inexistant internal name \'form12\'#');
-
+		$this->assert->variable($wf->accept($verif))->isNull();
+		
 	}
 }

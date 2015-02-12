@@ -7,6 +7,9 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterThan;
 
+
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
+
 /**
  * WorkflowNodeControlForm class
  * Check if response is set or date is ok
