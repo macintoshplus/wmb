@@ -6,6 +6,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength;
+use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterThan;
 
 /**
