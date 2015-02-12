@@ -103,7 +103,7 @@ class WorkflowNodeAddExecutionUser extends WorkflowNode
 
         $roles = $this->getRolesFromForm($execution);
         if (null !== $roles) {
-            if (!($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRoleInterface)) {
+            if (!is_object($roles) || !($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRolesInterface)) {
                 throw new \Exception("Unable to set user on execution");
             }
             //récupere les ancien roles

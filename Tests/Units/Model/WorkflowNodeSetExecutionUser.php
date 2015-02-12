@@ -91,13 +91,20 @@ class WorkflowNodeSetExecutionUser extends Units\Test
 
 		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSetExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
 		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
-		$mockExecute->setVariable('form1',array(array('data1'=>'toto','user'=>'nahaje00')));
+
+		$user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+		$user->setUsername('admin');
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getAnswer = $user;
+
+		$mockExecute->setVariable('form1',array($mock));
 
 		$node->activate($mockExecute);
 
 		$this->assert->boolean($node->execute($mockExecute))->isTrue();
 
-		$this->assert->array($mockExecute->getRoles())->hasSize(1)->contains('nahaje00');
+		$this->assert->array($mockExecute->getRoles())->hasSize(1)->contains($user);
 
 	}
 
@@ -122,13 +129,25 @@ class WorkflowNodeSetExecutionUser extends Units\Test
 
 		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSetExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
 		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
-		$mockExecute->setVariable('form1',array(array('data1'=>'toto','user'=>array('nahaje00','bourwi00'))));
+
+		$user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+		$user->setUsername('admin');
+		$user2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+		$user2->setUsername('admin2');
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getAnswer = array($user, $user2);
+
+		$mockExecute->setVariable('form1',array($mock));
 
 		$node->activate($mockExecute);
 
-		$this->assert->boolean($node->execute($mockExecute))->isTrue();
+		$this->assert->exception(function () use ($node, $mockExecute) {
+			$node->execute($mockExecute);
+		})->hasMessage('Unable to set user on execution');
+		
 
-		$this->assert->array($mockExecute->getRoles())->hasSize(2)->containsValues(array('nahaje00','bourwi00'));
+		$this->assert->variable($mockExecute->getRoles())->isNull();
 
 	}
 }

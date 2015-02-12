@@ -103,8 +103,8 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
 
         $roles = $this->getRolesFromForm($execution);
         if (null !== $roles) {
-            if (!($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRolesInterface)) {
-                throw new \Exception("Unable to set user on execution (".get_class($roles).")");
+            if (!is_object($roles) || !($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRolesInterface)) {
+                throw new \Exception("Unable to set user on execution");
             }
 
             $execution->setRoles(array($roles));
