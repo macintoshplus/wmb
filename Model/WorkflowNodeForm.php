@@ -17,8 +17,8 @@ class WorkflowNodeForm extends WorkflowNode
 {
     const PREFIX_RESPONSE = '_response';
     const PREFIX_CONTINUE = '_continue';
-    const PREFIX_REVIEW = '_review';
-    const PREFIX_DELETED = '_deleted';
+    const PREFIX_REVIEW   = '_review';
+    const PREFIX_DELETED  = '_deleted';
 
     protected $configuration = array(
         'min_response'=>1,
