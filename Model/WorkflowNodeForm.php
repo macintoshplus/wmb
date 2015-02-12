@@ -15,6 +15,11 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
  **/
 class WorkflowNodeForm extends WorkflowNode
 {
+    const PREFIX_RESPONSE = '_response';
+    const PREFIX_CONTINUE = '_continue';
+    const PREFIX_REVIEW = '_review';
+    const PREFIX_DELETED = '_deleted';
+
     protected $configuration = array(
         'min_response'=>1,
         'max_response'=>false,
@@ -208,9 +213,10 @@ class WorkflowNodeForm extends WorkflowNode
     {
         $canExecute = true;
         $formName = $this->configuration['internal_name'];
-        $formNameResponse = $formName.'_response';
-        $formNameContinue = $formName.'_continue';
-        $formNameReview = $formName.'_review';
+        $formNameResponse = $formName . WorkflowNodeForm::PREFIX_RESPONSE;
+        $formNameContinue = $formName . WorkflowNodeForm::PREFIX_CONTINUE;
+        $formNameReview   = $formName . WorkflowNodeForm::PREFIX_REVIEW;
+        $formNameDeleted  = $formName . WorkflowNodeForm::PREFIX_DELETED;
         //$variables = $execution->getVariables();
         
         //Vérifie que les données sont renseignées
@@ -229,8 +235,8 @@ class WorkflowNodeForm extends WorkflowNode
             }
             
             //Déplace les données
-            
             $responses = $this->getResponses($execution);
+
             //Si un ID est fourni, il l'extrait
             if (null !== $response->getId()) {
                 //récupère la clée
@@ -245,20 +251,37 @@ class WorkflowNodeForm extends WorkflowNode
                 $response->setAnsweredAt(new \DateTime());
             }
 
-            //si une réponse possible, il ajoute les données en remplaçant celle eventuellement présente
-            if ($this->getMaxResponse() === $this->getMinResponse()) {
-                $responses = array($response);
-            } else {
-                //Sinon, si la clée est initialisée, remplacement des données, sinon, ajout
-                if (isset($key)) {
-                    $responses[$key] = $response;
-                } else {
-                    if (false === $this->getMaxResponse() || count($responses) < $this->getMaxResponse()) {
-                        $responses[] = $response;
-                    }
+            //Si données supprimées, il supprime la réponse et ajoute dans les suppressions
+            if (null !== $response->getDeletedAt()) {
+                if (!isset($key)) {
+                    $canExecute = false;
+                    goto traiteExecution;
                 }
-                
+
+                unset($responses[$key]);
+
+                $responsesDeleted = ($execution->hasVariable($formNameDeleted))? $execution->getVariable($formNameDeleted):array();
+                $responsesDeleted[] = $response;
+                $execution->setVariable($formNameDeleted, $responsesDeleted);
+
+            } else {
+                //Pas supprimé
+                //si une réponse possible, il ajoute les données en remplaçant celle eventuellement présente
+                if ($this->getMaxResponse() === $this->getMinResponse()) {
+                    $responses = array($response);
+                } else {
+                    //Sinon, si la clée est initialisée, remplacement des données, sinon, ajout
+                    if (isset($key)) {
+                        $responses[$key] = $response;
+                    } else {
+                        if (false === $this->getMaxResponse() || count($responses) < $this->getMaxResponse()) {
+                            $responses[] = $response;
+                        }
+                    }
+                    
+                }
             }
+
             //reset id
             foreach ($responses as $key => $response) {
                 $responses[$key]->setId($key);
@@ -287,7 +310,7 @@ class WorkflowNodeForm extends WorkflowNode
             $canExecute = true;
         }
 
-
+        traiteExecution:
         if (!$canExecute) {
             //echo "Add variables\n";
             //Ajoute la variable de réponse

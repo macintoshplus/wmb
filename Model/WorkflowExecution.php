@@ -140,16 +140,15 @@ abstract class WorkflowExecution
      * @return mixed Value of the property or null.
      * @ignore
      */
-    public function __get( $propertyName )
+    public function __get($propertyName)
     {
-        switch ( $propertyName )
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
             case 'workflow':
                 return $this->properties[$propertyName];
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -166,14 +165,12 @@ abstract class WorkflowExecution
      *         Workflow.
      * @ignore
      */
-    public function __set( $propertyName, $val )
+    public function __set($propertyName, $val)
     {
-        switch ( $propertyName )
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
-                if ( !( $val instanceof WorkflowDefinitionStorageInterface ) )
-                {
-                    throw new BaseValueException( $propertyName, $val, 'WorkflowDefinitionStorageInterface' );
+                if (!($val instanceof WorkflowDefinitionStorageInterface)) {
+                    throw new BaseValueException($propertyName, $val, 'WorkflowDefinitionStorageInterface');
                 }
 
                 $this->properties['definitionStorage'] = $val;
@@ -181,9 +178,8 @@ abstract class WorkflowExecution
                 return;
 
             case 'workflow':
-                if ( !( $val instanceof Workflow ) )
-                {
-                    throw new BaseValueException( $propertyName, $val, 'Workflow' );
+                if (!($val instanceof Workflow)) {
+                    throw new BaseValueException($propertyName, $val, 'Workflow');
                 }
 
                 $this->properties['workflow'] = $val;
@@ -191,7 +187,7 @@ abstract class WorkflowExecution
                 return;
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -201,10 +197,9 @@ abstract class WorkflowExecution
      * @return bool True is the property is set, otherwise false.
      * @ignore
      */
-    public function __isset( $propertyName )
+    public function __isset($propertyName)
     {
-        switch ( $propertyName )
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
             case 'workflow':
                 return true;
@@ -228,12 +223,11 @@ abstract class WorkflowExecution
      * @throws WorkflowExecutionException
      *         If no workflow has been set up for execution.
      */
-    public function start( $parentId = null )
+    public function start($parentId = null)
     {
-        if ( $this->workflow === null )
-        {
+        if ($this->workflow === null) {
             throw new WorkflowExecutionException(
-              'No workflow has been set up for execution.'
+                'No workflow has been set up for execution.'
             );
         }
 
@@ -242,24 +236,22 @@ abstract class WorkflowExecution
         $this->resumed   = false;
         $this->suspended = false;
 
-        $this->doStart( $parentId );
+        $this->doStart($parentId);
         $this->loadFromVariableHandlers();
 
-        foreach ( $this->plugins as $plugin )
-        {
-            $plugin->afterExecutionStarted( $this );
+        foreach ($this->plugins as $plugin) {
+            $plugin->afterExecutionStarted($this);
         }
 
         // Start workflow execution by activating the start node.
-        $this->workflow->startNode->activate( $this );
+        $this->workflow->startNode->activate($this);
 
         // Continue workflow execution until there are no more
         // activated nodes.
         $this->execute();
 
         // Return execution ID if the workflow has been suspended.
-        if ( $this->isSuspended() )
-        {
+        if ($this->isSuspended()) {
             return (int)$this->getId();
         }
     }
@@ -280,7 +272,7 @@ abstract class WorkflowExecution
     {
         if ($this->cancelled || $this->ended) {
             throw new WorkflowExecutionException(
-              'Unable to suspend execution (execution ended or cancelled)'
+                'Unable to suspend execution (execution ended or cancelled)'
             );
         }
 
@@ -291,23 +283,20 @@ abstract class WorkflowExecution
 
         $this->saveToVariableHandlers();
 
-        $keys     = array_keys( $this->variables );
-        $count    = count( $keys );
+        $keys     = array_keys($this->variables);
+        $count    = count($keys);
         $handlers = $this->workflow->getVariableHandlers();
 
-        for ( $i = 0; $i < $count; $i++ )
-        {
-            if ( isset( $handlers[$keys[$i]] ) )
-            {
-                unset( $this->variables[$keys[$i]] );
+        for ($i = 0; $i < $count; $i++) {
+            if (isset($handlers[$keys[$i]])) {
+                unset($this->variables[$keys[$i]]);
             }
         }
 
         $this->doSuspend();
 
-        foreach ( $this->plugins as $plugin )
-        {
-            $plugin->afterExecutionSuspended( $this );
+        foreach ($this->plugins as $plugin) {
+            $plugin->afterExecutionSuspended($this);
         }
     }
 
@@ -315,7 +304,7 @@ abstract class WorkflowExecution
      * Resumes workflow execution of a suspended workflow.
      *
      * $executionId is the id of the execution to resume. $inputData is an
-     * associative array of the format array( 'variable name' => value ) that should
+     * associative array of the format array('variable name' => value ) that should
      * contain new workflow variable data required to resume execution.
      *
      * Calls do doResume() before the variables are loaded using the variable handlers.
@@ -324,18 +313,17 @@ abstract class WorkflowExecution
      * @throws WorkflowInvalidInputException if the input given does not match the expected data.
      * @throws WorkflowExecutionException if there is no prior ID for this execution.
      */
-    public function resume( array $inputData = array() )
+    public function resume(array $inputData = array())
     {
-        if ( $this->getId() === null )
-        {
+        if ($this->getId() === null) {
             throw new WorkflowExecutionException(
-              'No execution id given.'
+                'No execution id given.'
             );
         }
 
         if ($this->cancelled || $this->ended) {
             throw new WorkflowExecutionException(
-              'Unable to resume execution (execution ended or cancelled)'
+                'Unable to resume execution (execution ended or cancelled)'
             );
         }
 
@@ -349,37 +337,29 @@ abstract class WorkflowExecution
 
         $errors = array();
 
-        foreach ( $inputData as $variableName => $value )
-        {
-            if ( isset( $this->waitingFor[$variableName] ) )
-            {
-                if ( $this->waitingFor[$variableName]['condition']->evaluate( $value ) )
-                {
-                    $this->setVariable( $variableName, $value );
-                    unset( $this->waitingFor[$variableName] );
-                }
-                else
-                {
+        foreach ($inputData as $variableName => $value) {
+            if (isset($this->waitingFor[$variableName])) {
+                if ($this->waitingFor[$variableName]['condition']->evaluate($value)) {
+                    $this->setVariable($variableName, $value);
+                    unset($this->waitingFor[$variableName]);
+                } else {
                     $errors[$variableName] = (string)$this->waitingFor[$variableName]['condition'];
                 }
             }
         }
 
-        if ( !empty( $errors ) )
-        {
-            throw new WorkflowInvalidInputException( $errors );
+        if (!empty($errors)) {
+            throw new WorkflowInvalidInputException($errors);
         }
 
-        foreach ( $this->plugins as $plugin )
-        {
-            $plugin->afterExecutionResumed( $this );
+        foreach ($this->plugins as $plugin) {
+            $plugin->afterExecutionResumed($this);
         }
 
         $this->execute();
 
         // Return execution ID if the workflow has been suspended.
-        if ( $this->isSuspended() )
-        {
+        if ($this->isSuspended()) {
             // @codeCoverageIgnoreStart
             return $this->getId();
             // @codeCoverageIgnoreEnd
@@ -391,7 +371,7 @@ abstract class WorkflowExecution
      *
      * @param WorkflowNode $node
      */
-    public function cancel( WorkflowNode $node = null )
+    public function cancel(WorkflowNode $node = null)
     {
         if (false === $this->cancellable) {
             throw new \Exception("Unable to cancel this execution.");
@@ -399,15 +379,13 @@ abstract class WorkflowExecution
 
         if ($this->cancelled || $this->ended) {
             throw new WorkflowExecutionException(
-              'Unable to cancel execution (execution ended or cancelled)'
+                'Unable to cancel execution (execution ended or cancelled)'
             );
         }
         
-        if ( $node !== null )
-        {
-            foreach ( $this->plugins as $plugin )
-            {
-                $plugin->afterNodeExecuted( $this, $node );
+        if ($node !== null) {
+            foreach ($this->plugins as $plugin) {
+                $plugin->afterNodeExecuted($this, $node);
             }
         }
 
@@ -415,16 +393,15 @@ abstract class WorkflowExecution
         $this->numActivatedNodes = 0;
         $this->waitingFor        = array();
 
-        if ( count( $this->workflow->finallyNode->getOutNodes() ) > 0 )
-        {
-            $this->workflow->finallyNode->activate( $this );
+        if (count($this->workflow->finallyNode->getOutNodes()) > 0) {
+            $this->workflow->finallyNode->activate($this);
             $this->execute();
         }
 
         $this->cancelled = true;
         $this->ended     = false;
 
-        $this->end( $node );
+        $this->end($node);
         $this->doEnd();
     }
 
@@ -436,22 +413,19 @@ abstract class WorkflowExecution
      * @param WorkflowNode $node
      * @ignore
      */
-    public function end( WorkflowNode $node = null )
+    public function end(WorkflowNode $node = null)
     {
 
         if ($this->cancelled || $this->ended) {
             throw new WorkflowExecutionException(
-              'Unable to end this execution (execution ended or cancelled)'
+                'Unable to end this execution (execution ended or cancelled)'
             );
         }
 
-        if ( !$this->cancelled )
-        {
-            if ( $node !== null )
-            {
-                foreach ( $this->plugins as $plugin )
-                {
-                    $plugin->afterNodeExecuted( $this, $node );
+        if (!$this->cancelled) {
+            if ($node !== null) {
+                foreach ($this->plugins as $plugin) {
+                    $plugin->afterNodeExecuted($this, $node);
                 }
             }
 
@@ -462,21 +436,16 @@ abstract class WorkflowExecution
             $this->doEnd();
             $this->saveToVariableHandlers();
 
-            if ( $node !== null )
-            {
-                $this->endThread( $node->getThreadId() );
+            if ($node !== null) {
+                $this->endThread($node->getThreadId());
 
-                foreach ( $this->plugins as $plugin )
-                {
-                    $plugin->afterExecutionEnded( $this );
+                foreach ($this->plugins as $plugin) {
+                    $plugin->afterExecutionEnded($this);
                 }
             }
-        }
-        else
-        {
-            foreach ( $this->plugins as $plugin )
-            {
-                $plugin->afterExecutionCancelled( $this );
+        } else {
+            foreach ($this->plugins as $plugin) {
+                $plugin->afterExecutionCancelled($this);
             }
         }
     }
@@ -490,19 +459,16 @@ abstract class WorkflowExecution
     protected function execute()
     {
         // Try to execute nodes while there are executable nodes on the stack.
-        do
-        {
+        do {
             // Flag that indicates whether a node has been executed during the
             // current iteration of the loop.
             $executed = false;
 
             // Iterate the stack of activated nodes.
-            foreach ( $this->activatedNodes as $key => $node )
-            {
+            foreach ($this->activatedNodes as $key => $node) {
                 // Only try to execute a node if the execution of the
                 // workflow instance has not ended yet.
-                if ( $this->cancelled && $this->ended )
-                {
+                if ($this->cancelled && $this->ended) {
                     // @codeCoverageIgnoreStart
                     break;
                     // @codeCoverageIgnoreEnd
@@ -510,28 +476,24 @@ abstract class WorkflowExecution
 
                 // The current node is an end node but there are still
                 // activated nodes on the stack.
-                if ( $node  instanceof WorkflowNodeEnd &&
+                if ($node  instanceof WorkflowNodeEnd &&
                      !$node instanceof WorkflowNodeCancel &&
-                     $this->numActivatedNodes != $this->numActivatedEndNodes )
-                {
+                     $this->numActivatedNodes != $this->numActivatedEndNodes) {
                     continue;
                 }
 
                 // Execute the current node and check whether it finished
                 // executing.
-                if ( $node->execute( $this ) )
-                {
+                if ($node->execute($this)) {
                     // Remove current node from the stack of activated
                     // nodes.
-                    unset( $this->activatedNodes[$key] );
+                    unset($this->activatedNodes[$key]);
                     $this->numActivatedNodes--;
 
                     // Notify plugins that the node has been executed.
-                    if ( !$this->cancelled && !$this->ended )
-                    {
-                        foreach ( $this->plugins as $plugin )
-                        {
-                            $plugin->afterNodeExecuted( $this, $node );
+                    if (!$this->cancelled && !$this->ended) {
+                        foreach ($this->plugins as $plugin) {
+                            $plugin->afterNodeExecuted($this, $node);
                         }
                     }
 
@@ -539,13 +501,11 @@ abstract class WorkflowExecution
                     $executed = true;
                 }
             }
-        }
-        while ( !empty( $this->activatedNodes ) && $executed );
+        } while (!empty($this->activatedNodes) && $executed);
 
         // The stack of activated nodes is not empty but at the moment none of
         // its nodes can be executed.
-        if ( !$this->cancelled && !$this->ended )
-        {
+        if (!$this->cancelled && !$this->ended) {
             $this->suspend();
         }
     }
@@ -561,56 +521,47 @@ abstract class WorkflowExecution
      * @return bool
      * @ignore
      */
-    public function activate( WorkflowNode $node, $notifyPlugins = true )
+    public function activate(WorkflowNode $node, $notifyPlugins = true)
     {
         // Only activate the node when
         //  - the execution of the workflow has not been cancelled,
         //  - the node is ready to be activated,
         //  - and the node is not already activated.
-        if ( $this->cancelled ||
+        if ($this->cancelled ||
              !$node->isExecutable() ||
-             in_array( $node, $this->activatedNodes ) !== false )
-        {
+             in_array($node, $this->activatedNodes) !== false) {
             return false;
         }
 
         $activateNode = true;
 
-        foreach ( $this->plugins as $plugin )
-        {
-            $activateNode = $plugin->beforeNodeActivated( $this, $node );
+        foreach ($this->plugins as $plugin) {
+            $activateNode = $plugin->beforeNodeActivated($this, $node);
 
-            if ( !$activateNode )
-            {
+            if (!$activateNode) {
             // @codeCoverageIgnoreStart
                 break;
             // @codeCoverageIgnoreEnd
             }
         }
 
-        if ( $activateNode )
-        {
+        if ($activateNode) {
             // Add node to list of activated nodes.
             $this->activatedNodes[] = $node;
             $this->numActivatedNodes++;
 
-            if ( $node instanceof WorkflowNodeEnd )
-            {
+            if ($node instanceof WorkflowNodeEnd) {
                 $this->numActivatedEndNodes++;
             }
 
-            if ( $notifyPlugins )
-            {
-                foreach ( $this->plugins as $plugin )
-                {
-                    $plugin->afterNodeActivated( $this, $node );
+            if ($notifyPlugins) {
+                foreach ($this->plugins as $plugin) {
+                    $plugin->afterNodeActivated($this, $node);
                 }
             }
 
             return true;
-        }
-        else
-        {
+        } else {
             // @codeCoverageIgnoreStart
             return false;
             // @codeCoverageIgnoreEnd
@@ -625,10 +576,9 @@ abstract class WorkflowExecution
      * @param WorkflowConditionInterface $condition
      * @ignore
      */
-    public function addWaitingFor( WorkflowNode $node, $variableName, WorkflowConditionInterface $condition )
+    public function addWaitingFor(WorkflowNode $node, $variableName, WorkflowConditionInterface $condition)
     {
-        if ( !isset( $this->waitingFor[$variableName] ) )
-        {
+        if (!isset($this->waitingFor[$variableName])) {
             $this->waitingFor[$variableName] = array(
               'node' => $node->getId(),
               'condition' => $condition
@@ -655,18 +605,16 @@ abstract class WorkflowExecution
      * @return int
      * @ignore
      */
-    public function startThread( $parentId = null, $numSiblings = 1 )
+    public function startThread($parentId = null, $numSiblings = 1)
     {
-        if ( !$this->cancelled )
-        {
+        if (!$this->cancelled) {
             $this->threads[$this->nextThreadId] = array(
               'parentId' => $parentId,
               'numSiblings' => $numSiblings
             );
 
-            foreach ( $this->plugins as $plugin )
-            {
-                $plugin->afterThreadStarted( $this, $this->nextThreadId, $parentId, $numSiblings );
+            foreach ($this->plugins as $plugin) {
+                $plugin->afterThreadStarted($this, $this->nextThreadId, $parentId, $numSiblings);
             }
 
             return $this->nextThreadId++;
@@ -681,24 +629,20 @@ abstract class WorkflowExecution
      * @param  integer $threadId
      * @ignore
      */
-    public function endThread( $threadId )
+    public function endThread($threadId)
     {
-        if ( isset( $this->threads[$threadId] ) )
-        {
-            unset( $this->threads[$threadId] );
+        if (isset($this->threads[$threadId])) {
+            unset($this->threads[$threadId]);
 
-            foreach ( $this->plugins as $plugin )
-            {
-                $plugin->afterThreadEnded( $this, $threadId );
+            foreach ($this->plugins as $plugin) {
+                $plugin->afterThreadEnded($this, $threadId);
             }
-        }
-        else
-        {
+        } else {
             throw new WorkflowExecutionException(
-              sprintf(
-                'There is no thread with id #%d.',
-                $threadId
-              )
+                sprintf(
+                    'There is no thread with id #%d.',
+                    $threadId
+                )
             );
         }
     }
@@ -720,20 +664,16 @@ abstract class WorkflowExecution
      * @return WorkflowExecution
      * @ignore
      */
-    public function getSubExecution( $id = null, $interactive = true )
+    public function getSubExecution($id = null, $interactive = true)
     {
-        if ( $interactive )
-        {
-            $execution = $this->doGetSubExecution( $id );
-        }
-        else
-        {
+        if ($interactive) {
+            $execution = $this->doGetSubExecution($id);
+        } else {
             $execution = new WorkflowExecutionNonInteractive;
         }
 
-        foreach ( $this->plugins as $plugin )
-        {
-            $execution->addPlugin( $plugin );
+        foreach ($this->plugins as $plugin) {
+            $execution->addPlugin($plugin);
         }
 
         return $execution;
@@ -746,14 +686,11 @@ abstract class WorkflowExecution
      * @return int
      * @ignore
      */
-    public function getNumSiblingThreads( $threadId )
+    public function getNumSiblingThreads($threadId)
     {
-        if ( isset( $this->threads[$threadId] ) )
-        {
+        if (isset($this->threads[$threadId])) {
             return $this->threads[$threadId]['numSiblings'];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -765,14 +702,11 @@ abstract class WorkflowExecution
      * @return int
      * @ignore
      */
-    public function getParentThreadId( $threadId )
+    public function getParentThreadId($threadId)
     {
-        if ( isset( $this->threads[$threadId] ) )
-        {
+        if (isset($this->threads[$threadId])) {
             return $this->threads[$threadId]['parentId'];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -783,18 +717,15 @@ abstract class WorkflowExecution
      * @param WorkflowExecutionPlugin $plugin
      * @return bool true when the plugin was added, false otherwise.
      */
-    public function addPlugin( WorkflowExecutionPlugin $plugin )
+    public function addPlugin(WorkflowExecutionPlugin $plugin)
     {
-        $pluginClass = get_class( $plugin );
+        $pluginClass = get_class($plugin);
 
-        if ( !isset( $this->plugins[$pluginClass] ) )
-        {
+        if (!isset($this->plugins[$pluginClass])) {
             $this->plugins[$pluginClass] = $plugin;
 
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -805,18 +736,15 @@ abstract class WorkflowExecution
      * @param WorkflowExecutionPlugin $plugin
      * @return bool true when the plugin was removed, false otherwise.
      */
-    public function removePlugin( WorkflowExecutionPlugin $plugin )
+    public function removePlugin(WorkflowExecutionPlugin $plugin)
     {
-        $pluginClass = get_class( $plugin );
+        $pluginClass = get_class($plugin);
 
-        if ( isset( $this->plugins[$pluginClass] ) )
-        {
-            unset( $this->plugins[$pluginClass] );
+        if (isset($this->plugins[$pluginClass])) {
+            unset($this->plugins[$pluginClass]);
 
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -827,14 +755,13 @@ abstract class WorkflowExecution
      * @param WorkflowExecutionListenerInterface $listener
      * @return bool true when the listener was added, false otherwise.
      */
-    public function addListener( WorkflowExecutionListenerInterface $listener )
+    public function addListener(WorkflowExecutionListenerInterface $listener)
     {
-        if ( !isset( $this->plugins['WorkflowExecutionListenerInterfacePlugin'] ) )
-        {
-            $this->addPlugin( new WorkflowExecutionListenerInterfacePlugin );
+        if (!isset($this->plugins['WorkflowExecutionListenerInterfacePlugin'])) {
+            $this->addPlugin(new WorkflowExecutionListenerInterfacePlugin);
         }
 
-        return $this->plugins['WorkflowExecutionListenerInterfacePlugin']->addListener( $listener );
+        return $this->plugins['WorkflowExecutionListenerInterfacePlugin']->addListener($listener);
     }
 
     /**
@@ -843,11 +770,10 @@ abstract class WorkflowExecution
      * @param WorkflowExecutionListenerInterface $listener
      * @return bool true when the listener was removed, false otherwise.
      */
-    public function removeListener( WorkflowExecutionListenerInterface $listener )
+    public function removeListener(WorkflowExecutionListenerInterface $listener)
     {
-        if ( isset( $this->plugins['WorkflowExecutionListenerInterfacePlugin'] ) )
-        {
-            return $this->plugins['WorkflowExecutionListenerInterfacePlugin']->removeListener( $listener );
+        if (isset($this->plugins['WorkflowExecutionListenerInterfacePlugin'])) {
+            return $this->plugins['WorkflowExecutionListenerInterfacePlugin']->removeListener($listener);
         }
 
         return false;
@@ -969,21 +895,27 @@ abstract class WorkflowExecution
      * @param string $variableName
      * @ignore
      */
-    public function getVariable( $variableName )
+    public function getVariable($variableName)
     {
-        if ( array_key_exists( $variableName, $this->variables ) )
-        {
+        if (array_key_exists($variableName, $this->variables)) {
             return $this->variables[$variableName];
-        }
-        else
-        {
+        } else {
             throw new WorkflowExecutionException(
-              sprintf(
-                'Variable "%s" does not exist.',
-                $variableName
-              )
+                sprintf(
+                    'Variable "%s" does not exist.',
+                    $variableName
+                )
             );
         }
+    }
+
+    public function getResponseForForm($formName, $id)
+    {
+        $answers = $this->getVariable($formName);
+        if (!array_key_exists($id, $answers)) {
+            throw new \Exception(sprintf("Answers ID '%s' not found", $formAnswersId));
+        }
+        return $answers[$id];
     }
 
     /**
@@ -1004,9 +936,9 @@ abstract class WorkflowExecution
      * @return bool true when the variable exists and false otherwise.
      * @ignore
      */
-    public function hasVariable( $variableName )
+    public function hasVariable($variableName)
     {
-        return array_key_exists( $variableName, $this->variables );
+        return array_key_exists($variableName, $this->variables);
     }
 
     /**
@@ -1017,18 +949,16 @@ abstract class WorkflowExecution
      * @return mixed the value that the variable has been set to
      * @ignore
      */
-    public function setVariable( $variableName, $value )
+    public function setVariable($variableName, $value)
     {
-        foreach ( $this->plugins as $plugin )
-        {
-            $value = $plugin->beforeVariableSet( $this, $variableName, $value );
+        foreach ($this->plugins as $plugin) {
+            $value = $plugin->beforeVariableSet($this, $variableName, $value);
         }
 
         $this->variables[$variableName] = $value;
 
-        foreach ( $this->plugins as $plugin )
-        {
-            $plugin->afterVariableSet( $this, $variableName, $value );
+        foreach ($this->plugins as $plugin) {
+            $plugin->afterVariableSet($this, $variableName, $value);
         }
 
         return $value;
@@ -1040,13 +970,12 @@ abstract class WorkflowExecution
      * @param array $variables
      * @ignore
      */
-    public function setVariables( array $variables )
+    public function setVariables(array $variables)
     {
         $this->variables = array();
 
-        foreach ( $variables as $variableName => $value )
-        {
-            $this->setVariable( $variableName, $value );
+        foreach ($variables as $variableName => $value) {
+            $this->setVariable($variableName, $value);
         }
     }
 
@@ -1057,29 +986,24 @@ abstract class WorkflowExecution
      * @return true, when the variable has been unset, false otherwise
      * @ignore
      */
-    public function unsetVariable( $variableName )
+    public function unsetVariable($variableName)
     {
         $unsetVariable = true;
 
-        if ( array_key_exists( $variableName, $this->variables ) )
-        {
-            foreach ( $this->plugins as $plugin )
-            {
-                $unsetVariable = $plugin->beforeVariableUnset( $this, $variableName );
+        if (array_key_exists($variableName, $this->variables)) {
+            foreach ($this->plugins as $plugin) {
+                $unsetVariable = $plugin->beforeVariableUnset($this, $variableName);
 
-                if ( !$unsetVariable )
-                {
+                if (!$unsetVariable) {
                     break;
                 }
             }
 
-            if ( $unsetVariable )
-            {
-                unset( $this->variables[$variableName] );
+            if ($unsetVariable) {
+                unset($this->variables[$variableName]);
 
-                foreach ( $this->plugins as $plugin )
-                {
-                    $plugin->afterVariableUnset( $this, $variableName );
+                foreach ($this->plugins as $plugin) {
+                    $plugin->afterVariableUnset($this, $variableName);
                 }
             }
         }
@@ -1144,10 +1068,9 @@ abstract class WorkflowExecution
      */
     protected function loadFromVariableHandlers()
     {
-        foreach ( $this->workflow->getVariableHandlers() as $variableName => $className )
-        {
+        foreach ($this->workflow->getVariableHandlers() as $variableName => $className) {
             $object = new $className;
-            $this->setVariable( $variableName, $object->load( $this, $variableName ) );
+            $this->setVariable($variableName, $object->load($this, $variableName));
         }
     }
 
@@ -1156,12 +1079,10 @@ abstract class WorkflowExecution
      */
     protected function saveToVariableHandlers()
     {
-        foreach ( $this->workflow->getVariableHandlers() as $variableName => $className )
-        {
-            if ( isset( $this->variables[$variableName] ) )
-            {
+        foreach ($this->workflow->getVariableHandlers() as $variableName => $className) {
+            if (isset($this->variables[$variableName])) {
                 $object = new $className;
-                $object->save( $this, $variableName, $this->variables[$variableName] );
+                $object->save($this, $variableName, $this->variables[$variableName]);
             }
         }
     }
@@ -1174,7 +1095,7 @@ abstract class WorkflowExecution
      *
      * @param  integer $parentId
      */
-    abstract protected function doStart( $parentId );
+    abstract protected function doStart($parentId);
 
     /**
      * Called by suspend() when workflow execution is suspended.
@@ -1212,5 +1133,5 @@ abstract class WorkflowExecution
      * @param  int $id
      * @return WorkflowExecution
      */
-    abstract protected function doGetSubExecution( $id = null );
+    abstract protected function doGetSubExecution($id = null);
 }
