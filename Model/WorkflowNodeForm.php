@@ -89,6 +89,11 @@ class WorkflowNodeForm extends WorkflowNode
         return (false === $this->configuration['max_response'] || 1 < $this->configuration['max_response'] || !$this->configuration['auto_continue']);
     }
 
+    public function doSingleResponse()
+    {
+        return ($this->configuration['min_response'] === $this->configuration['max_response'] && 1 === $this->configuration['min_response']);
+    }
+
     /**
      * @return integer
      */
