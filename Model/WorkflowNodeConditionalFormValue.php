@@ -10,8 +10,15 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterThan;
 
 /**
- * WorkflowNodeControlForm class
- * Check if response is set or date is ok
+ * WorkflowNodeConditionalFormValue class
+ * Check if response set is ok
+ * 
+ * Use :
+ * $node = new WorkflowNodeConditionalFormValue(array('form_internal_name'=>'form1', 'field_internal_name'=>'field1'));
+ * $condition = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual('test');
+ * $outNode = new WorkflowNode...
+ * $elseNode = new WorkflowNode...
+ * $node->addSelectOutNode($outNode, $elseNode, $condition);
  *
  * @author Jean-Baptiste Nahan <jbnahan at gmail dot com>
  **/

@@ -47,7 +47,7 @@ class WorkflowNodeConditionalFormValue extends Units\Test
 		$end = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
 		$elseEnd = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
         $node->addSelectOutNode($end, $elseEnd, $condition);
-        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        //$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
 
         $node->activate($mockExecute);
 
@@ -82,7 +82,7 @@ class WorkflowNodeConditionalFormValue extends Units\Test
 		$end = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
 		$elseEnd = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
         $node->addSelectOutNode($end, $elseEnd, $condition);
-        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        //$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
 
         $node->activate($mockExecute);
 
