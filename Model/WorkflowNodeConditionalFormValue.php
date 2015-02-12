@@ -3,6 +3,7 @@
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
+use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterThan;
@@ -16,6 +17,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterTh
 class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch
 {
 	protected $configuration = array(
+	  	'internal_name'=>null,
 	  	'form_internal_name'=>null,
         'field_internal_name'=>null,
       	'condition' => array(),
@@ -30,6 +32,9 @@ class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch
 
 	public function __construct(array $configuration)
 	{
+		if (!isset($configuration['internal_name'])) {
+			$configuration['internal_name']='conditional_'.substr(uniqid(), -8);
+		} 
         parent::__construct( $configuration );
 	}
 
@@ -38,15 +43,33 @@ class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch
 	 * @param WorkflowNode $else
 	 * @return Workflow
 	 */
-	public function addSelectOutNode( WorkflowNode $outNode, WorkflowNode $else )
+	public function addSelectOutNode( WorkflowNode $outNode, WorkflowNode $else, WorkflowConditionInterface $condition )
     {
-    	$equal = new WorkflowConditionIsGreaterThan(0);
-    	$condition = new WorkflowConditionVariableArrayLength($this->getInternalName(), $equal);
-    	return parent::addConditionalOutNode($condition, $outNode, $else);
+
+    	$conditionCompleted = new WorkflowConditionVariable($this->getInternalName(), $condition);
+    	return parent::addConditionalOutNode($conditionCompleted, $outNode, $else);
     }
 
-	
+    /**
+     * return internal name
+     * this name is use when ID for Type Form link
+     * @return string
+     */
+    public function getInternalName()
+    {
+        return $this->configuration['internal_name'];
+    }
 
+    /**
+     * @param string $internalName
+     * @return WorkflowNodeReviewUniqueForm
+     */
+    // public function setInternalName($internalName)
+    // {
+    //     $this->configuration['internal_name'] = $internalName;
+
+    //     return $this;
+    // }
     /**
      * @return string
      */
@@ -108,16 +131,18 @@ class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch
 	 */
     public function execute( WorkflowExecution $execution )
     {
-		//Ne passe pas si la date n'est pas passé !
-    	$value = $this->getValueFromForm($execution);
+		//set la valeur
+    	$execution->setVariable($this->getInternalName(), $this->getValueFromForm($execution));
     	//verifier la condition selon la valeur...
-
         return parent::execute( $execution );
     }
 
     public function verify() {
     	parent::verify();
 
+    	if (null === $this->getInternalName()) {
+    		throw new WorkflowInvalidWorkflowException('Node conditional form value has no internal name.');
+    	}
     	if (null === $this->getFormInternalName()) {
     		throw new WorkflowInvalidWorkflowException('Node conditional form value has no form internal name.');
     	}
