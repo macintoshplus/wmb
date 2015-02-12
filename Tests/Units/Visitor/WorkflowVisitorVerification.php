@@ -297,6 +297,12 @@ class WorkflowVisitorVerification extends Units\Test
 		
 		$this->assert->variable($wf->accept($verif))->isNull();
 
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
+
 	}
 
 
@@ -333,6 +339,12 @@ class WorkflowVisitorVerification extends Units\Test
 		
 		$this->assert->variable($wf->accept($verif))->isNull();
 
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
+
 	}
 
 
@@ -361,6 +373,12 @@ class WorkflowVisitorVerification extends Units\Test
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
 		$this->assert->variable($wf->accept($verif))->isNull();
+
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getFormInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
 		
 	}
 
@@ -389,6 +407,12 @@ class WorkflowVisitorVerification extends Units\Test
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
 		$this->assert->variable($wf->accept($verif))->isNull();
+
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getFormInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
 		
 	}
 
@@ -421,6 +445,12 @@ class WorkflowVisitorVerification extends Units\Test
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
 		$this->assert->variable($wf->accept($verif))->isNull();
+
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
 		
 	}
 
@@ -453,6 +483,12 @@ class WorkflowVisitorVerification extends Units\Test
 		$verif = new \JbNahan\Bundle\WorkflowManagerBundle\Visitor\WorkflowVisitorVerification();
 
 		$this->assert->variable($wf->accept($verif))->isNull();
+
+		$this->mock($form1)->call('getInternalName')->atLeastOnce();
+		$this->mock($form1)->call('verify')->once();
+
+		$this->mock($form2)->call('getInternalName')->atLeastOnce();
+		$this->mock($form2)->call('verify')->once();
 		
 	}
 }
