@@ -11,6 +11,8 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeReviewUniqueForm;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSetExecutionUser;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalFormValue;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
 
@@ -79,12 +81,68 @@ class WorkflowVisitorVerification extends WorkflowVisitor
                     }
                 }
             }
-            //verif si toute les clées sont OK
+            //collecte les noms internes des formulaires et vérifie les collisions
             $internalname = array();
-            $userinternalname = array();
             foreach ($visitable->nodes as $node) {
-                if ($node instanceof )
+                if ($node instanceof WorkflowNodeForm) {
+                    if (in_array($node->getInternalName(), $internalname)) {
+                        throw new WorkflowInvalidWorkflowException(
+                            sprintf('The node %s (id %d) use a existant internal name \'%s\'. Please change it.',
+                                get_class($node),
+                                $node->getId(),
+                                $node->getInternalName()
+                        ));
+                    }
+                    $internalname[] = $node->getInternalName();
+                }
             }
+            //check un colition de nom entre des formulaires et nom des conditionalsFormValue
+            $internalnameAll = $internalname;
+            foreach ($visitable->nodes as $node) {
+                if ($node instanceof WorkflowNodeConditionalFormValue) {
+                    if (in_array($node->getInternalName(), $internalname)) {
+                        throw new WorkflowInvalidWorkflowException(
+                            sprintf('The node %s (id %d) use a existant internal name \'%s\'. Please change it.',
+                                get_class($node),
+                                $node->getId(),
+                                $node->getInternalName()
+                        ));
+                    }
+                    $internalnameAll[] = $node->getInternalName();
+                }
+            }
+
+            //vérifie que les clés utilisées existes
+            foreach ($visitable->nodes as $node) {
+                if ($node instanceof WorkflowNodeReviewUniqueForm ||
+                    $node instanceof WorkflowNodeControlForm) {
+                    if (!in_array($node->getInternalName(), $internalname)) {
+                        throw new WorkflowInvalidWorkflowException(
+                            sprintf('The node %s (id %d) use a inexistant internal name \'%s\' (available internal name \'%s\')',
+                                get_class($node),
+                                $node->getId(),
+                                $node->getInternalName(),
+                                implode("', '", $internalname)
+                        ));
+                        
+                    }
+                }
+                if ($node instanceof WorkflowNodeSetExecutionUser ||
+                    $node instanceof WorkflowNodeAddExecutionUser ||
+                    $node instanceof WorkflowNodeConditionalFormValue) {
+                    if (!in_array($node->getFormInternalName(), $internalname)) {
+                        throw new WorkflowInvalidWorkflowException(
+                            sprintf('The node %s (id %d) use a inexistant internal name \'%s\' (available internal name \'%s\')',
+                                get_class($node),
+                                $node->getId(),
+                                $node->getFormInternalName(),
+                                implode("', '", $internalname)
+                        ));
+                        
+                    }
+                }
+            }
+
         }
 
         if ($visitable instanceof WorkflowNode) {
