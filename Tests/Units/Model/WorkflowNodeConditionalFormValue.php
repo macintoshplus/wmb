@@ -15,10 +15,6 @@ class WorkflowNodeConditionalFormValue extends Units\Test
 		$controller->__construct = function() {};
 
 		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
 
 		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
@@ -38,10 +34,6 @@ class WorkflowNodeConditionalFormValue extends Units\Test
 		$controller->__construct = function() {};
 
 		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
 
 		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
@@ -77,10 +69,6 @@ class WorkflowNodeConditionalFormValue extends Units\Test
 		$controller->__construct = function() {};
 
 		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
 
 		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 

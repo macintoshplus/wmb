@@ -7,6 +7,10 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNode;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFinally;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeReviewUniqueForm;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeSetExecutionUser;
+use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
 
@@ -50,41 +54,40 @@ class WorkflowVisitorVerification extends WorkflowVisitor
      *
      * @param WorkflowVisitableInterface $visitable
      */
-    protected function doVisit( WorkflowVisitableInterface $visitable )
+    protected function doVisit(WorkflowVisitableInterface $visitable)
     {
-        if ( $visitable instanceof Workflow )
-        {
-            foreach ( $visitable->nodes as $node )
-            {
-                if ( $node instanceof WorkflowNodeStart &&
-                    !$node instanceof WorkflowNodeFinally )
-                {
+        if ($visitable instanceof Workflow) {
+            foreach ($visitable->nodes as $node) {
+                if ($node instanceof WorkflowNodeStart &&
+                    !$node instanceof WorkflowNodeFinally) {
                     $this->numStartNodes++;
 
-                    if ( $this->numStartNodes > 1 )
-                    {
+                    if ($this->numStartNodes > 1) {
                         throw new WorkflowInvalidWorkflowException(
                           'A workflow may have only one start node.'
                         );
                     }
                 }
 
-                if ( $node instanceof WorkflowNodeFinally )
-                {
+                if ($node instanceof WorkflowNodeFinally) {
                     $this->numFinallyNodes++;
 
-                    if ( $this->numFinallyNodes > 1 )
-                    {
+                    if ($this->numFinallyNodes > 1) {
                         throw new WorkflowInvalidWorkflowException(
                           'A workflow may have only one finally node.'
                         );
                     }
                 }
             }
+            //verif si toute les clées sont OK
+            $internalname = array();
+            $userinternalname = array();
+            foreach ($visitable->nodes as $node) {
+                if ($node instanceof )
+            }
         }
 
-        if ( $visitable instanceof WorkflowNode )
-        {
+        if ($visitable instanceof WorkflowNode) {
             $visitable->verify();
         }
     }
