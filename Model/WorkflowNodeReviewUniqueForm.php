@@ -3,6 +3,7 @@
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
+use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsArray;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual;
@@ -70,7 +71,7 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch
      */
     public function getReviewData(WorkflowExecution $execution)
     {
-        return $execution->getVariable($this->getInternalName() . '_review');
+        return $execution->getVariable($this->getInternalName() . WorkflowNodeForm::PREFIX_REVIEW);
     }
 
     /**
@@ -124,6 +125,7 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch
         
         //Vérifie que les données sont renseignées
         if (!$execution->hasVariable($formNameReview)) {
+            $execution->addWaitingFor($this, $formNameReview, new WorkflowConditionIsArray());
             return false;
         }
 
