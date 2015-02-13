@@ -30,13 +30,11 @@ class WorkflowDatabaseOptions extends BaseOptions
      *         If the the desired property is not found.
      * @ignore
      */
-    public function __set( $propertyName, $propertyValue )
+    public function __set($propertyName, $propertyValue)
     {
-        switch ( $propertyName )
-        {
+        switch ($propertyName) {
             case 'prefix':
-                if ( !is_string( $propertyValue ) )
-                {
+                if (!is_string($propertyValue)) {
                     throw new BaseValueException(
                         $propertyName,
                         $propertyValue,
@@ -45,7 +43,7 @@ class WorkflowDatabaseOptions extends BaseOptions
                 }
                 break;
             default:
-                throw new BasePropertyNotFoundException( $propertyName );
+                throw new BasePropertyNotFoundException($propertyName);
         }
         $this->properties[$propertyName] = $propertyValue;
     }

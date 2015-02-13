@@ -19,15 +19,14 @@ abstract class BaseWorkflowDefinitionStorage implements WorkflowDefinitionStorag
      * @param string $className
      * @return mixed
      */
-    public static function getDefaultConfiguration( $className )
+    public static function getDefaultConfiguration($className)
     {
         $configuration = null;
 
-        $class    = new \ReflectionClass( $className );
+        $class    = new \ReflectionClass($className);
         $defaults = $class->getDefaultProperties();
 
-        if ( isset( $defaults['configuration'] ) )
-        {
+        if (isset($defaults['configuration'])) {
             $configuration = $defaults['configuration'];
         }
 

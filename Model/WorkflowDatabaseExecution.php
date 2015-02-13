@@ -82,8 +82,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      */
     public function __get($propertyName)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
             case 'workflow':
             case 'options':
@@ -106,8 +105,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      */
     public function __set($propertyName, $propertyValue)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
             case 'workflow':
                 return parent::__set($propertyName, $propertyValue);
@@ -135,8 +133,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      */
     public function __isset($propertyName)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'definitionStorage':
             case 'workflow':
             case 'options':
