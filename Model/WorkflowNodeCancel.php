@@ -5,10 +5,6 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 /**
  * This node implements the Cancel Case workflow pattern.
  *
- * A complete process instance is removed. This includes currently executing
- * tasks, those which may execute at some future time and all sub-processes.
- * The process instance is recorded as having completed unsuccessfully.
- *
  * Incoming nodes: 1
  * Outgoing nodes: 0..1
  *
@@ -39,9 +35,9 @@ class WorkflowNodeCancel extends WorkflowNodeEnd
      * @param int                  $threadId
      * @ignore
      */
-    public function activate( WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0 )
+    public function activate(WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0)
     {
-        $execution->cancel( $this );
+        $execution->cancel($this);
     }
 }
 
