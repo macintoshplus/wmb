@@ -373,7 +373,8 @@ abstract class WorkflowExecution
      */
     public function cancel(WorkflowNode $node = null)
     {
-        if (false === $this->cancellable) {
+        //Vérifie la possibilité d'annuler que si c'est en provenance de l'utilisateur ($node est null)
+        if (false === $this->cancellable && null === $node) {
             throw new \Exception("Unable to cancel this execution.");
         }
 
@@ -401,7 +402,9 @@ abstract class WorkflowExecution
         $this->cancelled = true;
         $this->ended     = false;
 
-        $this->end($node);
+        foreach ($this->plugins as $plugin) {
+            $plugin->afterExecutionCancelled($this);
+        }
         $this->doEnd();
     }
 
@@ -422,30 +425,24 @@ abstract class WorkflowExecution
             );
         }
 
-        if (!$this->cancelled) {
-            if ($node !== null) {
-                foreach ($this->plugins as $plugin) {
-                    $plugin->afterNodeExecuted($this, $node);
-                }
-            }
-
-            $this->ended     = true;
-            $this->resumed   = false;
-            $this->suspended = false;
-
-            $this->doEnd();
-            $this->saveToVariableHandlers();
-
-            if ($node !== null) {
-                $this->endThread($node->getThreadId());
-
-                foreach ($this->plugins as $plugin) {
-                    $plugin->afterExecutionEnded($this);
-                }
-            }
-        } else {
+        if ($node !== null) {
             foreach ($this->plugins as $plugin) {
-                $plugin->afterExecutionCancelled($this);
+                $plugin->afterNodeExecuted($this, $node);
+            }
+        }
+
+        $this->ended     = true;
+        $this->resumed   = false;
+        $this->suspended = false;
+
+        $this->doEnd();
+        $this->saveToVariableHandlers();
+
+        if ($node !== null) {
+            $this->endThread($node->getThreadId());
+
+            foreach ($this->plugins as $plugin) {
+                $plugin->afterExecutionEnded($this);
             }
         }
     }
