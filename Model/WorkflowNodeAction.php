@@ -29,12 +29,12 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseAutoloadException;
  * {
  *     private $whatToSay;
  *
- *     public function __construct( $whatToSay )
+ *     public function __construct($whatToSay)
  *     {
  *         $this->whatToSay = $whatToSay;
  *     }
  *
- *     public function execute( WorkflowExecution $execution )
+ *     public function execute(WorkflowExecution $execution)
  *     {
  *         print $this->whatToSay;
  *         return true; // we're finished, activate next node
@@ -46,12 +46,12 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseAutoloadException;
  *     }
  * }
  *
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  *
- * $action = new WorkflowNodeAction( array( "class" => "MyPrintAction",
- *                                             "arguments" => "No. 1 The larch!" ) );
- * $action->addOutNode( $workflow->endNode );
- * $workflow->startNode->addOutNode( $action );
+ * $action = new WorkflowNodeAction(array("class" => "MyPrintAction",
+ *                                             "arguments" => "No. 1 The larch!"));
+ * $action->addOutNode($workflow->endNode);
+ * $workflow->startNode->addOutNode($action);
  * ?>
  * </code>
  *
@@ -81,19 +81,17 @@ class WorkflowNodeAction extends WorkflowNode
      * @param mixed $configuration
      * @throws WorkflowDefinitionStorageException
      */
-    public function __construct( $configuration )
+    public function __construct($configuration)
     {
-        if ( is_string( $configuration ) )
-        {
-            $configuration = array( 'class' => $configuration );
+        if (is_string($configuration)) {
+            $configuration = array('class' => $configuration);
         }
 
-        if ( !isset( $configuration['arguments'] ) )
-        {
+        if (!isset($configuration['arguments'])) {
             $configuration['arguments'] = array();
         }
 
-        parent::__construct( $configuration );
+        parent::__construct($configuration);
     }
 
     /**
@@ -109,17 +107,16 @@ class WorkflowNodeAction extends WorkflowNode
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
         $object   = $this->createObject();
-        $finished = $object->execute( $execution );
+        $finished = $object->execute($execution);
 
         // Execution of the Service Object has finished.
-        if ( $finished !== false )
-        {
-            $this->activateNode( $execution, $this->outNodes[0] );
+        if ($finished !== false) {
+            $this->activateNode($execution, $this->outNodes[0]);
 
-            return parent::execute( $execution );
+            return parent::execute($execution);
         }
         // Execution of the Service Object has not finished.
         else
@@ -135,20 +132,18 @@ class WorkflowNodeAction extends WorkflowNode
      * @return array
      * @ignore
      */
-    public static function configurationFromXML( \DOMElement $element )
+    public static function configurationFromXML(\DOMElement $element)
     {
         $configuration = array(
-          'class'     => $element->getAttribute( 'serviceObjectClass' ),
+          'class'     => $element->getAttribute('serviceObjectClass'),
           'arguments' => array()
         );
 
-        $childNode = WorkflowDefinitionStorageInterfaceXml::getChildNode( $element );
+        $childNode = WorkflowDefinitionStorageInterfaceXml::getChildNode($element);
 
-        if ( $childNode->tagName == 'arguments' )
-        {
-            foreach ( WorkflowDefinitionStorageInterfaceXml::getChildNodes( $childNode ) as $argument )
-            {
-                $configuration['arguments'][] = WorkflowDefinitionStorageInterfaceXml::xmlToVariable( $argument );
+        if ($childNode->tagName == 'arguments') {
+            foreach (WorkflowDefinitionStorageInterfaceXml::getChildNodes($childNode) as $argument) {
+                $configuration['arguments'][] = WorkflowDefinitionStorageInterfaceXml::xmlToVariable($argument);
             }
         }
 
@@ -161,18 +156,16 @@ class WorkflowNodeAction extends WorkflowNode
      * @param DOMElement $element
      * @ignore
      */
-    public function configurationToXML( \DOMElement $element )
+    public function configurationToXML(\DOMElement $element)
     {
-        $element->setAttribute( 'serviceObjectClass', $this->configuration['class'] );
+        $element->setAttribute('serviceObjectClass', $this->configuration['class']);
 
-        if ( !empty( $this->configuration['arguments'] ) )
-        {
+        if (!empty($this->configuration['arguments'])) {
             $xmlArguments = $element->appendChild(
-              $element->ownerDocument->createElement( 'arguments' )
+              $element->ownerDocument->createElement('arguments')
             );
 
-            foreach ( $this->configuration['arguments'] as $argument )
-            {
+            foreach ($this->configuration['arguments'] as $argument) {
                 $xmlArguments->appendChild(
                   WorkflowDefinitionStorageInterfaceXml::variableToXml(
                     $argument, $element->ownerDocument
@@ -194,12 +187,10 @@ class WorkflowNodeAction extends WorkflowNode
         {
             $buffer = (string)$this->createObject();
         }
-        catch ( BaseAutoloadException $e )
-        {
+        catch (BaseAutoloadException $e) {
             return 'Class not found.';
         }
-        catch ( WorkflowExecutionException $e )
-        {
+        catch (WorkflowExecutionException $e) {
             return $e->getMessage();
         }
 
@@ -213,8 +204,7 @@ class WorkflowNodeAction extends WorkflowNode
      */
     protected function createObject()
     {
-        if ( !class_exists( $this->configuration['class'] ) )
-        {
+        if (!class_exists($this->configuration['class'])) {
             throw new WorkflowExecutionException(
               sprintf(
                 'Class "%s" not found.',
@@ -223,10 +213,9 @@ class WorkflowNodeAction extends WorkflowNode
             );
         }
 
-        $class = new \ReflectionClass( $this->configuration['class'] );
+        $class = new \ReflectionClass($this->configuration['class']);
 
-        if ( !$class->implementsInterface( 'WorkflowServiceObject' ) )
-        {
+        if (!$class->implementsInterface('WorkflowServiceObject')) {
             throw new WorkflowExecutionException(
               sprintf(
                 'Class "%s" does not implement the WorkflowServiceObject interface.',
@@ -235,9 +224,8 @@ class WorkflowNodeAction extends WorkflowNode
             );
         }
 
-        if ( !empty( $this->configuration['arguments'] ) )
-        {
-            return $class->newInstanceArgs( $this->configuration['arguments'] );
+        if (!empty($this->configuration['arguments'])) {
+            return $class->newInstanceArgs($this->configuration['arguments']);
         }
         else
         {

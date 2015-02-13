@@ -53,6 +53,6 @@ interface WorkflowExecutionListenerInterface
      * @param string  $message
      * @param int $type
      */
-    public function notify( $message, $type = WorkflowExecutionListenerInterface::INFO );
+    public function notify($message, $type = WorkflowExecutionListenerInterface::INFO);
 }
 ?>

@@ -30,8 +30,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
      *
      * @param  string $directory The directory that holds the XML files.
      */
-    public function __construct( $directory = '' )
-    {
+    public function __construct( $directory = '' ) {
         $this->directory = $directory;
     }
 
@@ -48,8 +47,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
      */
     public function loadByName( $workflowName, $workflowVersion = 0 )
     {
-        if ( $workflowVersion == 0 )
-        {
+        if ( $workflowVersion == 0 ) {
             // Load the latest version of the workflow definition by default.
             $workflowVersion = $this->getCurrentVersion( $workflowName );
         }
@@ -59,18 +57,15 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         // Load the document.
         $document = new \DOMDocument;
 
-        if ( is_readable( $filename ) )
-        {
+        if ( is_readable( $filename ) ) {
             libxml_use_internal_errors( true );
 
             $loaded = @$document->load( $filename );
 
-            if ( $loaded === false )
-            {
+            if ( $loaded === false ) {
                 $message = '';
 
-                foreach ( libxml_get_errors() as $error )
-                {
+                foreach ( libxml_get_errors() as $error ) {
                     $message .= $error->message;
                 }
 
@@ -114,20 +109,17 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         $nodes    = array();
         $xmlNodes = $document->getElementsByTagName( 'node' );
 
-        foreach ( $xmlNodes as $xmlNode )
-        {
+        foreach ( $xmlNodes as $xmlNode ) {
             $id        = (int)$xmlNode->getAttribute( 'id' );
             //$className = 'WorkflowNode' . $xmlNode->getAttribute( 'type' );
             $className = $xmlNode->getAttribute( 'type' );
 
-            if ( class_exists( $className ) )
-            {
+            if ( class_exists( $className ) ) {
                 $configuration = call_user_func_array(
                   array( $className, 'configurationFromXML' ), array( $xmlNode )
                 );
 
-                if ( is_null( $configuration ) )
-                {
+                if ( is_null( $configuration ) ) {
                     $configuration = self::getDefaultConfiguration( $className );
                 }
             }
@@ -136,54 +128,39 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
             $node->setId( $id );
 
             if ( $node instanceof WorkflowNodeFinally &&
-                 !isset( $finallyNode ) )
-            {
+                 !isset( $finallyNode ) ) {
                 $finallyNode = $node;
-            }
-
-            else if ( $node instanceof WorkflowNodeEnd &&
-                      !isset( $defaultEndNode ) )
-            {
+            } else if ( $node instanceof WorkflowNodeEnd &&
+                      !isset( $defaultEndNode ) ) {
                 $defaultEndNode = $node;
-            }
-
-            else if ( $node instanceof WorkflowNodeStart )
-            {
+            } else if ( $node instanceof WorkflowNodeStart ) {
                 $startNode = $node;
             }
 
             $nodes[$id] = $node;
         }
 
-        if ( !isset( $startNode ) || !isset( $defaultEndNode ) )
-        {
+        if ( !isset( $startNode ) || !isset( $defaultEndNode ) ) {
             throw new WorkflowDefinitionStorageException(
               'Could not load workflow definition.'
             );
         }
 
         // Connect node objects.
-        foreach ( $xmlNodes as $xmlNode )
-        {
+        foreach ( $xmlNodes as $xmlNode ) {
             $id        = (int)$xmlNode->getAttribute( 'id' );
             //$className = 'WorkflowNode' . $xmlNode->getAttribute( 'type' );
             $className = $xmlNode->getAttribute( 'type' );
 
-            foreach ( $xmlNode->getElementsByTagName( 'outNode' ) as $outNode )
-            {
+            foreach ( $xmlNode->getElementsByTagName( 'outNode' ) as $outNode ) {
                 $nodes[$id]->addOutNode( $nodes[(int)$outNode->getAttribute( 'id' )] );
             }
 
-            if ( is_subclass_of( $className, 'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalBranch' ) )
-            {
-                foreach ( self::getChildNodes( $xmlNode ) as $childNode )
-                {
-                    if ( $childNode->tagName == 'condition' )
-                    {
-                        foreach ( $childNode->getElementsByTagName( 'else' ) as $elseNode )
-                        {
-                            foreach ( $elseNode->getElementsByTagName( 'outNode' ) as $outNode )
-                            {
+            if ( is_subclass_of( $className, 'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalBranch' ) ) {
+                foreach ( self::getChildNodes( $xmlNode ) as $childNode ) {
+                    if ( $childNode->tagName == 'condition' ) {
+                        foreach ( $childNode->getElementsByTagName( 'else' ) as $elseNode ) {
+                            foreach ( $elseNode->getElementsByTagName( 'outNode' ) as $outNode ) {
                                 $elseId = (int)$outNode->getAttribute( 'id' );
                             }
                         }
@@ -191,17 +168,13 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
                         $condition = self::xmlToCondition( $childNode );
                         $xpath     = new \DOMXPath( $childNode->ownerDocument );
 
-                        foreach ( $xpath->query( 'outNode', $childNode ) as $outNode )
-                        {
-                            if ( !isset( $elseId ) )
-                            {
+                        foreach ( $xpath->query( 'outNode', $childNode ) as $outNode ) {
+                            if ( !isset( $elseId ) ) {
                                 $nodes[$id]->addConditionalOutNode(
                                   $condition,
                                   $nodes[(int)$outNode->getAttribute( 'id' )]
                                 );
-                            }
-                            else
-                            {
+                            } else {
                                 $nodes[$id]->addConditionalOutNode(
                                   $condition,
                                   $nodes[(int)$outNode->getAttribute( 'id' )],
@@ -217,8 +190,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         }
 
         if ( !isset( $finallyNode ) ||
-             count( $finallyNode->getInNodes() ) > 0 )
-        {
+             count( $finallyNode->getInNodes() ) > 0 ) {
             $finallyNode = null;
         }
 
@@ -228,8 +200,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         $workflow->version = $workflowVersion;
 
         // Handle the variable handlers.
-        foreach ( $document->getElementsByTagName( 'variableHandler' ) as $variableHandler )
-        {
+        foreach ( $document->getElementsByTagName( 'variableHandler' ) as $variableHandler ) {
             $workflow->addVariableHandler(
               $variableHandler->getAttribute( 'variable' ),
               $variableHandler->getAttribute( 'class' )
@@ -282,8 +253,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         // http://bugs.php.net/bug.php?id=40608
         $keys = array_keys( $nodes );
 
-        for ( $i = 0; $i < $numNodes; $i++ )
-        {
+        for ( $i = 0; $i < $numNodes; $i++ ) {
             $id        = $keys[$i];
             $node      = $nodes[$id];
             $nodeClass = get_class( $node );
@@ -303,12 +273,9 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
             $_keys       = array_keys( $outNodes );
             $numOutNodes = count( $_keys );
 
-            for ( $j = 0; $j < $numOutNodes; $j++ )
-            {
-                foreach ( $nodes as $outNodeId => $_node )
-                {
-                    if ( $_node === $outNodes[$_keys[$j]] )
-                    {
+            for ( $j = 0; $j < $numOutNodes; $j++ ) {
+                foreach ( $nodes as $outNodeId => $_node ) {
+                    if ( $_node === $outNodes[$_keys[$j]] ) {
                         break;
                     }
                 }
@@ -317,10 +284,8 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
                 $xmlOutNode->setAttribute( 'id', $outNodeId );
 
                 if ( is_subclass_of( $nodeClass, 'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalBranch' ) &&
-                      $condition = $node->getCondition( $outNodes[$_keys[$j]] ) )
-                {
-                    if ( !$node->isElse( $outNodes[$_keys[$j]] ) )
-                    {
+                      $condition = $node->getCondition( $outNodes[$_keys[$j]] ) ) {
+                    if ( !$node->isElse( $outNodes[$_keys[$j]] ) ) {
                         $xmlCondition = self::conditionToXml(
                           $condition,
                           $document
@@ -328,22 +293,17 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
 
                         $xmlCondition->appendChild( $xmlOutNode );
                         $xmlNode->appendChild( $xmlCondition );
-                    }
-                    else
-                    {
+                    } else {
                         $xmlElse = $xmlCondition->appendChild( $document->createElement( 'else' ) );
                         $xmlElse->appendChild( $xmlOutNode );
                     }
-                }
-                else
-                {
+                } else {
                     $xmlNode->appendChild( $xmlOutNode );
                 }
             }
         }
 
-        foreach ( $workflow->getVariableHandlers() as $variable => $class )
-        {
+        foreach ( $workflow->getVariableHandlers() as $variable => $class ) {
             $variableHandler = $root->appendChild(
               $document->createElement( 'variableHandler' )
             );
@@ -371,8 +331,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
 
         $xmlCondition->setAttribute( 'type', $conditionClass );
 
-        switch ( $conditionClass )
-        {
+        switch ( $conditionClass ) {
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable': {
                 $xmlCondition->setAttribute( 'name', $condition->getVariableName() );
 
@@ -397,8 +356,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionAnd':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionOr':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionXor': {
-                foreach ( $condition->getConditions() as $childCondition )
-                {
+                foreach ( $condition->getConditions() as $childCondition ) {
                     $xmlCondition->appendChild(
                       self::conditionToXml( $childCondition, $document )
                     );
@@ -445,8 +403,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         //$class = 'WorkflowConditionInterface' . $element->getAttribute( 'type' );
         $class = $element->getAttribute( 'type' );
 
-        switch ( $class )
-        {
+        switch ( $class ) {
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable': {
                 return new $class(
                   $element->getAttribute( 'name' ),
@@ -469,10 +426,8 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionXor': {
                 $conditions = array();
 
-                foreach ( self::getChildNodes( $element ) as $childNode )
-                {
-                    if ( $childNode->tagName == 'condition' )
-                    {
+                foreach ( self::getChildNodes( $element ) as $childNode ) {
+                    if ( $childNode->tagName == 'condition' ) {
                         $conditions[] = self::xmlToCondition( $childNode );
                     }
                 }
@@ -517,12 +472,10 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
      */
     public static function variableToXml( $variable, \DOMDocument $document )
     {
-        if ( is_array( $variable ) )
-        {
+        if ( is_array( $variable ) ) {
             $xmlResult = $document->createElement( 'array' );
 
-            foreach ( $variable as $key => $value )
-            {
+            foreach ( $variable as $key => $value ) {
                 $element = $document->createElement( 'element' );
                 $element->setAttribute( 'key', $key );
                 $element->appendChild( self::variableToXml( $value, $document ) );
@@ -531,23 +484,19 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
             }
         }
 
-        if ( is_object( $variable ) )
-        {
+        if ( is_object( $variable ) ) {
             $xmlResult = $document->createElement( 'object' );
             $xmlResult->setAttribute( 'class', get_class( $variable ) );
         }
 
-        if ( is_null( $variable ) )
-        {
+        if ( is_null( $variable ) ) {
             $xmlResult = $document->createElement( 'null' );
         }
 
-        if ( is_scalar( $variable ) )
-        {
+        if ( is_scalar( $variable ) ) {
             $type = gettype( $variable );
 
-            if ( is_bool( $variable ) )
-            {
+            if ( is_bool( $variable ) ) {
                 $variable = $variable === true ? 'true' : 'false';
             }
 
@@ -567,21 +516,16 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
     {
         $variable = null;
 
-        switch ( $element->tagName )
-        {
+        switch ( $element->tagName ) {
             case 'array': {
                 $variable = array();
 
-                foreach ( $element->getElementsByTagName( 'element' ) as $element )
-                {
+                foreach ( $element->getElementsByTagName( 'element' ) as $element ) {
                     $value = self::xmlToVariable( self::getChildNode( $element ) );
 
-                    if ( $element->hasAttribute( 'key' ) )
-                    {
+                    if ( $element->hasAttribute( 'key' ) ) {
                         $variable[ (string)$element->getAttribute( 'key' ) ] = $value;
-                    }
-                    else
-                    {
+                    } else {
                         $variable[] = $value;
                     }
                 }
@@ -591,27 +535,22 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
             case 'object': {
                 $className = $element->getAttribute( 'class' );
 
-                if ( $element->hasChildNodes() )
-                {
+                if ( $element->hasChildNodes() ) {
                     $arguments = self::getChildNodes(
                       self::getChildNode( $element )
                     );
 
                     $constructorArgs = array();
 
-                    foreach ( $arguments as $argument )
-                    {
-                        if ( $argument instanceof \DOMElement )
-                        {
+                    foreach ( $arguments as $argument ) {
+                        if ( $argument instanceof \DOMElement ) {
                             $constructorArgs[] = self::xmlToVariable( $argument );
                         }
                     }
 
                     $class    = new \ReflectionClass( $className );
                     $variable = $class->newInstanceArgs( $constructorArgs );
-                }
-                else
-                {
+                } else {
                     $variable = new $className;
                 }
             }
@@ -646,10 +585,8 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
     {
         $childNodes = array();
 
-        foreach ( $node->childNodes as $childNode )
-        {
-            if ( !$childNode instanceof \DOMText )
-            {
+        foreach ( $node->childNodes as $childNode ) {
+            if ( !$childNode instanceof \DOMText ) {
                 $childNodes[] = $childNode;
             }
         }
@@ -678,28 +615,23 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
      */
     public static function variableToString( $variable )
     {
-        if ( $variable === null )
-        {
+        if ( $variable === null ) {
             return '<null>';
         }
 
-        if ( $variable === true )
-        {
+        if ( $variable === true ) {
             return '<true>';
         }
 
-        if ( $variable === false )
-        {
+        if ( $variable === false ) {
             return '<false>';
         }
 
-        if ( is_array( $variable ) )
-        {
+        if ( is_array( $variable ) ) {
             return '<array>';
         }
 
-        if ( is_object( $variable ) )
-        {
+        if ( is_object( $variable ) ) {
             return '<' . get_class( $variable ) . '>';
         }
 
@@ -717,8 +649,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
         $workflowName = $this->getFilesystemWorkflowName( $workflowName );
         $files = glob( $this->directory . $workflowName . '_*.xml' );
 
-        if ( !empty( $files ) )
-        {
+        if ( !empty( $files ) ) {
             return (int)str_replace(
               array(
                 $this->directory . $workflowName . '_',
@@ -727,9 +658,7 @@ class WorkflowDefinitionStorageInterfaceXml extends BaseWorkflowDefinitionStorag
               '',
               $files[count( $files ) - 1]
             );
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
