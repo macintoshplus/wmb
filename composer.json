@@ -8,7 +8,6 @@
             "email": "jbnahan@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
         "php": ">=5.4",
         "symfony/symfony": ">2.3",
