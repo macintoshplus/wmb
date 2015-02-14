@@ -41,14 +41,13 @@ class WorkflowVisitorVisualizationOptions extends BaseOptions
      *         If the the desired property is not found.
      * @ignore
      */
-    public function __set( $propertyName, $propertyValue )
+    public function __set($propertyName, $propertyValue)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'colorHighlighted':
             case 'colorNormal':
-                if ( !is_string( $propertyValue ) )
-                {
+                if (!is_string($propertyValue)) {
                     throw new BaseValueException(
                         $propertyName,
                         $propertyValue,
@@ -58,8 +57,7 @@ class WorkflowVisitorVisualizationOptions extends BaseOptions
                 break;
             case 'highlightedNodes':
             case 'workflowVariables':
-                if ( !is_array( $propertyValue ) )
-                {
+                if (!is_array($propertyValue)) {
                     throw new BaseValueException(
                         $propertyName,
                         $propertyValue,
@@ -68,9 +66,8 @@ class WorkflowVisitorVisualizationOptions extends BaseOptions
                 }
                 break;
             default:
-                throw new BasePropertyNotFoundException( $propertyName );
+                throw new BasePropertyNotFoundException($propertyName);
         }
         $this->properties[$propertyName] = $propertyValue;
     }
 }
-

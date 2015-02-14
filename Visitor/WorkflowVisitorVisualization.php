@@ -16,7 +16,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalBranch;
  * <code>
  * <?php
  * $visitor = new WorkflowVisitorVisualization;
- * $workflow->accept( $visitor );
+ * $workflow->accept($visitor);
  * print $visitor;
  * ?>
  * </code>
@@ -36,7 +36,7 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
     /**
      * Holds all the edges of the graph.
      *
-     * @var array( id => array( WorkflowNode ) )
+     * @var array(id => array(WorkflowNode))
      */
     protected $edges = array();
 
@@ -71,13 +71,12 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
      * @param string $propertyName
      * @ignore
      */
-    public function __get( $propertyName )
+    public function __get($propertyName)
     {
-        if ( $this->__isset( $propertyName ) )
-        {
+        if ($this->__isset($propertyName)) {
             return $this->properties[$propertyName];
         }
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -88,13 +87,11 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
      * @param string $propertyValue
      * @ignore
      */
-    public function __set( $propertyName, $propertyValue )
+    public function __set($propertyName, $propertyValue)
     {
-        switch ( $propertyName )
-        {
+        switch ($propertyName) {
             case 'options':
-                if ( !( $propertyValue instanceof WorkflowVisitorVisualizationOptions ) )
-                {
+                if (!($propertyValue instanceof WorkflowVisitorVisualizationOptions)) {
                     throw new BaseValueException(
                         $propertyName,
                         $propertyValue,
@@ -103,7 +100,7 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
                 }
                 break;
             default:
-                throw new BasePropertyNotFoundException( $propertyName );
+                throw new BasePropertyNotFoundException($propertyName);
         }
         $this->properties[$propertyName] = $propertyValue;
     }
@@ -115,9 +112,9 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
      * @return bool
      * @ignore
      */
-    public function __isset( $propertyName )
+    public function __isset($propertyName)
     {
-        return array_key_exists( $propertyName, $this->properties );
+        return array_key_exists($propertyName, $this->properties);
     }
 
     /**
@@ -125,10 +122,9 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
      *
      * @param WorkflowVisitableInterface $visitable
      */
-    protected function doVisit( WorkflowVisitableInterface $visitable )
+    protected function doVisit(WorkflowVisitableInterface $visitable)
     {
-        if ( $visitable instanceof Workflow )
-        {
+        if ($visitable instanceof Workflow) {
             $this->workflowName = $visitable->name;
 
             // The following line of code is not a no-op. It triggers the
@@ -137,21 +133,16 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
             $visitable->nodes;
         }
 
-        if ( $visitable instanceof WorkflowNode )
-        {
+        if ($visitable instanceof WorkflowNode) {
             $id = $visitable->getId();
 
-            if ( in_array( $id, $this->options['highlightedNodes'] ) )
-            {
+            if (in_array($id, $this->options['highlightedNodes'])) {
                 $color = $this->options['colorHighlighted'];
-            }
-            else
-            {
+            } else {
                 $color = $this->options['colorNormal'];
             }
 
-            if ( !isset( $this->nodes[$id] ) )
-            {
+            if (!isset($this->nodes[$id])) {
                 $this->nodes[$id] = array(
                   'label' => (string)$visitable,
                   'color' => $color
@@ -160,21 +151,18 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
 
             $outNodes = array();
 
-            foreach ( $visitable->getOutNodes() as $outNode )
-            {
+            foreach ($visitable->getOutNodes() as $outNode) {
                 $label = '';
 
-                if ( $visitable instanceof WorkflowNodeConditionalBranch )
-                {
-                    $condition = $visitable->getCondition( $outNode );
+                if ($visitable instanceof WorkflowNodeConditionalBranch) {
+                    $condition = $visitable->getCondition($outNode);
 
-                    if ( $condition !== false )
-                    {
+                    if ($condition !== false) {
                         $label = ' [label="' . $condition . '"]';
                     }
                 }
 
-                $outNodes[] = array( $outNode->getId(), $label );
+                $outNodes[] = array($outNode->getId(), $label);
             }
 
             $this->edges[$id] = $outNodes;
@@ -191,43 +179,36 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
     {
         $dot = 'digraph ' . $this->workflowName . " {\n";
 
-        foreach ( $this->nodes as $key => $data )
-        {
+        foreach ($this->nodes as $key => $data) {
             $dot .= sprintf(
-              "node%s [label=\"%s\", color=\"%s\"]\n",
-              $key,
-              $data['label'],
-              $data['color']
+                "node%s [label=\"%s\", color=\"%s\"]\n",
+                $key,
+                $data['label'],
+                $data['color']
             );
         }
 
         $dot .= "\n";
 
-        foreach ( $this->edges as $fromNode => $toNodes )
-        {
-            foreach ( $toNodes as $toNode )
-            {
+        foreach ($this->edges as $fromNode => $toNodes) {
+            foreach ($toNodes as $toNode) {
                 $dot .= sprintf(
-                  "node%s -> node%s%s\n",
-
-                  $fromNode,
-                  $toNode[0],
-                  $toNode[1]
+                    "node%s -> node%s%s\n",
+                    $fromNode,
+                    $toNode[0],
+                    $toNode[1]
                 );
             }
         }
 
-        if ( !empty( $this->options['workflowVariables'] ) )
-        {
+        if (!empty($this->options['workflowVariables'])) {
             $dot .= 'variables [shape=none, label=<<table>';
 
-            foreach ( $this->options['workflowVariables'] as $name => $value )
-            {
+            foreach ($this->options['workflowVariables'] as $name => $value) {
                 $dot .= sprintf(
-                  '<tr><td>%s</td><td>%s</td></tr>',
-
-                  $name,
-                  htmlspecialchars( WorkflowUtil::variableToString( $value ) )
+                    '<tr><td>%s</td><td>%s</td></tr>',
+                    $name,
+                    htmlspecialchars(WorkflowUtil::variableToString($value))
                 );
             }
 

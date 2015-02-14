@@ -66,7 +66,7 @@ class WorkflowVisitorVerification extends WorkflowVisitor
 
                     if ($this->numStartNodes > 1) {
                         throw new WorkflowInvalidWorkflowException(
-                          'A workflow may have only one start node.'
+                            'A workflow may have only one start node.'
                         );
                     }
                 }
@@ -76,7 +76,7 @@ class WorkflowVisitorVerification extends WorkflowVisitor
 
                     if ($this->numFinallyNodes > 1) {
                         throw new WorkflowInvalidWorkflowException(
-                          'A workflow may have only one finally node.'
+                            'A workflow may have only one finally node.'
                         );
                     }
                 }

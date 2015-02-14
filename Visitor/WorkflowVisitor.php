@@ -35,7 +35,7 @@ class WorkflowVisitor implements Countable
      */
     public function count()
     {
-        return count( $this->visited );
+        return count($this->visited);
     }
 
     /**
@@ -46,19 +46,17 @@ class WorkflowVisitor implements Countable
      * @param WorkflowVisitableInterface $visitable
      * @return bool
      */
-    public function visit( WorkflowVisitableInterface $visitable )
+    public function visit(WorkflowVisitableInterface $visitable)
     {
-        if ( $visitable instanceof WorkflowNode )
-        {
-            if ( $this->visited->contains( $visitable ) )
-            {
+        if ($visitable instanceof WorkflowNode) {
+            if ($this->visited->contains($visitable)) {
                 return false;
             }
 
-            $this->visited->attach( $visitable );
+            $this->visited->attach($visitable);
         }
 
-        $this->doVisit( $visitable );
+        $this->doVisit($visitable);
 
         return true;
     }
@@ -68,7 +66,7 @@ class WorkflowVisitor implements Countable
      *
      * @param WorkflowVisitableInterface $visitable
      */
-    protected function doVisit( WorkflowVisitableInterface $visitable )
+    protected function doVisit(WorkflowVisitableInterface $visitable)
     {
     }
 }
