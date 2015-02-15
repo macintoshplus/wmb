@@ -27,17 +27,15 @@ abstract class WorkflowConditionBooleanSet implements WorkflowConditionInterface
     /**
      * Constructs a new boolean set with the conditions $conditions.
      *
-     * The format of $conditions must be array( WorkflowConditionInterface )
+     * The format of $conditions must be array(WorkflowConditionInterface)
      *
      * @param array $conditions
      * @throws WorkflowDefinitionStorageException
      */
-    public function __construct( array $conditions )
+    public function __construct(array $conditions)
     {
-        foreach ( $conditions as $condition )
-        {
-            if ( !$condition instanceof WorkflowConditionInterface )
-            {
+        foreach ($conditions as $condition) {
+            if (!$condition instanceof WorkflowConditionInterface) {
                 throw new WorkflowDefinitionStorageException(
                   'Array does not contain (only) WorkflowConditionInterface objects.'
                 );
@@ -68,10 +66,8 @@ abstract class WorkflowConditionBooleanSet implements WorkflowConditionInterface
     {
         $string = '( ';
 
-        foreach ( $this->conditions as $condition )
-        {
-            if ( $string != '( ' )
-            {
+        foreach ($this->conditions as $condition) {
+            if ($string != '( ') {
                 $string .= ' ' . $this->concatenation . ' ';
             }
 
@@ -81,4 +77,3 @@ abstract class WorkflowConditionBooleanSet implements WorkflowConditionInterface
         return $string . ' )';
     }
 }
-
