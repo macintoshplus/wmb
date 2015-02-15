@@ -14,7 +14,7 @@ interface WorkflowConditionInterface
      * @param  mixed $value
      * @return boolean true when the condition holds, false otherwise.
      */
-    public function evaluate( $value );
+    public function evaluate($value);
 
     /**
      * Returns a textual representation of this condition.
@@ -23,4 +23,3 @@ interface WorkflowConditionInterface
      */
     public function __toString();
 }
-
