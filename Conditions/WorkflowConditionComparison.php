@@ -29,7 +29,7 @@ abstract class WorkflowConditionComparison implements WorkflowConditionInterface
      *
      * @param  mixed  $value
      */
-    public function __construct( $value = null )
+    public function __construct($value = null)
     {
         $this->value = $value;
     }
@@ -51,7 +51,7 @@ abstract class WorkflowConditionComparison implements WorkflowConditionInterface
      * @param mixed $value
      * @ignore
      */
-    public function setValue( $value )
+    public function setValue($value)
     {
         $this->value = $value;
     }
@@ -78,4 +78,3 @@ abstract class WorkflowConditionComparison implements WorkflowConditionInterface
         return $this->operator . ' ' . $this->value;
     }
 }
-
