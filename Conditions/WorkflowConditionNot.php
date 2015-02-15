@@ -10,7 +10,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Conditions;
  *
  * <code>
  * <?php
- * $notNondition = new WorkflowConditionNot( $condition ) ;
+ * $notNondition = new WorkflowConditionNot($condition) ;
  * ?>
  * </code>
  *
@@ -29,7 +29,7 @@ class WorkflowConditionNot implements WorkflowConditionInterface
      *
      * @param  WorkflowConditionInterface $condition
      */
-    public function __construct( WorkflowConditionInterface $condition )
+    public function __construct(WorkflowConditionInterface $condition)
     {
         $this->condition = $condition;
     }
@@ -43,9 +43,9 @@ class WorkflowConditionNot implements WorkflowConditionInterface
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return !$this->condition->evaluate( $value );
+        return !$this->condition->evaluate($value);
     }
 
     /**
@@ -70,4 +70,3 @@ class WorkflowConditionNot implements WorkflowConditionInterface
         return '! ' . $this->condition;
     }
 }
-
