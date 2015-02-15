@@ -12,7 +12,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Conditions;
  * <?php
  * $condition = new WorkflowConditionVariable(
  *   'variable name',
- *   new WorkflowConditionInArray( array( ... ) )
+ *   new WorkflowConditionInArray(array(...))
  * );
  * ?>
  * </code>
@@ -34,9 +34,9 @@ class WorkflowConditionInArray extends WorkflowConditionComparison
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return in_array( $value, $this->value );
+        return in_array($value, $this->value);
     }
 
     /**
@@ -48,14 +48,12 @@ class WorkflowConditionInArray extends WorkflowConditionComparison
     public function __toString()
     {
         $array = $this->value;
-        $count = count( $array );
+        $count = count($array);
 
-        for ( $i = 0; $i < $count; $i++ )
-        {
-            $array[$i] = var_export( $array[$i], true );
+        for ($i = 0; $i < $count; $i++) {
+            $array[$i] = var_export($array[$i], true);
         }
 
-        return $this->operator . '(' . join( ', ', $array ) . ')';
+        return $this->operator . '(' . join(', ', $array) . ')';
     }
 }
-
