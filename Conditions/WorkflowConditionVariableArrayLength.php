@@ -29,7 +29,7 @@ class WorkflowConditionVariableArrayLength implements WorkflowConditionInterface
      * @param  string $variableName
      * @param  WorkflowConditionInterface $condition
      */
-    public function __construct( $variableName, WorkflowConditionInterface $condition )
+    public function __construct($variableName, WorkflowConditionInterface $condition)
     {
         $this->variableName = $variableName;
         $this->condition    = $condition;
@@ -42,17 +42,14 @@ class WorkflowConditionVariableArrayLength implements WorkflowConditionInterface
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        if ( is_array( $value ) && isset( $value[$this->variableName] ) )
-        {
+        if (is_array($value ) && isset( $value[$this->variableName])) {
             if (!is_array($value[$this->variableName])) {
                 return false;
             }
-            return $this->condition->evaluate( count($value[$this->variableName]) );
-        }
-        else
-        {
+            return $this->condition->evaluate(count($value[$this->variableName]));
+        } else {
             return false;
         }
     }
@@ -90,4 +87,3 @@ class WorkflowConditionVariableArrayLength implements WorkflowConditionInterface
         return $this->condition;
     }
 }
-

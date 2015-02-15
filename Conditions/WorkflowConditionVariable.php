@@ -28,7 +28,7 @@ class WorkflowConditionVariable implements WorkflowConditionInterface
      * @param  string $variableName
      * @param  WorkflowConditionInterface $condition
      */
-    public function __construct( $variableName, WorkflowConditionInterface $condition )
+    public function __construct($variableName, WorkflowConditionInterface $condition)
     {
         $this->variableName = $variableName;
         $this->condition    = $condition;
@@ -41,14 +41,11 @@ class WorkflowConditionVariable implements WorkflowConditionInterface
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        if ( is_array( $value ) && isset( $value[$this->variableName] ) )
-        {
-            return $this->condition->evaluate( $value[$this->variableName] );
-        }
-        else
-        {
+        if (is_array($value ) && isset( $value[$this->variableName])) {
+            return $this->condition->evaluate($value[$this->variableName]);
+        } else {
             return false;
         }
     }
@@ -86,4 +83,3 @@ class WorkflowConditionVariable implements WorkflowConditionInterface
         return $this->condition;
     }
 }
-

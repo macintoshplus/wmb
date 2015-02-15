@@ -37,10 +37,9 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
      * @param  WorkflowConditionInterface $condition
      * @throws BaseValueException
      */
-    public function __construct( $variableNameA, $variableNameB, WorkflowConditionInterface $condition )
+    public function __construct($variableNameA, $variableNameB, WorkflowConditionInterface $condition)
     {
-        if ( !$condition instanceof WorkflowConditionComparison )
-        {
+        if (!$condition instanceof WorkflowConditionComparison) {
             throw new BaseValueException(
               'condition',
               $condition,
@@ -60,17 +59,15 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        if ( is_array( $value ) &&
-             isset( $value[$this->variableNameA] ) &&
-             isset( $value[$this->variableNameB] ) )
+        if (is_array( $value) &&
+             isset($value[$this->variableNameA]) &&
+             isset($value[$this->variableNameB] ))
         {
-            $this->condition->setValue( $value[$this->variableNameB] );
-            return $this->condition->evaluate( $value[$this->variableNameA] );
-        }
-        else
-        {
+            $this->condition->setValue($value[$this->variableNameB]);
+            return $this->condition->evaluate($value[$this->variableNameA]);
+        } else {
             return false;
         }
     }
@@ -94,7 +91,7 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
      */
     public function getVariableNames()
     {
-        return array( $this->variableNameA, $this->variableNameB );
+        return array($this->variableNameA, $this->variableNameB);
     }
 
     /**
@@ -114,4 +111,3 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
         );
     }
 }
-
