@@ -10,7 +10,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Conditions;
  *
  * <code>
  * <?php
- * $or = new WorkflowConditionOr( array ( $condition , ... ) );
+ * $or = new WorkflowConditionOr(array ($condition , ...));
  * ?>
  * </code>
  *
@@ -31,12 +31,10 @@ class WorkflowConditionOr extends WorkflowConditionBooleanSet
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        foreach ( $this->conditions as $condition )
-        {
-            if ( $condition->evaluate( $value ) )
-            {
+        foreach ($this->conditions as $condition) {
+            if ($condition->evaluate($value)) {
                 return true;
             }
         }
@@ -44,4 +42,3 @@ class WorkflowConditionOr extends WorkflowConditionBooleanSet
         return false;
     }
 }
-
