@@ -27,9 +27,9 @@ class WorkflowConditionIsString extends WorkflowConditionType
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return is_string( $value );
+        return is_string($value);
     }
 
     /**
@@ -43,4 +43,3 @@ class WorkflowConditionIsString extends WorkflowConditionType
         return 'is string';
     }
 }
-

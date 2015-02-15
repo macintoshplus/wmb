@@ -27,7 +27,7 @@ class WorkflowConditionIsAnything extends WorkflowConditionType
      * @return boolean true
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
         return true;
     }
@@ -43,4 +43,3 @@ class WorkflowConditionIsAnything extends WorkflowConditionType
         return 'is anything';
     }
 }
-

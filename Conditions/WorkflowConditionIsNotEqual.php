@@ -12,7 +12,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Conditions;
  * <?php
  * $condition = new WorkflowConditionVariable(
  *   'variable name',
- *   new WorkflowConditionNotEqual( $comparisonValue )
+ *   new WorkflowConditionNotEqual($comparisonValue)
  * );
  * ?>
  * </code>
@@ -34,9 +34,8 @@ class WorkflowConditionIsNotEqual extends WorkflowConditionComparison
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
         return $value != $this->value;
     }
 }
-

@@ -27,9 +27,9 @@ class WorkflowConditionIsFloat extends WorkflowConditionType
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return is_float( $value );
+        return is_float($value);
     }
 
     /**
@@ -43,4 +43,3 @@ class WorkflowConditionIsFloat extends WorkflowConditionType
         return 'is float';
     }
 }
-

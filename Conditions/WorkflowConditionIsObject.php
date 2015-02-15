@@ -27,9 +27,9 @@ class WorkflowConditionIsObject extends WorkflowConditionType
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return is_object( $value );
+        return is_object($value);
     }
 
     /**
@@ -43,4 +43,3 @@ class WorkflowConditionIsObject extends WorkflowConditionType
         return 'is object';
     }
 }
-

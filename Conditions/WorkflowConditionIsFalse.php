@@ -27,7 +27,7 @@ class WorkflowConditionIsFalse implements WorkflowConditionInterface
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
         return $value === false;
     }
@@ -43,4 +43,3 @@ class WorkflowConditionIsFalse implements WorkflowConditionInterface
         return 'is false';
     }
 }
-

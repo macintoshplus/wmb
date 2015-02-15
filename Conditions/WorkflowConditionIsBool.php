@@ -27,9 +27,9 @@ class WorkflowConditionIsBool extends WorkflowConditionType
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return is_bool( $value );
+        return is_bool($value);
     }
 
     /**
@@ -43,4 +43,3 @@ class WorkflowConditionIsBool extends WorkflowConditionType
         return 'is bool';
     }
 }
-

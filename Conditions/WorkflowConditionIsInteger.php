@@ -27,9 +27,9 @@ class WorkflowConditionIsInteger extends WorkflowConditionType
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return is_int( $value );
+        return is_int($value);
     }
 
     /**
@@ -43,4 +43,3 @@ class WorkflowConditionIsInteger extends WorkflowConditionType
         return 'is integer';
     }
 }
-

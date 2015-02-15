@@ -11,7 +11,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Conditions;
  * <code>
  * <?php
  * $condition = new WorkflowConditionVariable ( 'variable name' ,
- *   new WorkflowConditionIsEqualOrLessThan ( $comparisonValue )
+ *   new WorkflowConditionIsEqualOrLessThan ($comparisonValue)
  * );
  * ?>
  * </code>
@@ -33,9 +33,8 @@ class WorkflowConditionIsEqualOrLessThan extends WorkflowConditionComparison
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
         return $value <= $this->value;
     }
 }
-

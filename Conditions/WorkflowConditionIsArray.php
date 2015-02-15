@@ -26,9 +26,9 @@ class WorkflowConditionIsArray extends WorkflowConditionType
      * @return boolean true when the condition holds, false otherwise.
      * @ignore
      */
-    public function evaluate( $value )
+    public function evaluate($value)
     {
-        return is_array( $value );
+        return is_array($value);
     }
 
     /**
@@ -42,4 +42,3 @@ class WorkflowConditionIsArray extends WorkflowConditionType
         return 'is array';
     }
 }
-
