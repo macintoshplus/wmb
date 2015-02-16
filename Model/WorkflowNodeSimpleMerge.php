@@ -21,32 +21,32 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  *
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  *
  * // wait for input into the workflow variable value.
- * $input = new WorkflowNodeInput( array( 'value' => new WorkflowConditionIsInt ) );
- * $workflow->startNode->addOutNode( $input );
+ * $input = new WorkflowNodeInput(array('value' => new WorkflowConditionIsInt));
+ * $workflow->startNode->addOutNode($input);
  *
  * // create the exclusive choice branching node
  * $choice = new WorkflowNodeExclusiveChoice;
- * $intput->addOutNode( $choice );
+ * $intput->addOutNode($choice);
  *
  * $branch1 = ....; // create nodes for the first branch of execution here..
  * $branch2 = ....; // create nodes for the second branch of execution here..
  *
  * // add the outnodes and set the conditions on the exclusive choice
  * $choice->addConditionalOutNode( new WorkflowConditionVariable( 'value',
- *                                                                  new WorkflowConditionGreatherThan( 10 ) ),
+ *                                                                  new WorkflowConditionGreatherThan(10 )),
  *                                $branch1 );
  * $choice->addConditionalOutNode( new WorkflowConditionVariable( 'value',
- *                                                                  new WorkflowConditionLessThan( 11 ) ),
+ *                                                                  new WorkflowConditionLessThan(11 )),
  *                                $branch2 );
  *
  * // Merge the two branches together and continue execution.
  * $merge = new WorkflowNodeSimpleMerge();
- * $merge->addInNode( $branch1 );
- * $merge->addInNode( $branch2 );
- * $merge->addOutNode( $workflow->endNode );
+ * $merge->addInNode($branch1);
+ * $merge->addInNode($branch2);
+ * $merge->addOutNode($workflow->endNode);
  * ?>
  * </code>
  *
@@ -61,15 +61,14 @@ class WorkflowNodeSimpleMerge extends WorkflowNodeMerge
      * @param int $threadId
      * @ignore
      */
-    public function activate( WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0 )
+    public function activate(WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0)
     {
-        $parentThreadId = $execution->getParentThreadId( $threadId );
+        $parentThreadId = $execution->getParentThreadId($threadId);
 
-        if ( empty( $this->state['threads'] ) )
-        {
+        if (empty($this->state['threads'])) {
             $this->state['threads'][] = $threadId;
 
-            parent::activate( $execution, $activatedFrom, $parentThreadId );
+            parent::activate($execution, $activatedFrom, $parentThreadId);
         }
     }
 
@@ -81,9 +80,8 @@ class WorkflowNodeSimpleMerge extends WorkflowNodeMerge
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
-        return $this->doMerge( $execution );
+        return $this->doMerge($execution);
     }
 }
-

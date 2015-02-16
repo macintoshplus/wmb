@@ -16,8 +16,8 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  * Example:
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
- * $workflow->startNode->addOutNode( ....some other node here .. );
+ * $workflow = new Workflow('Test');
+ * $workflow->startNode->addOutNode(....some other node here ..);
  * ?>
  * </code>
  *
@@ -48,7 +48,7 @@ class WorkflowNodeStart extends WorkflowNode
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
         $this->outNodes[0]->activate(
           $execution,
@@ -56,7 +56,6 @@ class WorkflowNodeStart extends WorkflowNode
           $execution->startThread()
         );
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
     }
 }
-

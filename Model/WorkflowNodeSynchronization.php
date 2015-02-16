@@ -29,10 +29,10 @@ class WorkflowNodeSynchronization extends WorkflowNodeMerge
      * @param int $threadId
      * @ignore
      */
-    public function activate( WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0 )
+    public function activate(WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0)
     {
-        $this->prepareActivate( $execution, $threadId );
-        parent::activate( $execution, $activatedFrom, $execution->getParentThreadId( $threadId ) );
+        $this->prepareActivate($execution, $threadId);
+        parent::activate($execution, $activatedFrom, $execution->getParentThreadId($threadId));
     }
 
     /**
@@ -43,16 +43,12 @@ class WorkflowNodeSynchronization extends WorkflowNodeMerge
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
-        if ( count( $this->state['threads'] ) == $this->state['siblings'] )
-        {
-            return $this->doMerge( $execution );
-        }
-        else
-        {
+        if (count($this->state['threads']) == $this->state['siblings']) {
+            return $this->doMerge($execution);
+        } else {
             return false;
         }
     }
 }
-
