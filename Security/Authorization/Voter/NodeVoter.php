@@ -18,14 +18,9 @@ class NodeVoter implements VoterInterface
         ));
     }
 
-    public function supportsClass($class)
+    public function supportsClass($object)
     {
-        $supportedClass = array(
-            'JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoter',
-            'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNode'
-        );
-
-        return in_array($class, $supportedClass, true);
+        return ($object instanceof JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface);
     }
 
     /**
@@ -34,7 +29,7 @@ class NodeVoter implements VoterInterface
     public function vote(TokenInterface $token, $entity, array $attributes)
     {
         // check if class of this object is supported by this voter
-        if (!$this->supportsClass(get_class($entity))) {
+        if (!$this->supportsClass($entity)) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
