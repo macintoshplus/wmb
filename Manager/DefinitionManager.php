@@ -30,7 +30,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeComputeExecutionName;
  * definitions to and from a database.
  *
  */
-class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
+class DefinitionManager extends BaseWorkflowDefinitionStorage
 {
     /**
      * EntityManager instance to be used.
