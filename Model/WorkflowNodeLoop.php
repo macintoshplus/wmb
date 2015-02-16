@@ -15,21 +15,21 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  *
  * <code>
  * <?php
- * $workflow = new Workflow( 'IncrementingLoop' );
+ * $workflow = new Workflow('IncrementingLoop');
  *
- * $set      = new WorkflowNodeVariableSet( array( 'i' => 1 ) );
- * $step     = new WorkflowNodeVariableIncrement( 'i' );
- * $break    = new WorkflowConditionVariable( 'i', new WorkflowConditionIsEqual( 10 ) );
- * $continue = new WorkflowConditionVariable( 'i', new WorkflowConditionIsLessThan( 10 ) );
+ * $set      = new WorkflowNodeVariableSet(array('i' => 1));
+ * $step     = new WorkflowNodeVariableIncrement('i');
+ * $break    = new WorkflowConditionVariable('i', new WorkflowConditionIsEqual(10));
+ * $continue = new WorkflowConditionVariable('i', new WorkflowConditionIsLessThan(10));
  *
- * $workflow->startNode->addOutNode( $set );
+ * $workflow->startNode->addOutNode($set);
  *
  * $loop = new WorkflowNodeLoop;
- * $loop->addInNode( $set );
- * $loop->addInNode( $step );
+ * $loop->addInNode($set);
+ * $loop->addInNode($step);
  *
- * $loop->addConditionalOutNode( $continue, $step );
- * $loop->addConditionalOutNode( $break, $workflow->endNode );
+ * $loop->addConditionalOutNode($continue, $step);
+ * $loop->addConditionalOutNode($break, $workflow->endNode);
  * ?>
  * </code>
  *
@@ -75,4 +75,3 @@ class WorkflowNodeLoop extends WorkflowNodeConditionalBranch
      */
     protected $startNewThreadForBranch = false;
 }
-
