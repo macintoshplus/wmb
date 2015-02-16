@@ -38,20 +38,15 @@ abstract class WorkflowNodeMerge extends WorkflowNode
      * @param int $threadId
      * @throws WorkflowExecutionException
      */
-    protected function prepareActivate( WorkflowExecution $execution, $threadId = 0 )
+    protected function prepareActivate(WorkflowExecution $execution, $threadId = 0)
     {
-        $parentThreadId = $execution->getParentThreadId( $threadId );
+        $parentThreadId = $execution->getParentThreadId($threadId);
 
-        if ( $this->state['siblings'] == -1 )
-        {
-            $this->state['siblings'] = $execution->getNumSiblingThreads( $threadId );
-        }
-        else
-        {
-            foreach ( $this->state['threads'] as $oldThreadId )
-            {
-                if ( $parentThreadId != $execution->getParentThreadId( $oldThreadId ) )
-                {
+        if ($this->state['siblings'] == -1) {
+            $this->state['siblings'] = $execution->getNumSiblingThreads($threadId);
+        } else {
+            foreach ($this->state['threads'] as $oldThreadId) {
+                if ($parentThreadId != $execution->getParentThreadId($oldThreadId)) {
                     throw new WorkflowExecutionException(
                       'Cannot synchronize threads that were started by different branches.'
                     );
@@ -70,17 +65,16 @@ abstract class WorkflowNodeMerge extends WorkflowNode
      * @return boolean true when the node finished execution,
      *                 and false otherwise
      */
-    protected function doMerge( WorkflowExecution $execution )
+    protected function doMerge(WorkflowExecution $execution)
     {
-        foreach ( $this->state['threads'] as $threadId )
-        {
-            $execution->endThread( $threadId );
+        foreach ($this->state['threads'] as $threadId) {
+            $execution->endThread($threadId);
         }
 
-        $this->activateNode( $execution, $this->outNodes[0] );
+        $this->activateNode($execution, $this->outNodes[0]);
         $this->initState();
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
     }
 
     /**
@@ -92,7 +86,6 @@ abstract class WorkflowNodeMerge extends WorkflowNode
     {
         parent::initState();
 
-        $this->state = array( 'threads' => array(), 'siblings' => -1 );
+        $this->state = array('threads' => array(), 'siblings' => -1);
     }
 }
-
