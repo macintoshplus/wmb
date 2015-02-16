@@ -40,24 +40,19 @@ abstract class WorkflowNodeBranch extends WorkflowNode
      * @return boolean true when the node finished execution,
      *                 and false otherwise
      */
-    protected function activateOutgoingNodes( WorkflowExecution $execution, array $nodes )
+    protected function activateOutgoingNodes(WorkflowExecution $execution, array $nodes)
     {
         $threadId           = $this->getThreadId();
-        $numNodesToActivate = count( $nodes );
+        $numNodesToActivate = count($nodes);
 
-        foreach ( $nodes as $node )
-        {
-            if ( $this->startNewThreadForBranch )
-            {
-                $node->activate( $execution, $this, $execution->startThread( $threadId, $numNodesToActivate ) );
-            }
-            else
-            {
-                $node->activate( $execution, $this, $threadId );
+        foreach ($nodes as $node) {
+            if ($this->startNewThreadForBranch) {
+                $node->activate($execution, $this, $execution->startThread($threadId, $numNodesToActivate));
+            } else {
+                $node->activate($execution, $this, $threadId);
             }
         }
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
     }
 }
-
