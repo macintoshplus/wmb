@@ -21,17 +21,17 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  *
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  *
  * $split = new WorkflowNodeParallelSplit();
- * $workflow->startNode->addOutNode( $split );
+ * $workflow->startNode->addOutNode($split);
  * $nodeExec1 = ....; // create nodes for the first thread of execution here..
  * $nodeExec2 = ....; // create nodes for the second thread of execution here..
  *
  * $disc = new WorkflowNodeDiscriminator();
- * $disc->addInNode( $nodeExec1 );
- * $disc->addInNode( $nodeExec2 );
- * $disc->addOutNode( $workflow->endNode );
+ * $disc->addInNode($nodeExec1);
+ * $disc->addInNode($nodeExec2);
+ * $disc->addOutNode($workflow->endNode);
  * ?>
  * </code>
  *
@@ -46,9 +46,8 @@ class WorkflowNodeParallelSplit extends WorkflowNodeBranch
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
-        return $this->activateOutgoingNodes( $execution, $this->outNodes );
+        return $this->activateOutgoingNodes($execution, $this->outNodes);
     }
 }
-
