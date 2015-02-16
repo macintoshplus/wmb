@@ -45,7 +45,7 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
      *
      * The key is the position of the out node in the array of out nodes.
      *
-     * @var array( 'condition' => array( 'int' => WorkflowCondtion ) )
+     * @var array('condition' => array('int' => WorkflowCondtion))
      */
     protected $configuration = array(
       'condition' => array(),
@@ -62,17 +62,16 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
      * @param WorkflowNode      $else
      * @return WorkflowNode
      */
-    public function addConditionalOutNode( WorkflowConditionInterface $condition, WorkflowNode $outNode, WorkflowNode $else = null )
+    public function addConditionalOutNode(WorkflowConditionInterface $condition, WorkflowNode $outNode, WorkflowNode $else = null)
     {
-        $this->addOutNode( $outNode );
-        $this->configuration['condition'][array_search( $outNode, $this->outNodes, true )] = $condition;
+        $this->addOutNode($outNode);
+        $this->configuration['condition'][array_search($outNode, $this->outNodes, true)] = $condition;
 
-        if ( !is_null( $else ) )
-        {
-            $this->addOutNode( $else );
+        if (!is_null($else)) {
+            $this->addOutNode($else);
 
             $key = array_search($else, $this->outNodes, true );
-            $this->configuration['condition'][$key] = new WorkflowConditionNot( $condition );
+            $this->configuration['condition'][$key] = new WorkflowConditionNot($condition);
             $this->configuration['else'][$key] = true;
         }
 
@@ -88,21 +87,16 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
      * @return WorkflowConditionInterface
      * @ignore
      */
-    public function getCondition( WorkflowNode $node )
+    public function getCondition(WorkflowNode $node)
     {
-        $keys    = array_keys( $this->outNodes );
-        $numKeys = count( $keys );
+        $keys    = array_keys($this->outNodes);
+        $numKeys = count($keys);
 
-        for ( $i = 0; $i < $numKeys; $i++ )
-        {
-            if ( $this->outNodes[$keys[$i]] === $node )
-            {
-                if ( isset( $this->configuration['condition'][$keys[$i]] ) )
-                {
+        for ($i = 0; $i < $numKeys; $i++) {
+            if ($this->outNodes[$keys[$i]] === $node) {
+                if (isset($this->configuration['condition'][$keys[$i]])) {
                     return $this->configuration['condition'][$keys[$i]];
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
@@ -118,9 +112,9 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
      * @return bool
      * @ignore
      */
-    public function isElse( WorkflowNode $node )
+    public function isElse(WorkflowNode $node)
     {
-        return isset( $this->configuration['else'][array_search( $node, $this->outNodes, true )] );
+        return isset($this->configuration['else'][array_search($node, $this->outNodes, true)]);
     }
 
     /**
@@ -132,48 +126,39 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
-        $keys                            = array_keys( $this->outNodes );
-        $numKeys                         = count( $keys );
+        $keys                            = array_keys($this->outNodes);
+        $numKeys                         = count($keys);
         $nodesToStart                    = array();
         $numActivatedConditionalOutNodes = 0;
 
-        if ( $this->maxActivatedConditionalOutNodes !== false )
-        {
+        if ($this->maxActivatedConditionalOutNodes !== false) {
             $maxActivatedConditionalOutNodes = $this->maxActivatedConditionalOutNodes;
-        }
-        else
-        {
+        } else {
             $maxActivatedConditionalOutNodes = $numKeys;
         }
 
-        for ( $i = 0; $i < $numKeys && $numActivatedConditionalOutNodes <= $maxActivatedConditionalOutNodes; $i++ )
-        {
-            if ( isset( $this->configuration['condition'][$keys[$i]] ) )
-            {
+        for ($i = 0; $i < $numKeys && $numActivatedConditionalOutNodes <= $maxActivatedConditionalOutNodes; $i++) {
+            if (isset($this->configuration['condition'][$keys[$i]])) {
                 // Conditional outgoing node.
-                if ( $this->configuration['condition'][$keys[$i]]->evaluate( $execution->getVariables() ) )
-                {
+                if ($this->configuration['condition'][$keys[$i]]->evaluate($execution->getVariables())) {
                     $nodesToStart[] = $this->outNodes[$keys[$i]];
                     $numActivatedConditionalOutNodes++;
                 }
-            }
-            else
-            {
+            } else {
                 // Unconditional outgoing node.
                 $nodesToStart[] = $this->outNodes[$keys[$i]];
             }
         }
 
-        if ( $this->minActivatedConditionalOutNodes !== false && $numActivatedConditionalOutNodes < $this->minActivatedConditionalOutNodes )
-        {
+        if ($this->minActivatedConditionalOutNodes !== false && $numActivatedConditionalOutNodes < $this->minActivatedConditionalOutNodes) {
             throw new WorkflowExecutionException(
               'Node activates less conditional outgoing nodes than required.'
             );
         }
 
-        return $this->activateOutgoingNodes( $execution, $nodesToStart );
+        return $this->activateOutgoingNodes($execution, $nodesToStart);
     }
 
     /**
@@ -185,14 +170,12 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
     {
         parent::verify();
 
-        $numConditionalOutNodes = count( $this->configuration['condition'] );
+        $numConditionalOutNodes = count($this->configuration['condition']);
 
-        if ( $this->minConditionalOutNodes !== false && $numConditionalOutNodes < $this->minConditionalOutNodes )
-        {
+        if ($this->minConditionalOutNodes !== false && $numConditionalOutNodes < $this->minConditionalOutNodes) {
             throw new WorkflowInvalidWorkflowException(
               'Node has less conditional outgoing nodes than required.'
             );
         }
     }
 }
-

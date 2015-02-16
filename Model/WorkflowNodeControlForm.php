@@ -18,106 +18,106 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowExcept
  **/
 class WorkflowNodeControlForm extends WorkflowNodeConditionalBranch
 {
-	protected $configuration = array(
-	  'internal_name'=>null,
-	  'out_date'=>null,
+    protected $configuration = array(
+      'internal_name'=>null,
+      'out_date'=>null,
       'condition' => array(),
       'else' => array()
     );
 
-	protected $minInNodes = 1;
+    protected $minInNodes = 1;
 
-	protected $startNewThreadForBranch = false;
-	
+    protected $startNewThreadForBranch = false;
+
     protected $minActivatedConditionalOutNodes = 1;
 
-	public function __construct(array $configuration)
-	{
-        parent::__construct( $configuration );
-	}
-
-	/**
-	 * @param WorkflowNode $outNode
-	 * @param WorkflowNode $else
-	 * @return Workflow
-	 */
-	public function addSelectOutNode( WorkflowNode $outNode, WorkflowNode $else )
+    public function __construct(array $configuration)
     {
-    	$equal = new WorkflowConditionIsGreaterThan(0);
-    	$condition = new WorkflowConditionVariableArrayLength($this->getInternalName(), $equal);
-    	return parent::addConditionalOutNode($condition, $outNode, $else);
+        parent::__construct($configuration);
     }
 
-	/**
-	 * return internal name
-	 * this name is use when ID for Type Form link
-	 * @return string
-	 */
-	public function getInternalName()
-	{
-		return $this->configuration['internal_name'];
-	}
-
-	/**
-	 * @param string $internalName
-	 * @return WorkflowNodeControlForm
-	 */
-	public function setInternalName($internalName)
-	{
-		$this->configuration['internal_name'] = $internalName;
-
-		return $this;
-	}
-
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getOutDate()
-	{
-		return $this->configuration['out_date'];
-	}
-
-	/**
-	 * @param \DateTime $date
-	 * @return WorkflowNodeControlForm
-	 */
-	public function setOutDate(\DateTime $date)
-	{
-		$this->configuration['out_date'] = $date;
-		return $this;
-	}
-
-	/**
-	 * @param WorkflowExecution $execution
-	 */
-    public function execute( WorkflowExecution $execution )
+    /**
+     * @param WorkflowNode $outNode
+     * @param WorkflowNode $else
+     * @return Workflow
+     */
+    public function addSelectOutNode(WorkflowNode $outNode, WorkflowNode $else)
     {
-		//Ne passe pas si la date n'est pas passé !
-    	if ($this->configuration['out_date'] > new \DateTime())
-    	{
-    		return false;
-    	}
+        $equal = new WorkflowConditionIsGreaterThan(0);
+        $condition = new WorkflowConditionVariableArrayLength($this->getInternalName(), $equal);
+        return parent::addConditionalOutNode($condition, $outNode, $else);
+    }
 
-        return parent::execute( $execution );
+    /**
+     * return internal name
+     * this name is use when ID for Type Form link
+     * @return string
+     */
+    public function getInternalName()
+    {
+        return $this->configuration['internal_name'];
+    }
+
+    /**
+     * @param string $internalName
+     * @return WorkflowNodeControlForm
+     */
+    public function setInternalName($internalName)
+    {
+        $this->configuration['internal_name'] = $internalName;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getOutDate()
+    {
+        return $this->configuration['out_date'];
+    }
+
+    /**
+     * @param \DateTime $date
+     * @return WorkflowNodeControlForm
+     */
+    public function setOutDate(\DateTime $date)
+    {
+        $this->configuration['out_date'] = $date;
+        return $this;
+    }
+
+    /**
+     * @param WorkflowExecution $execution
+     */
+    public function execute(WorkflowExecution $execution)
+    {
+        //Ne passe pas si la date n'est pas passé !
+        if ($this->configuration['out_date'] > new \DateTime()) {
+            return false;
+        }
+
+        return parent::execute($execution);
 
     }
 
-    public function verify() {
-    	parent::verify();
+    public function verify()
+    {
+        parent::verify();
 
-    	if (null === $this->getInternalName()) {
-    		throw new WorkflowInvalidWorkflowException('Node controle form has no form internal name.');
-    	}
+        if (null === $this->getInternalName()) {
+            throw new WorkflowInvalidWorkflowException('Node controle form has no form internal name.');
+        }
 
-    	if (null === $this->configuration['out_date'] || !$this->configuration['out_date'] instanceof \DateTime) {
-    		throw new WorkflowInvalidWorkflowException(
+        if (null === $this->configuration['out_date'] || !$this->configuration['out_date'] instanceof \DateTime) {
+            throw new WorkflowInvalidWorkflowException(
               sprintf(
                 'Node control form "%s" have not out date.',
                 $this->getInternalName()
               )
             );
-    	}
-    	
+        }
+
     }
 
 } // END class WorkflowNodeForm
