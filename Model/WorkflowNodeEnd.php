@@ -16,11 +16,11 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  * Example:
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  * // build up your workflow here... result in $node
  * $node = ...
- * $workflow->startNode->addOutNode( ... some other node here ... );
- * $node->addOutNode( $workflow->endNode );
+ * $workflow->startNode->addOutNode(... some other node here ...);
+ * $node->addOutNode($workflow->endNode);
  * ?>
  * </code>
  *
@@ -51,11 +51,10 @@ class WorkflowNodeEnd extends WorkflowNode
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
-        $execution->end( $this );
+        $execution->end($this);
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
     }
 }
-

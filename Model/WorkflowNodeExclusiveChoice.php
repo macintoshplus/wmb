@@ -19,32 +19,32 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  *
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  *
  * // wait for input into the workflow variable value.
- * $input = new WorkflowNodeInput( array( 'value' => new WorkflowConditionIsInt ) );
- * $workflow->startNode->addOutNode( $input );
+ * $input = new WorkflowNodeInput(array('value' => new WorkflowConditionIsInt));
+ * $workflow->startNode->addOutNode($input);
  *
  * // create the exclusive choice branching node
  * $choice = new WorkflowNodeExclusiveChoice;
- * $intput->addOutNode( $choice );
+ * $intput->addOutNode($choice);
  *
  * $branch1 = ....; // create nodes for the first branch of execution here..
  * $branch2 = ....; // create nodes for the second branch of execution here..
  *
  * // add the outnodes and set the conditions on the exclusive choice
  * $choice->addConditionalOutNode( new WorkflowConditionVariable( 'value',
- *                                                                  new WorkflowConditionGreaterThan( 10 ) ),
+ *                                                                  new WorkflowConditionGreaterThan(10 )),
  *                                $branch1 );
  * $choice->addConditionalOutNode( new WorkflowConditionVariable( 'value',
- *                                                                  new WorkflowConditionLessThan( 11 ) ),
+ *                                                                  new WorkflowConditionLessThan(11 )),
  *                                $branch2 );
  *
  * // Merge the two branches together and continue execution.
  * $merge = new WorkflowNodeSimpleMerge();
- * $merge->addInNode( $branch1 );
- * $merge->addInNode( $branch2 );
- * $merge->addOutNode( $workflow->endNode );
+ * $merge->addInNode($branch1);
+ * $merge->addInNode($branch2);
+ * $merge->addOutNode($workflow->endNode);
  * ?>
  * </code>
  */
@@ -74,4 +74,3 @@ class WorkflowNodeExclusiveChoice extends WorkflowNodeConditionalBranch
      */
     protected $maxActivatedConditionalOutNodes = 1;
 }
-
