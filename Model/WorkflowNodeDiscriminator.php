@@ -23,17 +23,17 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  *
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  *
  * $split = new WorkflowNodeParallelSplit();
- * $workflow->startNode->addOutNode( $split );
+ * $workflow->startNode->addOutNode($split);
  * $nodeExec1 = ....; // create nodes for the first thread of execution here..
  * $nodeExec2 = ....; // create nodes for the second thread of execution here..
  *
  * $disc = new WorkflowNodeDiscriminator();
- * $disc->addInNode( $nodeExec1 );
- * $disc->addInNode( $nodeExec2 );
- * $disc->addOutNode( $workflow->endNode );
+ * $disc->addInNode($nodeExec1);
+ * $disc->addInNode($nodeExec2);
+ * $disc->addOutNode($workflow->endNode);
  * ?>
  * </code>
  */
@@ -47,23 +47,20 @@ class WorkflowNodeDiscriminator extends WorkflowNodeMerge
      * @param int $threadId
      * @ignore
      */
-    public function activate( WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0 )
+    public function activate(WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0)
     {
-        $this->prepareActivate( $execution, $threadId );
-        $this->setThreadId( $execution->getParentThreadId( $threadId ) );
+        $this->prepareActivate($execution, $threadId);
+        $this->setThreadId($execution->getParentThreadId($threadId));
 
-        $numActivated = count( $this->state['threads'] );
+        $numActivated = count($this->state['threads']);
 
-        if ( $numActivated == 1 )
-        {
-            $this->activateNode( $execution, $this->outNodes[0] );
-        }
-        else if ( $numActivated == $execution->getNumSiblingThreads( $threadId ) )
-        {
-            parent::activate( $execution, $activatedFrom, $this->threadId );
+        if ($numActivated == 1) {
+            $this->activateNode($execution, $this->outNodes[0]);
+        } elseif ($numActivated == $execution->getNumSiblingThreads($threadId)) {
+            parent::activate($execution, $activatedFrom, $this->threadId);
         }
 
-        $execution->endThread( $threadId );
+        $execution->endThread($threadId);
     }
 
     /**
@@ -74,11 +71,10 @@ class WorkflowNodeDiscriminator extends WorkflowNodeMerge
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
         $this->initState();
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
     }
 }
-
