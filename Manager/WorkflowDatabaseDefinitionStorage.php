@@ -80,8 +80,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function __get($propertyName)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'options':
                 return $this->properties[$propertyName];
         }
@@ -102,8 +101,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function __set($propertyName, $propertyValue)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'options':
                 if (!($propertyValue instanceof WorkflowDatabaseOptions)) {
                     throw new BaseValueException(
@@ -128,8 +126,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      */
     public function __isset($propertyName)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'options':
                 return true;
         }
@@ -148,7 +145,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  int $workflowVersion
      * @return Workflow
      * @throws WorkflowDefinitionStorageException
-     * 
+     *
      */
     public function loadById($workflowId, $workflowName = '', $workflowVersion = 0)
     {
@@ -183,9 +180,9 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
 
             if ($nodes[$nodeDbId] instanceof WorkflowNodeFinally && !isset($finallyNode)) {
                 $finallyNode = $nodes[$nodeDbId];
-            } else if ($nodes[$nodeDbId] instanceof WorkflowNodeEnd && !isset($defaultEndNode)) {
+            } elseif ($nodes[$nodeDbId] instanceof WorkflowNodeEnd && !isset($defaultEndNode)) {
                 $defaultEndNode = $nodes[$nodeDbId];
-            } else if ($nodes[$nodeDbId] instanceof WorkflowNodeStart && !isset($startNode)) {
+            } elseif ($nodes[$nodeDbId] instanceof WorkflowNodeStart && !isset($startNode)) {
                 $startNode = $nodes[$nodeDbId];
             }
             if ($nodes[$nodeDbId] instanceof WorkflowNodeEmail) {
@@ -197,7 +194,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
             }
         }
 
-        
+
 
         if (!isset($startNode) || !isset($defaultEndNode)) {
             throw new WorkflowDefinitionStorageException('Could not load workflow definition.');
@@ -231,7 +228,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $workflow->verify();
 
         return $workflow;
-        
+
     }
 
     /**
@@ -241,7 +238,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      * @param  int $workflowVersion
      * @return Workflow
      * @throws WorkflowDefinitionStorageException
-     * 
+     *
      */
     public function loadByName($workflowName, $workflowVersion = 0)
     {
@@ -250,7 +247,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         if ($workflowVersion == 0) {
             $workflowVersion = $this->getCurrentVersionNumber($workflowName);
         }
-        
+
         $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Definition');
         $qb = $repo->createQueryBuilder('w');
         $qb->select('w.id')
@@ -261,7 +258,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
 
 
         $result = $qb->getQuery()->getResult(\PDO::FETCH_ASSOC);
-        
+
         if ($result !== false && isset($result[0])) {
             return $this->loadById(
                 $result[0]['id'],
@@ -363,7 +360,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
                 foreach ($nodeMap as $_id => $_node) {
                     if ($_node['node'] === $node) {
                         $incomingNodeDb = $_node['db'];
-                    } else if ($_node['node'] === $outNode) {
+                    } elseif ($_node['node'] === $outNode) {
                         $outgoingNodeDb = $_node['db'];
                     }
 
@@ -396,25 +393,25 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
 
         $workflow->id = $dbDefinition->getId();
 
-        return $workflow;
-        //Disable code
-        /*
-        NON REIMPLEMENTE
-        // Write variable handler rows.
-        foreach ($workflow->getVariableHandlers() as $variable => $class)
-        {
-            $query = $this->db->createInsertQuery();
-
-            $query->insertInto($this->db->quoteIdentifier($this->options['prefix'] . 'variable_handler'))
-                  ->set($this->db->quoteIdentifier('workflow_id'), $query->bindValue((int)$workflow->id))
-                  ->set($this->db->quoteIdentifier('variable'), $query->bindValue($variable))
-                  ->set($this->db->quoteIdentifier('class'), $query->bindValue($class));
-
-            $statement = $query->prepare();
-            $statement->execute();
+        // Refactor this code
+        $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:VariableHandler')->findBy(array('definition'=>$workflow->id));
+        if (null !== $result && 0 < count($result)) {
+            foreach ($result as $obj) {
+                $this->entityManager->remove($obj);
+            }
+            $this->entityManager->flush();
         }
 
-        $this->db->commit();*/
+        foreach ($workflow->getVariableHandlers() as $variable => $class) {
+            $handler = new Entity\VariableHandler();
+            $handler->setDefinition($dbDefinition);
+            $handler->setClass($class);
+            $handler->setVariable($variable);
+            $entityManager->persist($handler);
+        }
+        //END TODO Refactoring
+
+        return $workflow;
     }
 
     /**
@@ -489,7 +486,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $token = $this->security->getToken();
         $user = (is_object($token))? $token->getUsername():'Anonymous';
 
-            
+
         $wf->setPublishedAt(new \DateTime());
         $wf->setPublishedBy($user);
 
@@ -505,7 +502,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         if (empty($wfParents)) {
             return;
         }
-        
+
         $wfParent = $wfParents[0];
 
         //Ne fait rien si déjà archivé
@@ -548,7 +545,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         $token = $this->security->getToken();
         $user = (is_object($token))? $token->getUsername():'Anonymous';
 
-            
+
         $wf->setPublishedAt(null);
         $wf->setPublishedBy(null);
 
@@ -564,7 +561,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
         if (empty($wfParents)) {
             return;
         }
-        
+
         $wfParent = $wfParents[0];
 
         //Ne fait rien si déjà archivé
@@ -584,7 +581,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
      *
      * @param  string $workflowName
      * @return int
-     * 
+     *
      * @todo Ajouter la gestion des wf publié ou non
      */
     protected function getCurrentVersionNumber($workflowName)
@@ -597,7 +594,7 @@ class WorkflowDatabaseDefinitionStorage extends BaseWorkflowDefinitionStorage
             ->setParameter('name', $workflowName);
 
         $result = $qb->getQuery()->getResult(\PDO::FETCH_ASSOC);
-        
+
         if ($result !== false && isset($result[0]['version']) && $result[0]['version'] !== null) {
             return $result[0]['version'];
         } else {
