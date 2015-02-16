@@ -9,7 +9,9 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExecution;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseOptions;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNode;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface;
-use JbNahan\Bundle\WorkflowManagerBundle\Manager\WorkflowDatabaseDefinitionStorage;
+use JbNahan\Bundle\WorkflowManagerBundle\Manager\
+
+DefinitionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
@@ -156,9 +158,15 @@ class WorkflowDatabaseExecution extends WorkflowExecution
 
         $execution->setDefinition((int)$this->workflow->id);
         $execution->setParent((int)$parentId);
-        $execution->setVariables(WorkflowDatabaseDefinitionStorage::serialize($this->variables));
-        $execution->setWaitingfor(WorkflowDatabaseDefinitionStorage::serialize($this->waitingFor));
-        $execution->setThreads(WorkflowDatabaseDefinitionStorage::serialize($this->threads));
+        $execution->setVariables(
+
+DefinitionManager::serialize($this->variables));
+        $execution->setWaitingfor(
+
+DefinitionManager::serialize($this->waitingFor));
+        $execution->setThreads(
+
+DefinitionManager::serialize($this->threads));
         $execution->setNextThreadId((int)$this->nextThreadId);
         $execution->setCancellable($this->isCancellable());
         $token = $this->security->getToken();
@@ -185,10 +193,16 @@ class WorkflowDatabaseExecution extends WorkflowExecution
             throw new WorkflowExecutionException('Could not Suspend execution.');
         }
         $execution = $result[0];
-        
-        $execution->setVariables(WorkflowDatabaseDefinitionStorage::serialize($this->variables));
-        $execution->setWaitingfor(WorkflowDatabaseDefinitionStorage::serialize($this->waitingFor));
-        $execution->setThreads(WorkflowDatabaseDefinitionStorage::serialize($this->threads));
+
+        $execution->setVariables(
+
+DefinitionManager::serialize($this->variables));
+        $execution->setWaitingfor(
+
+DefinitionManager::serialize($this->waitingFor));
+        $execution->setThreads(
+
+DefinitionManager::serialize($this->threads));
         $execution->setNextThreadId((int)$this->nextThreadId);
         $execution->setSuspendedAt(new \DateTime());
         $execution->setName($this->getName());
@@ -202,8 +216,12 @@ class WorkflowDatabaseExecution extends WorkflowExecution
             $state = new Entity\ExecutionState();
             $state->setExecution($execution);
             $state->setNode($node->getId());
-            $state->setNodeState(WorkflowDatabaseDefinitionStorage::serialize($node->getState()));
-            $state->setNodeActivatedFrom(WorkflowDatabaseDefinitionStorage::serialize($node->getActivatedFrom()));
+            $state->setNodeState(
+
+DefinitionManager::serialize($node->getState()));
+            $state->setNodeActivatedFrom(
+
+DefinitionManager::serialize($node->getActivatedFrom()));
             $state->setNodeThreadId((int)$node->getThreadId());
             $execution->addState($state);
 
@@ -304,7 +322,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
                 'Could not load execution state.'
             );
         }
-        
+
         $wf = $result[0];
         $this->id = $executionId;
 
@@ -312,9 +330,15 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         $this->roles = $wf->getRoles();
         $this->setCancellable($wf->getCancellable());
         $this->setName($wf->getName());
-        $this->threads = WorkflowDatabaseDefinitionStorage::unserialize($wf->getThreads());
-        $this->variables = WorkflowDatabaseDefinitionStorage::unserialize($wf->getVariables());
-        $this->waitingFor = WorkflowDatabaseDefinitionStorage::unserialize($wf->getWaitingFor());
+        $this->threads =
+
+DefinitionManager::unserialize($wf->getThreads());
+        $this->variables =
+
+DefinitionManager::unserialize($wf->getVariables());
+        $this->waitingFor =
+
+DefinitionManager::unserialize($wf->getWaitingFor());
 
         $active = array();
 
@@ -322,8 +346,12 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         //foreach ($result as $row)
         foreach ($wf->getStates() as $state) {
             $active[$state->getNode()] = array(
-                'activated_from' => WorkflowDatabaseDefinitionStorage::unserialize($state->getNodeActivatedFrom()),
-                'state' => WorkflowDatabaseDefinitionStorage::unserialize($state->getNodeState(), null),
+                'activated_from' =>
+
+DefinitionManager::unserialize($state->getNodeActivatedFrom()),
+                'state' =>
+
+DefinitionManager::unserialize($state->getNodeState(), null),
                 'thread_id' => $state->getNodeThreadId()
             );
         }
@@ -348,7 +376,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         $this->cancelled = (null !== $wf->getCanceledAt());
         //si end != null alors il est terminée
         $this->ended     = (null !== $wf->getEndAt());
-        
+
         $this->loaded    = true;
         $this->resumed   = false;
         //Si suspendu est === null il n'est pas suspendu
