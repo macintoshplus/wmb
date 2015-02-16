@@ -9,15 +9,15 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  **/
 abstract class WorkflowNodeUserCancellable extends WorkflowNode
 {
-	protected $newStatusForCancellable = null;
+    protected $newStatusForCancellable = null;
 
-	public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
         $execution->setCancellable($this->newStatusForCancellable);
 
-		$this->activateNode( $execution, $this->outNodes[0] );
+        $this->activateNode($execution, $this->outNodes[0]);
 
-        return parent::execute( $execution );
+        return parent::execute($execution);
 
     }
 }
