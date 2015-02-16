@@ -9,9 +9,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExecution;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseOptions;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNode;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface;
-use JbNahan\Bundle\WorkflowManagerBundle\Manager\
-
-DefinitionManager;
+use JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
@@ -158,15 +156,9 @@ class WorkflowDatabaseExecution extends WorkflowExecution
 
         $execution->setDefinition((int)$this->workflow->id);
         $execution->setParent((int)$parentId);
-        $execution->setVariables(
-
-DefinitionManager::serialize($this->variables));
-        $execution->setWaitingfor(
-
-DefinitionManager::serialize($this->waitingFor));
-        $execution->setThreads(
-
-DefinitionManager::serialize($this->threads));
+        $execution->setVariables(DefinitionManager::serialize($this->variables));
+        $execution->setWaitingfor(DefinitionManager::serialize($this->waitingFor));
+        $execution->setThreads(DefinitionManager::serialize($this->threads));
         $execution->setNextThreadId((int)$this->nextThreadId);
         $execution->setCancellable($this->isCancellable());
         $token = $this->security->getToken();
@@ -194,15 +186,9 @@ DefinitionManager::serialize($this->threads));
         }
         $execution = $result[0];
 
-        $execution->setVariables(
-
-DefinitionManager::serialize($this->variables));
-        $execution->setWaitingfor(
-
-DefinitionManager::serialize($this->waitingFor));
-        $execution->setThreads(
-
-DefinitionManager::serialize($this->threads));
+        $execution->setVariables(DefinitionManager::serialize($this->variables));
+        $execution->setWaitingfor(DefinitionManager::serialize($this->waitingFor));
+        $execution->setThreads(DefinitionManager::serialize($this->threads));
         $execution->setNextThreadId((int)$this->nextThreadId);
         $execution->setSuspendedAt(new \DateTime());
         $execution->setName($this->getName());
@@ -216,12 +202,8 @@ DefinitionManager::serialize($this->threads));
             $state = new Entity\ExecutionState();
             $state->setExecution($execution);
             $state->setNode($node->getId());
-            $state->setNodeState(
-
-DefinitionManager::serialize($node->getState()));
-            $state->setNodeActivatedFrom(
-
-DefinitionManager::serialize($node->getActivatedFrom()));
+            $state->setNodeState(DefinitionManager::serialize($node->getState()));
+            $state->setNodeActivatedFrom(DefinitionManager::serialize($node->getActivatedFrom()));
             $state->setNodeThreadId((int)$node->getThreadId());
             $execution->addState($state);
 
@@ -330,15 +312,9 @@ DefinitionManager::serialize($node->getActivatedFrom()));
         $this->roles = $wf->getRoles();
         $this->setCancellable($wf->getCancellable());
         $this->setName($wf->getName());
-        $this->threads =
-
-DefinitionManager::unserialize($wf->getThreads());
-        $this->variables =
-
-DefinitionManager::unserialize($wf->getVariables());
-        $this->waitingFor =
-
-DefinitionManager::unserialize($wf->getWaitingFor());
+        $this->threads =DefinitionManager::unserialize($wf->getThreads());
+        $this->variables =DefinitionManager::unserialize($wf->getVariables());
+        $this->waitingFor =DefinitionManager::unserialize($wf->getWaitingFor());
 
         $active = array();
 
@@ -346,12 +322,8 @@ DefinitionManager::unserialize($wf->getWaitingFor());
         //foreach ($result as $row)
         foreach ($wf->getStates() as $state) {
             $active[$state->getNode()] = array(
-                'activated_from' =>
-
-DefinitionManager::unserialize($state->getNodeActivatedFrom()),
-                'state' =>
-
-DefinitionManager::unserialize($state->getNodeState(), null),
+                'activated_from' =>DefinitionManager::unserialize($state->getNodeActivatedFrom()),
+                'state' =>DefinitionManager::unserialize($state->getNodeState(), null),
                 'thread_id' => $state->getNodeThreadId()
             );
         }

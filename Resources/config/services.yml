@@ -1,7 +1,5 @@
 parameters:
-    jb_nahan_workflow_manager.workflow_definition_database.class: JbNahan\Bundle\WorkflowManagerBundle\Manager\
-
-DefinitionManager
+    jb_nahan_workflow_manager.workflow_definition_database.class: JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager
     jb_nahan_workflow_manager.workflow_execution.class: JbNahan\Bundle\WorkflowManagerBundle\Manager\ExecutionManager
     jb_nahan_workflow_manager.workflow_execution_database_factory.class: JbNahan\Bundle\WorkflowManagerBundle\Factory\WorkflowDatabaseExecutionFactory
     jb_nahan_workflow_manager.workflow_node_factory.class: JbNahan\Bundle\WorkflowManagerBundle\Factory\WorkflowNodeFactory

@@ -3,9 +3,7 @@
 namespace JbNahan\Bundle\WorkflowManagerBundle\Factory;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution;
-use JbNahan\Bundle\WorkflowManagerBundle\Manager\
-
-DefinitionManager;
+use JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\SecurityContextInterface;
@@ -16,13 +14,9 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 class WorkflowDatabaseExecutionFactory
 {
     /**
+     * DefinitionManager
      *
-
-DefinitionManager
-     *
-     * @var
-
-DefinitionManager
+     * @var DefinitionManager
      **/
     private $definitionService;
 
@@ -39,9 +33,7 @@ DefinitionManager
     private $security;
 
 
-    public function __construct(EntityManager $entityManager,
-
-DefinitionManager $definitionService, SecurityContextInterface $security)
+    public function __construct(EntityManager $entityManager,DefinitionManager $definitionService, SecurityContextInterface $security)
     {
         $this->definitionService = $definitionService;
         $this->entityManager = $entityManager;
