@@ -24,21 +24,21 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
  *
  * <code>
  * <?php
- * $workflow = new Workflow( 'Test' );
+ * $workflow = new Workflow('Test');
  *
  * $input = new WorkflowNodeInput(
  *   'mixedVar' => new WorkflowConditionIsAnything,
  *   'intVar'   => new WorkflowConditionAnd(
  *     array(
  *       new WorkflowConditionIsInteger,
- *       new WorkflowConditionIsGreatherThan( 0 )
- *       new WorkflowConditionIsLessThan( 11 )
+ *       new WorkflowConditionIsGreatherThan(0)
+ *       new WorkflowConditionIsLessThan(11)
  *     )
  *   )
  * );
  *
- * $input->addOutNode( $workflow->endNode );
- * $workflow->startNode->addOutNode( $input );
+ * $input->addOutNode($workflow->endNode);
+ * $workflow->startNode->addOutNode($input);
  * ?>
  * </code>
  *
@@ -64,10 +64,9 @@ class WorkflowNodeInput extends WorkflowNode
      * @param mixed $configuration
      * @throws BaseValueException
      */
-    public function __construct( $configuration = '' )
+    public function __construct($configuration = '')
     {
-        if ( !is_array( $configuration ) )
-        {
+        if (!is_array($configuration)) {
             throw new BaseValueException(
               'configuration', $configuration, 'array'
             );
@@ -75,12 +74,9 @@ class WorkflowNodeInput extends WorkflowNode
 
         $tmp = array();
 
-        foreach ( $configuration as $key => $value )
-        {
-            if ( is_int( $key ) )
-            {
-                if ( !is_string( $value ) )
-                {
+        foreach ($configuration as $key => $value) {
+            if (is_int($key)) {
+                if (!is_string($value)) {
                     throw new BaseValueException(
                       'workflow variable name', $value, 'string'
                     );
@@ -88,11 +84,8 @@ class WorkflowNodeInput extends WorkflowNode
 
                 $variable  = $value;
                 $condition = new WorkflowConditionIsAnything;
-            }
-            else
-            {
-                if ( !is_object( $value ) || !$value instanceof WorkflowConditionInterface )
-                {
+            } else {
+                if (!is_object($value) || !$value instanceof WorkflowConditionInterface) {
                     throw new BaseValueException(
                       'workflow variable condition', $value, 'WorkflowConditionInterface'
                     );
@@ -105,7 +98,7 @@ class WorkflowNodeInput extends WorkflowNode
             $tmp[$variable] = $condition;
         }
 
-        parent::__construct( $tmp );
+        parent::__construct($tmp);
     }
 
     /**
@@ -116,40 +109,31 @@ class WorkflowNodeInput extends WorkflowNode
      *                 and false otherwise
      * @ignore
      */
-    public function execute( WorkflowExecution $execution )
+    public function execute(WorkflowExecution $execution)
     {
         $variables  = $execution->getVariables();
         $canExecute = true;
         $errors     = array();
 
-        foreach ( $this->configuration as $variable => $condition )
-        {
-            if ( !isset( $variables[$variable] ) )
-            {
-                $execution->addWaitingFor( $this, $variable, $condition );
+        foreach ($this->configuration as $variable => $condition) {
+            if (!isset($variables[$variable])) {
+                $execution->addWaitingFor($this, $variable, $condition);
 
                 $canExecute = false;
-            }
-
-            else if ( !$condition->evaluate( $variables[$variable] ) )
-            {
+            } elseif (!$condition->evaluate($variables[$variable])) {
                 $errors[$variable] = (string)$condition;
             }
         }
 
-        if ( !empty( $errors ) )
-        {
-            throw new WorkflowInvalidInputException( $errors );
+        if (!empty($errors)) {
+            throw new WorkflowInvalidInputException($errors);
         }
 
-        if ( $canExecute )
-        {
-            $this->activateNode( $execution, $this->outNodes[0] );
+        if ($canExecute) {
+            $this->activateNode($execution, $this->outNodes[0]);
 
-            return parent::execute( $execution );
-        }
-        else
-        {
+            return parent::execute($execution);
+        } else {
             return false;
         }
     }
@@ -161,14 +145,13 @@ class WorkflowNodeInput extends WorkflowNode
      * @return array
      * @ignore
      */
-    public static function configurationFromXML( \DOMElement $element )
+    public static function configurationFromXML(\DOMElement $element)
     {
         $configuration = array();
 
-        foreach ( $element->getElementsByTagName( 'variable' ) as $variable )
-        {
-            $configuration[$variable->getAttribute( 'name' )] = WorkflowDefinitionStorageInterfaceXml::xmlToCondition(
-              WorkflowDefinitionStorageInterfaceXml::getChildNode( $variable )
+        foreach ($element->getElementsByTagName('variable') as $variable) {
+            $configuration[$variable->getAttribute('name')] = WorkflowDefinitionStorageInterfaceXml::xmlToCondition(
+              WorkflowDefinitionStorageInterfaceXml::getChildNode($variable)
             );
         }
 
@@ -181,15 +164,14 @@ class WorkflowNodeInput extends WorkflowNode
      * @param DOMElement $element
      * @ignore
      */
-    public function configurationToXML( \DOMElement $element )
+    public function configurationToXML(\DOMElement $element)
     {
-        foreach ( $this->configuration as $variable => $condition )
-        {
+        foreach ($this->configuration as $variable => $condition) {
             $xmlVariable = $element->appendChild(
-              $element->ownerDocument->createElement( 'variable' )
+              $element->ownerDocument->createElement('variable')
             );
 
-            $xmlVariable->setAttribute( 'name', $variable );
+            $xmlVariable->setAttribute('name', $variable);
 
             $xmlVariable->appendChild(
               WorkflowDefinitionStorageInterfaceXml::conditionToXml(
@@ -199,4 +181,3 @@ class WorkflowNodeInput extends WorkflowNode
         }
     }
 }
-
