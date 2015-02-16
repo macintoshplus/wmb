@@ -12,7 +12,7 @@ abstract class WorkflowExecutionPlugin
      *
      * @param WorkflowExecution $execution
      */
-    public function afterExecutionStarted( WorkflowExecution $execution )
+    public function afterExecutionStarted(WorkflowExecution $execution)
     {
     // @codeCoverageIgnoreStart
     }
@@ -23,7 +23,7 @@ abstract class WorkflowExecutionPlugin
      *
      * @param WorkflowExecution $execution
      */
-    public function afterExecutionSuspended( WorkflowExecution $execution )
+    public function afterExecutionSuspended(WorkflowExecution $execution)
     {
     // @codeCoverageIgnoreStart
     }
@@ -34,7 +34,7 @@ abstract class WorkflowExecutionPlugin
      *
      * @param WorkflowExecution $execution
      */
-    public function afterExecutionResumed( WorkflowExecution $execution )
+    public function afterExecutionResumed(WorkflowExecution $execution)
     {
     // @codeCoverageIgnoreStart
     }
@@ -45,7 +45,7 @@ abstract class WorkflowExecutionPlugin
      *
      * @param WorkflowExecution $execution
      */
-    public function afterExecutionCancelled( WorkflowExecution $execution )
+    public function afterExecutionCancelled(WorkflowExecution $execution)
     {
     // @codeCoverageIgnoreStart
     }
@@ -56,7 +56,7 @@ abstract class WorkflowExecutionPlugin
      *
      * @param WorkflowExecution $execution
      */
-    public function afterExecutionEnded( WorkflowExecution $execution )
+    public function afterExecutionEnded(WorkflowExecution $execution)
     {
     // @codeCoverageIgnoreStart
     }
@@ -69,7 +69,7 @@ abstract class WorkflowExecutionPlugin
      * @param WorkflowNode      $node
      * @return bool true, when the node should be activated, false otherwise
      */
-    public function beforeNodeActivated( WorkflowExecution $execution, WorkflowNode $node )
+    public function beforeNodeActivated(WorkflowExecution $execution, WorkflowNode $node)
     {
     // @codeCoverageIgnoreStart
         return true;
@@ -82,7 +82,7 @@ abstract class WorkflowExecutionPlugin
      * @param WorkflowExecution $execution
      * @param WorkflowNode      $node
      */
-    public function afterNodeActivated( WorkflowExecution $execution, WorkflowNode $node )
+    public function afterNodeActivated(WorkflowExecution $execution, WorkflowNode $node)
     {
     // @codeCoverageIgnoreStart
     }
@@ -94,7 +94,7 @@ abstract class WorkflowExecutionPlugin
      * @param WorkflowExecution $execution
      * @param WorkflowNode      $node
      */
-    public function afterNodeExecuted( WorkflowExecution $execution, WorkflowNode $node )
+    public function afterNodeExecuted(WorkflowExecution $execution, WorkflowNode $node)
     {
     // @codeCoverageIgnoreStart
     }
@@ -108,7 +108,7 @@ abstract class WorkflowExecutionPlugin
      * @param int                  $parentId
      * @param int                  $numSiblings
      */
-    public function afterThreadStarted( WorkflowExecution $execution, $threadId, $parentId, $numSiblings )
+    public function afterThreadStarted(WorkflowExecution $execution, $threadId, $parentId, $numSiblings)
     {
     // @codeCoverageIgnoreStart
     }
@@ -120,7 +120,7 @@ abstract class WorkflowExecutionPlugin
      * @param WorkflowExecution $execution
      * @param int                  $threadId
      */
-    public function afterThreadEnded( WorkflowExecution $execution, $threadId )
+    public function afterThreadEnded(WorkflowExecution $execution, $threadId)
     {
     // @codeCoverageIgnoreStart
     }
@@ -134,7 +134,7 @@ abstract class WorkflowExecutionPlugin
      * @param  mixed                $value
      * @return mixed the value the variable should be set to
      */
-    public function beforeVariableSet( WorkflowExecution $execution, $variableName, $value )
+    public function beforeVariableSet(WorkflowExecution $execution, $variableName, $value)
     {
     // @codeCoverageIgnoreStart
         return $value;
@@ -148,7 +148,7 @@ abstract class WorkflowExecutionPlugin
      * @param string               $variableName
      * @param mixed                $value
      */
-    public function afterVariableSet( WorkflowExecution $execution, $variableName, $value )
+    public function afterVariableSet(WorkflowExecution $execution, $variableName, $value)
     {
     // @codeCoverageIgnoreStart
     }
@@ -161,7 +161,7 @@ abstract class WorkflowExecutionPlugin
      * @param  string               $variableName
      * @return bool true, when the variable should be unset, false otherwise
      */
-    public function beforeVariableUnset( WorkflowExecution $execution, $variableName )
+    public function beforeVariableUnset(WorkflowExecution $execution, $variableName)
     {
     // @codeCoverageIgnoreStart
         return true;
@@ -174,10 +174,9 @@ abstract class WorkflowExecutionPlugin
      * @param WorkflowExecution $execution
      * @param string               $variableName
      */
-    public function afterVariableUnset( WorkflowExecution $execution, $variableName )
+    public function afterVariableUnset(WorkflowExecution $execution, $variableName)
     {
     // @codeCoverageIgnoreStart
     }
     // @codeCoverageIgnoreEnd
 }
-
