@@ -6,8 +6,10 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\ExecutionVoterInterface;
 
-abstract class WorkflowExecution
+
+abstract class WorkflowExecution implements ExecutionVoterInterface
 {
     /**
      * Container to hold the properties

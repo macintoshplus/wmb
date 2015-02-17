@@ -4,10 +4,12 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\ExecutionVoterInterface;
+
 /**
  * Execution
  */
-class Execution
+class Execution implements ExecutionVoterInterface
 {
     /**
      * @var integer
