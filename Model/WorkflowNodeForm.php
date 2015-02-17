@@ -6,6 +6,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsInstanceOf;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface;
 
 /**
  * WorkflowNodeForm class
@@ -13,7 +14,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
  *
  * @author Jean-Baptiste Nahan <jbnahan at gmail dot com>
  **/
-class WorkflowNodeForm extends WorkflowNode
+class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 {
     const PREFIX_RESPONSE = '_response';
     const PREFIX_CONTINUE = '_continue';
@@ -214,6 +215,24 @@ class WorkflowNodeForm extends WorkflowNode
         return $execution->getVariable($this->configuration['internal_name']);
     }
 
+    /**
+     * return true if username si in roles
+     * @param string $username
+     * @return boolean
+     */
+    public function hasRoleUsername($username)
+    {
+        if (null === $this->roles || 0 === count($this->roles)) {
+            return false;
+        }
+        foreach ($this->roles as $role) {
+            if ($role->getUsername() === $username) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function execute(WorkflowExecution $execution)
     {
         $canExecute = true;
@@ -280,7 +299,7 @@ class WorkflowNodeForm extends WorkflowNode
                         $responses[$key] = $response;
                     } else {
                         if (false === $this->getMaxResponse() || count($responses) < $this->getMaxResponse()) {
-                            $responses[] = $response;
+                            $responses[substr(uniqid(), -8)] = $response;
                         }
                     }
                     

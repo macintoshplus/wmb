@@ -7,6 +7,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsArray;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual;
+use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface;
 
 /**
  * WorkflowNodeReviewUniqueForm class
@@ -14,7 +15,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual;
  *
  * @author Jean-Baptiste Nahan <jbnahan at gmail dot com>
  **/
-class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch
+class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch implements NodeVoterInterface
 {
     protected $configuration = array(
       'internal_name'=>null,
@@ -112,6 +113,24 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch
         $equal = new WorkflowConditionIsEqual(0);
         $condition = new WorkflowConditionVariableArrayLength($this->getInternalName() . '_review', $equal);
         return parent::addConditionalOutNode($condition, $outNode, $else);
+    }
+
+    /**
+     * return true if username si in roles
+     * @param string $username
+     * @return boolean
+     */
+    public function hasRoleUsername($username)
+    {
+        if (null === $this->roles || 0 === count($this->roles)) {
+            return false;
+        }
+        foreach ($this->roles as $role) {
+            if ($role->getUsername() === $username) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function execute(WorkflowExecution $execution)
