@@ -459,12 +459,15 @@ class Definition
      */
     public function setRolesForUpdate($rolesForUpdate)
     {
-        $filter = array_filter($rolesForUpdate);
-        if (0 === count($filter)) {
-            $filter = null;
+        if (is_array($rolesForUpdate)) {
+            $filter = array_filter($rolesForUpdate);
+            if (0 === count($filter)) {
+                $filter = null;
+            }
+            $this->rolesForUpdate = $filter;
+        } else {
+            $this->rolesForUpdate = null;
         }
-        $this->rolesForUpdate = $filter;
-
 
         return $this;
     }
