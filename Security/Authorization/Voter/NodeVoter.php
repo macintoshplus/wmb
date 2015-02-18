@@ -18,9 +18,9 @@ class NodeVoter implements VoterInterface
         ));
     }
 
-    public function supportsClass($object)
+    public function supportsClass($class)
     {
-        return ($object instanceof \JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface);
+        return true;
     }
 
     /**
@@ -29,7 +29,9 @@ class NodeVoter implements VoterInterface
     public function vote(TokenInterface $token, $entity, array $attributes)
     {
         // check if class of this object is supported by this voter
-        if (!$this->supportsClass($entity)) {
+        if (!$this->supportsClass(get_class($entity)) ||
+            !($entity instanceof \JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface)
+            ) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
@@ -67,7 +69,7 @@ class NodeVoter implements VoterInterface
             case self::EDIT:
                 // the data object could have for example a method isPrivate()
                 // which checks the Boolean attribute $private
-                if (null === $entity->getRoles() || 0 === count($entity->getRoles()) || $entity->hasRoleUsername($user->getUsername())) {
+                if (null === $entity->getRoles() || 0 === count($entity->getRoles()) || $entity->hasRoleUsername($user->getUsername()) || $entity->hasRoles($user->getRoles())) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;

@@ -14,4 +14,6 @@ interface NodeVoterInterface
      * @return booblean
      */
     public function hasRoleUsername($username);
+
+    public function hasRoles(array $roles);
 }

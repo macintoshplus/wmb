@@ -133,6 +133,16 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch impleme
         return false;
     }
 
+    public function hasRoles(array $roles)
+    {
+        foreach ($roles as $role) {
+            if (true === $this->hasRoleUsername($role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function execute(WorkflowExecution $execution)
     {
         $canExecute = true;
