@@ -122,11 +122,11 @@ class WorkflowNodeReviewUniqueForm extends WorkflowNodeConditionalBranch impleme
      */
     public function hasRoleUsername($username)
     {
-        if (null === $this->roles || 0 === count($this->roles)) {
+        if (null === $this->getRoles() || 0 === count($this->getRoles())) {
             return false;
         }
-        foreach ($this->roles as $role) {
-            if ($role->getUsername() === $username) {
+        foreach ($this->getRoles() as $role) {
+            if ($role === $username) {
                 return true;
             }
         }

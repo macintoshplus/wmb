@@ -82,7 +82,6 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode
     protected function getRolesFromForm(WorkflowExecution $execution)
     {
         $result = $execution->getVariable($this->configuration['form_internal_name']);
-
         return $result[0]->getAnswer($this->configuration['field_internal_name']);
     }
 
