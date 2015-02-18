@@ -8,7 +8,6 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\ExecutionVoterInterface;
 
-
 abstract class WorkflowExecution implements ExecutionVoterInterface
 {
     /**

@@ -28,10 +28,21 @@ class ModeleEmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('to', 'text', array(
+            /*->add('to', 'text', array(
                 'required'=>true,
                 'constraints'=>array(new NotBlank(), new Email(array('groups' => array('ToEmail'))))
-                ))
+                ))*/
+            ->add('to', 'collection', array(
+                'type'=> 'text',
+                'options'=>array('required'=>false, 'constraints'=>array(new NotBlank(), new Email())),
+                'required' => false,
+                'cascade_validation'=>true,
+                'allow_add'=>true,
+                'prototype_name'=>'__name_value__',
+                'allow_delete' => true,
+                'error_bubbling'=>false,
+                'constraints'=>array(new NotBlank())/*,
+                'by_reference'=>false*/))
             ->add('from', 'text', array(
                 'required'=>true,
                 'constraints'=>array(new NotBlank(), new Email())
@@ -57,9 +68,6 @@ class ModeleEmailType extends AbstractType
             'validation_groups' => function (FormInterface $form) {
                 $data = $form->getData();
                 $list=array('Default');
-                if ('user' !== $data['to']) {
-                    $list[]='ToEmail';
-                }
                 return $list;
             }
          ));

@@ -13,6 +13,8 @@ use \Twig_Environment;
  **/
 class WorkflowNodeEmail extends WorkflowNode
 {
+
+    const AFFECTED_EXECUTION_USER = 'user@execution.tld';
     private $mailer;
 
     private $twig;
@@ -65,6 +67,11 @@ class WorkflowNodeEmail extends WorkflowNode
      */
     public function setTo($to)
     {
+        if (is_array($to)) {
+            $filter = array_filter($to);
+            $unique = array_unique($filter);
+            $to = implode(',', $unique);
+        }
         $this->configuration['to'] = $to;
         
         return $this;
@@ -75,7 +82,7 @@ class WorkflowNodeEmail extends WorkflowNode
      */
     public function getTo()
     {
-        return $this->configuration['to'];
+        return explode(',', $this->configuration['to']);
     }
 
     /**
@@ -135,8 +142,11 @@ class WorkflowNodeEmail extends WorkflowNode
 
         $subject = $this->twig->render($this->configuration['subject'], $variables);
         $body = $this->twig->render($this->configuration['body'], $variables);
-
-        if ('user' === $this->configuration['to']) {
+        
+        $finalTo = $this->configuration['to'];
+        //if ('user' === $this->configuration['to']) {
+        //Ajoute les emails des utilisateurs de l'execution
+        if (false !== strpos($finalTo, WorkflowNodeEmail::AFFECTED_EXECUTION_USER)) {
             $array = $execution->getRoles();
             if (null === $array || 0 === count($array)) {
                 throw new \Exception("Unable to use 'user' in 'to' email field");
@@ -144,26 +154,26 @@ class WorkflowNodeEmail extends WorkflowNode
 
             $toDef = '';
             foreach ($array as $user) {
-                $toDef .= (('' === $toDef)? '':', ').$user->getEmail();
+                $toDef .= (('' === $toDef)? '':',').$user->getEmail();
             }
-        } else {
-            $toDef = $this->configuration['to'];
+            $finalTo = str_replace(WorkflowNodeEmail::AFFECTED_EXECUTION_USER, $toDef, $finalTo);
         }
-        
+        //remet en array et retire les valeurs vides
+        $toArray = array_filter(explode(',', $finalTo));
 
         $message = \Swift_Message::newInstance()
         ->setSubject($subject)
         ->setFrom($this->configuration['from'])
-        ->setTo($toDef)
+        ->setTo($toArray)
         ->setBody($body) ;
         
         $recipient = array();
         $sent = $this->mailer->send($message, $recipient);
 
-        if (!empty($recipient)) {
+        if (0 < count($recipient)) {
             return false;
         }
-
+        
         $this->activateNode($execution, $this->outNodes[0]);
 
         return parent::execute($execution);
