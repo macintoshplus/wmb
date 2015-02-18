@@ -20,7 +20,7 @@ class NodeVoter implements VoterInterface
 
     public function supportsClass($object)
     {
-        return ($object instanceof JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface);
+        return ($object instanceof \JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface);
     }
 
     /**
