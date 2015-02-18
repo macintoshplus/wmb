@@ -487,11 +487,15 @@ class Definition
      */
     public function setRolesForUse($rolesForUse)
     {
-        $filter = array_filter($rolesForUse);
-        if (0 === count($filter)) {
-            $filter = null;
+        if (is_array($rolesForUse)) {
+            $filter = array_filter($rolesForUse);
+            if (0 === count($filter)) {
+                $filter = null;
+            }
+            $this->rolesForUse = $filter;
+        } else {
+            $this->rolesForUse = null;
         }
-        $this->rolesForUse = $filter;
 
         return $this;
     }
