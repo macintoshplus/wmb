@@ -81,6 +81,7 @@ class ExecutionSearch
      * @var \DateTime
      */
     private $suspendedAt;
+    private $suspendedAtEnd;
 
     /**
      * @var boolean
@@ -531,6 +532,29 @@ class ExecutionSearch
     public function getSuspendedAt()
     {
         return $this->suspendedAt;
+    }
+
+    /**
+     * Set suspendedAtEnd
+     *
+     * @param \DateTime $suspendedAtEnd
+     * @return ExecutionSearch
+     */
+    public function setSuspendedAtEnd($suspendedAtEnd)
+    {
+        $this->suspendedAtEnd = $suspendedAtEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get suspendedAtEnd
+     *
+     * @return \DateTime 
+     */
+    public function getSuspendedAtEnd()
+    {
+        return $this->suspendedAtEnd;
     }
 
 
