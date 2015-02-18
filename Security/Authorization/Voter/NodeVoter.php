@@ -59,26 +59,18 @@ class NodeVoter implements VoterInterface
         }
 
         //If Admin, all access
-        /*if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
             return VoterInterface::ACCESS_GRANTED;
-        }*/
+        }
 
         switch($attribute) {
-            case self::VIEW:
+            case self::EDIT:
                 // the data object could have for example a method isPrivate()
                 // which checks the Boolean attribute $private
                 if (null === $entity->getRoles() || 0 === count($entity->getRoles()) || $entity->hasRoleUsername($user->getUsername())) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
                 break;
-
-            case self::EDIT:
-                // we assume that our data object has a method getOwner() to
-                // get the current owner user entity for this data object
-                // if (null !== $entity->getRolesForUpdate() && 0 < count(array_intersect($user->getRoles(), $entity->getRolesForUpdate()))) {
-                //     return VoterInterface::ACCESS_GRANTED;
-                // }
-                // break;
         }
 
         return VoterInterface::ACCESS_DENIED;
