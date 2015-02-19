@@ -12,6 +12,6 @@ services: mysql
 
 before_script:
   - composer self-update
-  - composer install --prefert-dist -o
+  - composer install --prefer-dist -o
   - phpenv --version
   - phpenv versions
