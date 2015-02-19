@@ -26,8 +26,8 @@ class WorkflowNodeForm extends Units\Test
 
         $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
         $mockExecute->getMockController()->getId = 1;
-        //$mockExecute->getMockController()->loadFromVariableHandlers = function(){};
-        
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
 
         //Tests de la configuration
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm(array());
@@ -37,7 +37,7 @@ class WorkflowNodeForm extends Units\Test
 
         $this->assert->integer($node->getMinResponse())->isEqualTo(1);
         $this->assert->boolean($node->getMaxResponse())->isFalse();
-        
+
         unset($node);
 
         /**
@@ -55,7 +55,7 @@ class WorkflowNodeForm extends Units\Test
 
         $this->assert->integer($node->getMinResponse())->isEqualTo(1);
         $this->assert->integer($node->getMaxResponse())->isEqualTo(1);
-        
+
         unset($node);
 
         /**
@@ -70,7 +70,7 @@ class WorkflowNodeForm extends Units\Test
 
         $this->assert->integer($node->getMinResponse())->isEqualTo(1);
         $this->assert->integer($node->getMaxResponse())->isEqualTo(1);
-        
+
         unset($node);
 
         /**
@@ -79,11 +79,11 @@ class WorkflowNodeForm extends Units\Test
         $config['min_response']= 2;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
-        
+
         $this->assert->integer($node->getMinResponse())->isEqualTo(1);
         $this->assert->integer($node->getMaxResponse())->isEqualTo(1);
 
-        
+
         unset($node);
 
 
@@ -93,10 +93,10 @@ class WorkflowNodeForm extends Units\Test
         $config['min_response']= "a";
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
-        
+
         $this->assert->integer($node->getMinResponse())->isEqualTo(1);
         $this->assert->integer($node->getMaxResponse())->isEqualTo(1);
-        
+
         unset($node);
 
         /**
@@ -105,10 +105,10 @@ class WorkflowNodeForm extends Units\Test
         $config['max_response']= "a";
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
-        
+
         $this->assert->integer($node->getMinResponse())->isEqualTo(1);
         $this->assert->boolean($node->getMaxResponse())->isFalse();
-        
+
         unset($node, $config);
 
     }
@@ -130,8 +130,8 @@ class WorkflowNodeForm extends Units\Test
 
         $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
         $mockExecute->getMockController()->getId = 1;
-        //$mockExecute->getMockController()->loadFromVariableHandlers = function(){};
-        
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
 
         /**
          * test execution multiple
@@ -160,7 +160,7 @@ class WorkflowNodeForm extends Units\Test
         $mockExecute->setVariable('form_test1_response', $mock);
         //Execute le node
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
@@ -176,12 +176,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'tata';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
+        $this->mock($mock)->call('setAnsweredAt')->once();
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -192,19 +194,23 @@ class WorkflowNodeForm extends Units\Test
             ->hasKeys(array('form_test1_response', 'form_test1_continue'));
 
         //remplacement des données
+        $keys = array_keys($mockExecute->getVariable('form_test1'));
 
         $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
-        $mock->getMockController()->getId = 0;
+        $mock->getMockController()->getId = $keys[0];
         $mock->getMockController()->getName = 'replace';
+        $mock->getMockController()->getAnsweredAt = new \DateTime();
 
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
+        $this->mock($mock)->call('setUpdatedAt')->once();
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -220,12 +226,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'replace invalid key';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
+        $this->mock($mock)->call('setAnsweredAt')->once();
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -237,7 +245,7 @@ class WorkflowNodeForm extends Units\Test
     }
 
 
-    public function test_execute_many_max_3_manual()
+    public function test_execute_many_withDelete()
     {
         $controller = new \atoum\mock\controller();
         $controller->__construct = function () {};
@@ -254,8 +262,8 @@ class WorkflowNodeForm extends Units\Test
 
         $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
         $mockExecute->getMockController()->getId = 1;
-        //$mockExecute->getMockController()->loadFromVariableHandlers = function(){};
-        
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
 
         /**
          * test execution multiple
@@ -283,7 +291,7 @@ class WorkflowNodeForm extends Units\Test
         $mockExecute->setVariable('form_test1_response', $mock);
         //Execute le node
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
@@ -300,12 +308,12 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'tata';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -316,18 +324,149 @@ class WorkflowNodeForm extends Units\Test
             ->hasKeys(array('form_test1_response', 'form_test1_continue'));
 
         //remplacement des données
+        $keys = array_keys($mockExecute->getVariable('form_test1'));
 
         $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
-        $mock->getMockController()->getId = 0;
+        $mock->getMockController()->getId = $keys[0];
         $mock->getMockController()->getName = 'replace';
+        $mock->getMockController()->getAnsweredAt = new \DateTime();
+        $mock->getMockController()->getDeletedAt = new \DateTime();
+
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
+        $this->mock($mock)->call('getId')->twice();
+        $this->mock($mock)->call('setId')->never();
+        $this->mock($mock)->call('getAnsweredAt')->never();
+        $this->mock($mock)->call('getDeletedAt')->once();
+        $this->mock($mock)->call('setUpdatedAt')->never();
+
+        //Vérifie que la réponse a bien été traitée
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+        //var_dump($mockExecute->getVariable('form_test1'));
+        $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
+
+        $varDeleted = 'form_test1'.\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm::PREFIX_DELETED;
+        $this->assert->boolean($mockExecute->hasVariable($varDeleted))->isTrue();
+        $this->assert->array($mockExecute->getVariable($varDeleted))->hasSize(1);
+
+        //Vérifie qu'il attent toujours les réponses
+        $this->assert->array($mockExecute->getWaitingFor())
+            ->hasSize(2)
+            ->hasKeys(array('form_test1_response', 'form_test1_continue'));
+
+
+            //suppression d'un object inconnu
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getId = 'jkhgfd';
+        $mock->getMockController()->getName = 'replace';
+        $mock->getMockController()->getAnsweredAt = new \DateTime();
+        $mock->getMockController()->getDeletedAt = new \DateTime();
+
+        $mockExecute->setVariable('form_test1_response', $mock);
+        //var_dump($mockExecute->getVariables());
+
+        //Execute le node
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+
+        $this->mock($mock)->call('getId')->twice();
+        $this->mock($mock)->call('setId')->never();
+        $this->mock($mock)->call('getAnsweredAt')->never();
+        $this->mock($mock)->call('getDeletedAt')->once();
+        $this->mock($mock)->call('setUpdatedAt')->never();
+
+        //Vérifie que la réponse a bien été traitée
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+        //var_dump($mockExecute->getVariable('form_test1'));
+        $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
+
+        $varDeleted = 'form_test1'.\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm::PREFIX_DELETED;
+        $this->assert->boolean($mockExecute->hasVariable($varDeleted))->isTrue();
+        $this->assert->array($mockExecute->getVariable($varDeleted))->hasSize(1);
+
+        //Vérifie qu'il attent toujours les réponses
+        $this->assert->array($mockExecute->getWaitingFor())
+            ->hasSize(2)
+            ->hasKeys(array('form_test1_response', 'form_test1_continue'));
+
+    }
+
+    public function test_execute_many_max_3_manual()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function () {};
+
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
+
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
+
+        /**
+         * test execution multiple
+         * réassignement pas l'ajout de l'ID dans les données
+         */
+        $config=array('min_response'=>1,
+            'max_response'=>3,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false);
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->activate($mockExecute);
+
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+        $this->assert->array($mockExecute->getWaitingFor())
+            ->hasSize(2)
+            ->hasKeys(array('form_test1_response', 'form_test1_continue'));
+
+        //Enregistre une réponse
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getId = null;
+        $mock->getMockController()->getName = 'toto';
+        $mockExecute->setVariable('form_test1_response', $mock);
+        //Execute le node
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+
+        //Vérifie que la réponse a bien été traitée
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+        $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
+        //Vérifie qu'il attent toujours les réponses
+        $this->assert->array($mockExecute->getWaitingFor())
+            ->hasSize(2)
+            ->hasKeys(array('form_test1_response', 'form_test1_continue'));
+
+        //Enregistre une réponse
+        //var_dump($mockExecute->getVariables());
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getId = null;
+        $mock->getMockController()->getName = 'tata';
+        $mockExecute->setVariable('form_test1_response', $mock);
+        //var_dump($mockExecute->getVariables());
+
+        //Execute le node
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -336,6 +475,38 @@ class WorkflowNodeForm extends Units\Test
         $this->assert->array($mockExecute->getWaitingFor())
             ->hasSize(2)
             ->hasKeys(array('form_test1_response', 'form_test1_continue'));
+
+        //remplacement des données
+        $keys = array_keys($mockExecute->getVariable('form_test1'));
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getId = $keys[0];
+        $mock->getMockController()->getName = 'replace';
+        $mock->getMockController()->getAnsweredAt = new \DateTime();
+
+        $mockExecute->setVariable('form_test1_response', $mock);
+        //var_dump($mockExecute->getVariables());
+
+        //Execute le node
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+
+        $this->mock($mock)->call('getId')->twice();
+        $this->mock($mock)->call('setId')->once();
+        $this->mock($mock)->call('getAnsweredAt')->twice();
+        $this->mock($mock)->call('setUpdatedAt')->once();
+
+        //Vérifie que la réponse a bien été traitée
+        $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
+        //var_dump($mockExecute->getVariable('form_test1'));
+        $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(2);
+        //Vérifie qu'il attent toujours les réponses
+        $this->assert->array($mockExecute->getWaitingFor())
+            ->hasSize(2)
+            ->hasKeys(array('form_test1_response', 'form_test1_continue'));
+
+
         //remplacement des données avec un ID faux
 
         $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
@@ -343,12 +514,12 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'replace invalid key';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -379,12 +550,12 @@ class WorkflowNodeForm extends Units\Test
         $mockExecute->setVariable('form_test1_response', $mock);
         $mockExecute->setVariable('form_test1_continue', true);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isTrue();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -412,8 +583,8 @@ class WorkflowNodeForm extends Units\Test
 
         $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
         $mockExecute->getMockController()->getId = 1;
-        //$mockExecute->getMockController()->loadFromVariableHandlers = function(){};
-        
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
 
         /**
          * test execution simple + auto_continue
@@ -448,7 +619,7 @@ class WorkflowNodeForm extends Units\Test
         $this->assert->boolean($node->execute($mockExecute))->isTrue();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->once();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
@@ -465,14 +636,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'tata';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isTrue();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->once();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -490,14 +661,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'tata';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isTrue();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->twice();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -516,14 +687,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'new value';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isTrue();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->twice();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -539,12 +710,12 @@ class WorkflowNodeForm extends Units\Test
         //var_dump($mockExecute->getVariables());
         //$mockExecute->setVariable('form_test1_response', array('id'=>5, 'data1'=>'new value'));
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -555,8 +726,6 @@ class WorkflowNodeForm extends Units\Test
             ->hasKeys(array('form_test1_response'));
 
     }
-
-
 
     public function test_unit_manual()
     {
@@ -575,8 +744,8 @@ class WorkflowNodeForm extends Units\Test
 
         $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
         $mockExecute->getMockController()->getId = 1;
-        //$mockExecute->getMockController()->loadFromVariableHandlers = function(){};
-        
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
 
         /**
          * test execution simple + auto_continue
@@ -609,11 +778,11 @@ class WorkflowNodeForm extends Units\Test
         $mockExecute->setVariable('form_test1_response', $mock);
         //Execute le node
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //$this->mock($mock)->call('setId')->once();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->once();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         $this->assert->array($mockExecute->getVariable('form_test1'))->hasSize(1);
@@ -631,14 +800,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'tata';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->once();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -656,14 +825,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'tata';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->twice();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -682,14 +851,14 @@ class WorkflowNodeForm extends Units\Test
         $mock->getMockController()->getName = 'new value';
         $mockExecute->setVariable('form_test1_response', $mock);
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
         $this->mock($mock)->call('setId')->withArguments(0)->once();
         $this->mock($mock)->call('getId')->twice();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));
@@ -705,12 +874,12 @@ class WorkflowNodeForm extends Units\Test
         //var_dump($mockExecute->getVariables());
         //$mockExecute->setVariable('form_test1_response', array('id'=>5, 'data1'=>'new value'));
         //var_dump($mockExecute->getVariables());
-        
+
         //Execute le node
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
-        
+
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
-        
+
         //Vérifie que la réponse a bien été traitée
         $this->assert->boolean($mockExecute->hasVariable('form_test1'))->isTrue();
         //var_dump($mockExecute->getVariable('form_test1'));

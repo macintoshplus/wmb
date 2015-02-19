@@ -161,7 +161,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
         return $this;
     }
-    
+
     /**
      * @return null|array
      */
@@ -252,7 +252,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         $formNameReview   = $formName . WorkflowNodeForm::PREFIX_REVIEW;
         $formNameDeleted  = $formName . WorkflowNodeForm::PREFIX_DELETED;
         //$variables = $execution->getVariables();
-        
+
         //Vérifie que les données sont renseignées
         if (!$execution->hasVariable($formName)) {
             $execution->setVariable($formName, array());
@@ -267,7 +267,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
             if ($execution->hasVariable($formNameReview)) {
                 $execution->unsetVariable($formNameReview);
             }
-            
+
             //Déplace les données
             $responses = $this->getResponses($execution);
 
@@ -275,14 +275,11 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
             if (null !== $response->getId()) {
                 //récupère la clée
                 $key = $response->getId();
-                $response->setUpdatedAt(new \DateTime());
 
                 //si aucune données n'est présente pour cette clé, elle est effacé.
                 if (!array_key_exists($key, $responses)) {
                     unset($key);
                 }
-            } else {
-                $response->setAnsweredAt(new \DateTime());
             }
 
             //Si données supprimées, il supprime la réponse et ajoute dans les suppressions
@@ -291,7 +288,6 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                     $canExecute = false;
                     goto traiteExecution;
                 }
-
                 unset($responses[$key]);
 
                 $responsesDeleted = ($execution->hasVariable($formNameDeleted))? $execution->getVariable($formNameDeleted):array();
@@ -300,6 +296,15 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
             } else {
                 //Pas supprimé
+
+                //Si c'est une modification
+                if (null !== $response->getAnsweredAt()) {
+                    $response->setUpdatedAt(new \DateTime());
+                }
+                //si c'est un ajout
+                if (null === $response->getAnsweredAt()) {
+                    $response->setAnsweredAt(new \DateTime());
+                }
                 //si une réponse possible, il ajoute les données en remplaçant celle eventuellement présente
                 if ($this->getMaxResponse() === $this->getMinResponse()) {
                     $responses = array($response);
@@ -312,7 +317,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                             $responses[substr(uniqid(), -8)] = $response;
                         }
                     }
-                    
+
                 }
             }
 
@@ -320,11 +325,11 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
             foreach ($responses as $key => $response) {
                 $responses[$key]->setId($key);
             }
-            
+
             $execution->setVariable($formName, $responses);
             //supprime la réponses
             $execution->unsetVariable($formNameResponse);
-            
+
             //Si il n'y a un nombre suffisent de réponse, il faut passer automatiquement à la suite.
             if ($this->responseIsEnough($execution) && $this->configuration['auto_continue']) {
                 $canExecute = true;
@@ -385,6 +390,6 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 )
             );
         }
-        
+
     }
 }
