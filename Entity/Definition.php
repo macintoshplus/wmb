@@ -98,6 +98,11 @@ class Definition
         //$this->executions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getName() .' (version '.$this->getVersion().')' ;
+    }
+
     /**
      * Get id
      *
