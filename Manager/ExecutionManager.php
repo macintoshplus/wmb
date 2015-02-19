@@ -33,6 +33,15 @@ class ExecutionManager
         return $this->getRepository()->getQbSearch($param);
     }
 
+    public function getByDefinitionId($id)
+    {
+        $param = new Entity\ExecutionSearch();
+        $param->setDefinition($id);
+        $qb = $this->getQbFromSearch($param);
+
+        return $qb->getQuery()->getResult();
+    }
+
     private function getRepository()
     {
         return $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution');
