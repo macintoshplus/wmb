@@ -55,10 +55,23 @@ class ExecutionRepository extends EntityRepository
 
         //Partie recherche
 
-        if (null !== $param->getName()) {
-            $qb->andWhere($qb->expr()->like('e.name', $qb->expr()->litteral('%'.$param->getName().'%')));
+        if (null !== $param->getId()) {
+            $qb->andWhere('e.id = :id')
+                ->setParameter('id', $param->getId());
         }
 
+        if (null !== $param->getName()) {
+            $qb->andWhere($qb->expr()->like('e.name', $qb->expr()->literal('%'.$param->getName().'%')));
+        }
+
+        if (null !== $param->getSuspendedStep()) {
+            $qb->andWhere($qb->expr()->like('e.suspendedStep', $qb->expr()->literal('%'.$param->getSuspendedStep().'%')));
+        }
+
+        if (null !== $param->getDefinition()) {
+            $qb->andWhere('e.definition = :def')
+                ->setParameter('def', $param->getDefinition());
+        }
 
         if (null !== $param->getIsEnded()) {
             if (true == $param->getIsEnded()) {
@@ -80,7 +93,33 @@ class ExecutionRepository extends EntityRepository
             }
         }
 
+        $qb = $this->addFilterDate($qb, 'e.canceledAt', $param->getCanceledAt(), $param->getCanceledAtEnd());
+        $qb = $this->addFilterDate($qb, 'e.endAt', $param->getEndAt(), $param->getEndAtEnd());
+        $qb = $this->addFilterDate($qb, 'e.startedAt', $param->getStartedAt(), $param->getStartedAtEnd());
 
+        return $qb;
+    }
+
+
+    private function addFilterDate($qb, $field, $dateDebut, $dateFin)
+    {
+        if (null !== $dateDebut && null !== $dateFin) {
+            $dateDebut = $dateDebut;
+            $dateDebut->setTime(0, 0, 0);
+            $dateFin = $dateFin;
+            $dateFin->setTime(23, 59, 59);
+            $qb->andWhere($qb->expr()->between($field, $qb->expr()->literal($dateDebut->format("Y-m-d H:i:s")), $qb->expr()->literal($dateFin->format("Y-m-d H:i:s"))));
+        }
+        if (null !== $dateDebut && null === $dateFin) {
+            $dateDebut = $dateDebut;
+            $dateDebut->setTime(0, 0, 0);
+            $qb->andWhere($qb->expr()->gte($field, $qb->expr()->literal($dateDebut->format("Y-m-d H:i:s"))));
+        }
+        if (null === $dateDebut && null !== $dateFin) {
+            $dateFin = $dateFin;
+            $dateFin->setTime(23, 59, 59);
+            $qb->andWhere($qb->expr()->lte($field, $qb->expr()->literal($dateFin->format("Y-m-d H:i:s"))));
+        }
         return $qb;
     }
 }
