@@ -13,5 +13,9 @@ services: mysql
 before_script:
   - composer self-update
   - composer install --prefer-dist -o
+  - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
   - phpenv --version
   - phpenv versions
+
+script:
+  - php mageekguy.atoum.phar
