@@ -2,16 +2,14 @@ language: php
 
 php:
   - 5.4
-
-env:
-  - MYSQL_VERSION=5.5
+  - 5.5
+  - 5.6
 
 services: mysql
 
 before_script:
   - composer self-update
-  - composer install --prefer-dist -o
-  - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
+  - composer update
   - phpenv --version
   - phpenv versions
 
