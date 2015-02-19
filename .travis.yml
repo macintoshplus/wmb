@@ -18,4 +18,4 @@ before_script:
   - phpenv versions
 
 script:
-  - php mageekguy.atoum.phar
+  - php mageekguy.atoum.phar -d "Tests/Units" "-bf" "vendor/autoload.php" "-c" "Tests/.atoum.php"
