@@ -22,7 +22,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterTh
  *
  * @author Jean-Baptiste Nahan <jbnahan at gmail dot com>
  **/
-class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch
+class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch implements WorkflowNodeFormFieldAccessInterface
 {
     protected $configuration = array(
         'internal_name'=>null,

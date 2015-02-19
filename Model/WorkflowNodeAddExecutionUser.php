@@ -11,7 +11,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
  *
  * @author Jean-Baptiste Nahan <jbnahan at gmail dot com>
  **/
-class WorkflowNodeAddExecutionUser extends WorkflowNode
+class WorkflowNodeAddExecutionUser extends WorkflowNode implements WorkflowNodeFormFieldAccessInterface
 {
     protected $configuration = array(
         'form_internal_name'=>null,

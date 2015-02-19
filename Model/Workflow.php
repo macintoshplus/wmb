@@ -403,6 +403,29 @@ class Workflow implements Countable, WorkflowVisitableInterface
         return $list;
     }
 
+    public function getFormFieldRequired()
+    {
+        $list = $this->getFormType();
+        $fields = array();
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeFormFieldAccessInterface) {
+                $form = $node->getFormInternalName();
+                //Pas utilisé, il ajoute
+                if (!array_key_exists($form, $fields)) {
+                    $fields[$form] = array('name'=>$list[$form], 'fields'=>array());
+                }
+                //Ajout des infos sur le chams
+                $fieldsKey = $node->getFieldInternalName();
+                $infos = array();
+                $infos['node_id'] = $node->getId();
+                $infos['node_name'] = $node->getName();
+                $infos['node_class'] = get_class($node);
+                $fields[$form]['fields'][$fieldsKey][] = $infos;
+            }
+        }
+        return $fields;
+    }
+
     /**
      * @return array
      */
