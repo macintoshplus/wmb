@@ -4,3 +4,8 @@ services:
         arguments: ["@security.context"]
         tags:
             - { name: form.type, alias: jb_nahan_definition }
+    jb_nahan.form.execution_search:
+        class: JbNahan\Bundle\WorkflowManagerBundle\Form\ExecutionSearchType
+        arguments: ["@security.context", "@jb_nahan.definition_manager"]
+        tags:
+            - { name: form.type, alias: jb_nahan_execution_search }
