@@ -25,10 +25,10 @@ class BasePropertyPermissionException extends BaseException
      * @param string $name The name of the property.
      * @param int    $mode The mode of the property that is allowed (::READ or ::WRITE).
      */
-    function __construct( $name, $mode )
+    function __construct($name, $mode)
     {
         parent::__construct( "The property '{$name}' is " .
-            ( $mode == self::READ ? "read" : "write" ) .
+            ($mode == self::READ ? "read" : "write") .
             "-only." );
     }
 }

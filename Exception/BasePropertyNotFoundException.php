@@ -15,9 +15,9 @@ class BasePropertyNotFoundException extends BaseException
      *
      * @param string $name The name of the property
      */
-    function __construct( $name )
+    function __construct($name)
     {
-        parent::__construct( "No such property name '{$name}'." );
+        parent::__construct("No such property name '{$name}'.");
     }
 }
 

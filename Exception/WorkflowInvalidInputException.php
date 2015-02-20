@@ -25,18 +25,18 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      *
      * @param array $message
      */
-    public function __construct( $message )
+    public function __construct($message)
     {
         $this->properties['errors'] = $message;
 
         $messages = array();
 
-        foreach ( $message as $variable => $condition )
+        foreach ($message as $variable => $condition)
         {
             $messages[] = $variable . ' ' . $condition;
         }
 
-        parent::__construct( join( "\n", $messages ) );
+        parent::__construct(join("\n", $messages));
     }
 
     /**
@@ -49,15 +49,15 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      * @return mixed Value of the property or null.
      * @ignore
      */
-    public function __get( $propertyName )
+    public function __get($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'errors':
                 return $this->properties[$propertyName];
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -70,15 +70,15 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      *         If there is a write access to errors.
      * @ignore
      */
-    public function __set( $propertyName, $val )
+    public function __set($propertyName, $val)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'errors':
-                throw new BasePropertyPermissionException( $propertyName, BasePropertyPermissionException::WRITE );
+                throw new BasePropertyPermissionException($propertyName, BasePropertyPermissionException::WRITE);
         }
 
-        throw new BasePropertyNotFoundException( $propertyName );
+        throw new BasePropertyNotFoundException($propertyName);
     }
 
     /**
@@ -88,9 +88,9 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      * @return bool True is the property is set, otherwise false.
      * @ignore
      */
-    public function __isset( $propertyName )
+    public function __isset($propertyName)
     {
-        switch ( $propertyName )
+        switch ($propertyName)
         {
             case 'errors':
                 return true;

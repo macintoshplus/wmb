@@ -17,17 +17,17 @@ abstract class BaseException extends \Exception
      *
      * @param string $message
      */
-    public function __construct( $message )
+    public function __construct($message)
     {
         $this->originalMessage = $message;
 
-        if ( php_sapi_name() == 'cli' )
+        if (php_sapi_name() == 'cli')
         {
-            parent::__construct( $message );
+            parent::__construct($message);
         }
         else
         {
-            parent::__construct( htmlspecialchars( $message ) );
+            parent::__construct(htmlspecialchars($message));
         }
     }
 }

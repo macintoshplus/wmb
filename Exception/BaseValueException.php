@@ -17,19 +17,19 @@ class BaseValueException extends BaseException
      * @param string  $expectedValue A string explaining the allowed type and value range.
      * @param string  $variableType  What type of variable was tried to be set (setting, argument).
      */
-    function __construct( $settingName, $value, $expectedValue = null, $variableType = 'setting' )
+    function __construct($settingName, $value, $expectedValue = null, $variableType = 'setting')
     {
-        $type = gettype( $value );
-        if ( in_array( $type, array( 'array', 'object', 'resource' ) ) )
+        $type = gettype($value);
+        if (in_array($type, array('array', 'object', 'resource')))
         {
-            $value = serialize( $value );
+            $value = serialize($value);
         }
         $msg = "The value '{$value}' that you were trying to assign to $variableType '{$settingName}' is invalid.";
-        if ( $expectedValue )
+        if ($expectedValue)
         {
             $msg .= " Allowed values are: " . $expectedValue . '.';
         }
-        parent::__construct( $msg );
+        parent::__construct($msg);
     }
 }
 
