@@ -31,8 +31,7 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
 
         $messages = array();
 
-        foreach ($message as $variable => $condition)
-        {
+        foreach ($message as $variable => $condition) {
             $messages[] = $variable . ' ' . $condition;
         }
 
@@ -51,8 +50,7 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      */
     public function __get($propertyName)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'errors':
                 return $this->properties[$propertyName];
         }
@@ -72,8 +70,7 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      */
     public function __set($propertyName, $val)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'errors':
                 throw new BasePropertyPermissionException($propertyName, BasePropertyPermissionException::WRITE);
         }
@@ -90,8 +87,7 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
      */
     public function __isset($propertyName)
     {
-        switch ($propertyName)
-        {
+        switch ($propertyName) {
             case 'errors':
                 return true;
         }
@@ -99,4 +95,3 @@ class WorkflowInvalidInputException extends WorkflowExecutionException
         return false;
     }
 }
-
