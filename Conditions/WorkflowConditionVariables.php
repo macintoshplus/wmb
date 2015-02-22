@@ -41,9 +41,9 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
     {
         if (!$condition instanceof WorkflowConditionComparison) {
             throw new BaseValueException(
-              'condition',
-              $condition,
-              'WorkflowConditionComparison'
+                'condition',
+                $condition,
+                'WorkflowConditionComparison'
             );
         }
 
@@ -61,10 +61,7 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
      */
     public function evaluate($value)
     {
-        if (is_array( $value) &&
-             isset($value[$this->variableNameA]) &&
-             isset($value[$this->variableNameB] ))
-        {
+        if (is_array($value) && isset($value[$this->variableNameA]) && isset($value[$this->variableNameB])) {
             $this->condition->setValue($value[$this->variableNameB]);
             return $this->condition->evaluate($value[$this->variableNameA]);
         } else {
@@ -103,11 +100,10 @@ class WorkflowConditionVariables implements WorkflowConditionInterface
     public function __toString()
     {
         return sprintf(
-          '%s %s %s',
-
-          $this->variableNameA,
-          $this->condition->getOperator(),
-          $this->variableNameB
+            '%s %s %s',
+            $this->variableNameA,
+            $this->condition->getOperator(),
+            $this->variableNameB
         );
     }
 }
