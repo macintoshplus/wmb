@@ -1107,10 +1107,11 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
 
     /**
      * @param \Swift_Message $message
+     * @return int
      */
     public function mailerSend(\Swift_Message $message)
     {
-        $this->mailer->send($message);
+        return $this->mailer->send($message);
     }
 
     /**
