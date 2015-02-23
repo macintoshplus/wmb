@@ -1081,21 +1081,50 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
         return $this->security;
     }
 
+    /**
+     * @return boolean
+     */
+    public function hasLogger()
+    {
+        return (null !== $this->logger);
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @return boolean
+     */
     public function hasMailer()
     {
         return (null !== $this->mailer);
     }
 
+    /**
+     * @param \Swift_Message $message
+     */
     public function mailerSend(\Swift_Message $message)
     {
         $this->mailer->send($message);
     }
 
+    /**
+     * @return boolean
+     */
     public function hasTwig()
     {
         return (null !== $this->twig);
     }
 
+    /**
+     * @param string $template
+     * @return string
+     */
     public function renderTemplate($template)
     {
         $variables = $execution->getVariables();
