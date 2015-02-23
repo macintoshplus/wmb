@@ -122,10 +122,10 @@ class WorkflowNodeEmail extends WorkflowNode
     {
 
         if (!$execution->hasMailer()) {
-            throw new \Exception("Enable to use this node if mailer service is not set");
+            throw new \Exception("Unable to use this node if mailer service is not set");
         }
         if (!$execution->hasTwig()) {
-            throw new \Exception("Enable to use this node if twig service is not set");
+            throw new \Exception("Unable to use this node if twig service is not set");
         }
 
         $variables = $execution->getVariables();

@@ -64,8 +64,10 @@ class WorkflowDatabaseExecution extends WorkflowExecution
             throw new WorkflowExecutionException('$executionId must be an integer.');
         }
 
+        parent::__construct($security, $logger, $mailer, $twig);
+
         $this->entityManager = $entityManager;
-        $this->security = $security;
+        //$this->security = $security;
         $this->properties['definitionStorage'] = $definitionService;
         $this->properties['options'] = new WorkflowDatabaseOptions;
 

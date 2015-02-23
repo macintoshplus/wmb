@@ -1128,17 +1128,17 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
      */
     public function renderTemplate($template)
     {
-        $variables = $execution->getVariables();
-        $variables['execution_id'] = $execution->getId();
-        $variables['execution_name'] = $execution->getName();
-        $variables['execution_ended'] = $execution->hasEnded();
-        $variables['execution_cancelled'] = $execution->isCancelled();
-        $variables['workflow_name'] = $execution->workflow->name;
-        $variables['workflow_id'] = $execution->workflow->id;
+        $variables = $this->getVariables();
+        $variables['execution_id'] = $this->getId();
+        $variables['execution_name'] = $this->getName();
+        $variables['execution_ended'] = $this->hasEnded();
+        $variables['execution_cancelled'] = $this->isCancelled();
+        $variables['workflow_name'] = $this->workflow->name;
+        $variables['workflow_id'] = $this->workflow->id;
         $variables['now'] = new \DateTime();
         $variables['users_name'] = '';
-        if (null !== $execution->getRoles() && 0 < count($execution->getRoles())) {
-            $roles = $execution->getRoles();
+        if (null !== $this->getRoles() && 0 < count($this->getRoles())) {
+            $roles = $this->getRoles();
             $name = '';
             foreach ($roles as $role) {
                 $name .= (('' === $name)? '':', ').$role->__toString();
