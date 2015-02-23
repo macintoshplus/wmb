@@ -23,15 +23,21 @@ class WorkflowNodeControlForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array('internal_name'=>'form_1','out_date'=>new \DateTime('2099-02-20')));
 
 
-        $trueNode  = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction( 'PrintTrue' );
-        $falseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction( 'PrintFalse' );
+        $trueNode  = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintTrue');
+        $falseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintFalse');
 
         $node->addSelectOutNode($trueNode, $falseNode);
 
@@ -63,8 +69,14 @@ class WorkflowNodeControlForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array('internal_name'=>'form_1','out_date'=>new \DateTime('2015-02-01')));
@@ -98,8 +110,14 @@ class WorkflowNodeControlForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array('internal_name'=>'form_1','out_date'=>new \DateTime('2015-02-01')));

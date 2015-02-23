@@ -9,42 +9,48 @@ use Mock;
 
 class WorkflowNodeExternalCounter extends Units\Test
 {
-	public function test_init()
-	{
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
+    public function test_init()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function() {};
 
-		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
 
-		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
-		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
-		$mockExecute->getMockController()->getId = 1;
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
 
-		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter(array('counter_name'=>'dde'));
-		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter(array('counter_name'=>'dde'));
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
 
 
-		$node->activate($mockExecute);
+        $node->activate($mockExecute);
 
-		$this->assert->exception(function () use ($node, $mockExecute) {
-			$node->execute($mockExecute);
-		})->hasMessage('Unable to use this node if counter service is not set');
+        $this->assert->exception(function () use ($node, $mockExecute) {
+            $node->execute($mockExecute);
+        })->hasMessage('Unable to use this node if counter service is not set');
 
-		$counter = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExternalCounterInterface();
-		$counter->getMockController()->getNext = 1;
-		$node->setExternalCounter($counter);
+        $counter = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExternalCounterInterface();
+        $counter->getMockController()->getNext = 1;
+        $node->setExternalCounter($counter);
 
-		$this->assert->boolean($node->execute($mockExecute))->isTrue();
+        $this->assert->boolean($node->execute($mockExecute))->isTrue();
 
-		$this->assert->boolean($mockExecute->hasVariable('counter'))->isTrue();
-		$this->assert->integer($mockExecute->getVariable('counter'))->isEqualTo(1);
+        $this->assert->boolean($mockExecute->hasVariable('counter'))->isTrue();
+        $this->assert->integer($mockExecute->getVariable('counter'))->isEqualTo(1);
 
-	}
+    }
 }

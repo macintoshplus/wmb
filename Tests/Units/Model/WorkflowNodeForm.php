@@ -23,8 +23,14 @@ class WorkflowNodeForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -127,8 +133,14 @@ class WorkflowNodeForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -259,8 +271,14 @@ class WorkflowNodeForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -412,8 +430,14 @@ class WorkflowNodeForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -580,8 +604,14 @@ class WorkflowNodeForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -741,8 +771,14 @@ class WorkflowNodeForm extends Units\Test
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
         $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 

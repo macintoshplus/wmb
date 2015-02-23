@@ -12,6 +12,9 @@ use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterfac
 use JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Psr\Log\LoggerInterface;
+use \Swift_Mailer;
+use \Twig_Environment;
 
 /**
  * Workflow executer that suspends and resumes workflow
@@ -55,7 +58,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      * @param  int          $executionId
      * @throws WorkflowExecutionException
      */
-    public function __construct(EntityManagerInterface $entityManager, WorkflowDefinitionStorageInterface $definitionService, SecurityContextInterface $security, $executionId = null)
+    public function __construct(EntityManagerInterface $entityManager, WorkflowDefinitionStorageInterface $definitionService, SecurityContextInterface $security, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig, $executionId = null)
     {
         if ($executionId !== null && !is_int($executionId)) {
             throw new WorkflowExecutionException('$executionId must be an integer.');

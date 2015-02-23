@@ -7,6 +7,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Psr\Log\LoggerInterface;
 use \Swift_Mailer;
 use \Twig_Environment;
 
@@ -66,7 +67,7 @@ class WorkflowDatabaseExecutionFactory
      */
     public function executionById($id)
     {
-        $execution = new WorkflowDatabaseExecution($this->entityManager, $this->definitionService, $this->security, $id);
+        $execution = new WorkflowDatabaseExecution($this->entityManager, $this->definitionService, $this->security, $this->logger, $this->mailer, $this->twig, $id);
         return $execution;
 
     }
@@ -84,7 +85,7 @@ class WorkflowDatabaseExecutionFactory
         if ($wf->isArchived()) {
             throw new WorkflowExecutionException("Unable to create new execution for a archived definition");
         }
-        $execution = new WorkflowDatabaseExecution($this->entityManager, $this->definitionService, $this->security);
+        $execution = new WorkflowDatabaseExecution($this->entityManager, $this->definitionService, $this->security, $this->logger, $this->mailer, $this->twig);
         $execution->workflow = $wf;
         return $execution;
     }

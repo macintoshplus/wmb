@@ -6,202 +6,235 @@ use atoum\AtoumBundle\Test\Units;
 use Buzz\Browser;
 use Mock;
 
-
+/**
+ * 
+ */
 class WorkflowNodeAddExecutionUser extends Units\Test
 {
-	public function test_init_form()
-	{
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
+    public function test_init_form()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function() {};
 
-		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
 
-		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
-		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
 
-		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
-		$mockExecute->getMockController()->getId = 1;
+        //, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig
 
-		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array());
-		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
 
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
 
-		$node->activate($mockExecute);
-
-		$this->assert->exception(function () use ($node, $mockExecute) {
-			$node->execute($mockExecute);
-		})->hasMessage('Unable to use this node if form internal name is not set');
-
-	}
-
-	public function test_init_field()
-	{
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
-
-		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
-
-		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
-
-		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
-
-		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
-		$mockExecute->getMockController()->getId = 1;
-
-		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1'));
-		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array());
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
 
 
-		$node->activate($mockExecute);
+        $node->activate($mockExecute);
 
-		$this->assert->exception(function () use ($node, $mockExecute) {
-			$node->execute($mockExecute);
-		})->hasMessage('Unable to use this node if field internal name is not set');
+        $this->assert->exception(function () use ($node, $mockExecute) {
+            $node->execute($mockExecute);
+        })->hasMessage('Unable to use this node if form internal name is not set');
 
-	}
+    }
 
+    public function test_init_field()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function() {};
 
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
 
-	public function test_add_first_role()
-	{
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
-		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
 
-		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
 
-		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
-
-		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
-		$mockExecute->getMockController()->getId = 1;
-
-		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
-		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
-
-		$user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
-		$user->setUsername('admin');
-
-        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
-        $mock->getMockController()->getAnswer = $user;
-
-		$mockExecute->setVariable('form1',array($mock));
-
-		$node->activate($mockExecute);
-
-		$this->assert->boolean($node->execute($mockExecute))->isTrue();
-
-		$this->assert->array($mockExecute->getRoles())->hasSize(1)->contains($user);
-
-	}
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1'));
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
 
 
-	public function test_tow_roles()
-	{
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
+        $node->activate($mockExecute);
 
-		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
+        $this->assert->exception(function () use ($node, $mockExecute) {
+            $node->execute($mockExecute);
+        })->hasMessage('Unable to use this node if field internal name is not set');
 
-		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+    }
 
-		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
 
-		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
-		$mockExecute->getMockController()->getId = 1;
 
-		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
-		$node2 = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user2'));
-		
-		//$node->addOutNode($node2);
-		$endNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
-		$node->addOutNode($endNode);
-		$node2->addOutNode($endNode);
+    public function test_add_first_role()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function() {};
 
-		$user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
-		$user->setUsername('admin');
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
 
-		$user2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
-		$user2->setUsername('admin2');
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+
+
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+
+        $user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+        $user->setUsername('admin');
 
         $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
         $mock->getMockController()->getAnswer = $user;
 
-		$mockExecute->setVariable('form1',array($mock));
+        $mockExecute->setVariable('form1',array($mock));
 
-		$node->activate($mockExecute);
+        $node->activate($mockExecute);
 
-		$this->assert->boolean($node->execute($mockExecute))->isTrue();
+        $this->assert->boolean($node->execute($mockExecute))->isTrue();
 
-		$this->assert->array($mockExecute->getRoles())->hasSize(1)->contains($user);
+        $this->assert->array($mockExecute->getRoles())->hasSize(1)->contains($user);
+
+    }
+
+
+    public function test_tow_roles()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function() {};
+
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
+
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+
+
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
+        $node2 = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user2'));
+        
+        //$node->addOutNode($node2);
+        $endNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd();
+        $node->addOutNode($endNode);
+        $node2->addOutNode($endNode);
+
+        $user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+        $user->setUsername('admin');
+
+        $user2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+        $user2->setUsername('admin2');
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getAnswer = $user;
+
+        $mockExecute->setVariable('form1',array($mock));
+
+        $node->activate($mockExecute);
+
+        $this->assert->boolean($node->execute($mockExecute))->isTrue();
+
+        $this->assert->array($mockExecute->getRoles())->hasSize(1)->contains($user);
 
 
         $mock->getMockController()->getAnswer = $user2;
-		$node2->activate($mockExecute);
+        $node2->activate($mockExecute);
 
-		$this->assert->boolean($node2->execute($mockExecute))->isTrue();
+        $this->assert->boolean($node2->execute($mockExecute))->isTrue();
 
-		$this->assert->array($mockExecute->getRoles())->hasSize(2)->containsValues(array($user, $user2));
+        $this->assert->array($mockExecute->getRoles())->hasSize(2)->containsValues(array($user, $user2));
 
-	}
+    }
 
 
-	public function test_set_with_array()
-	{
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
+    public function test_set_with_array()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function() {};
 
-		$entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
-		//$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
-		//$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
-		//$repo->getMockController()->getExecutionById = array();
-		//$entityManager->getMockController()->getRepository = $repo;
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
 
-		$definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
-		$security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
 
-		$mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, null, $controller);
-		$mockExecute->getMockController()->getId = 1;
 
-		$node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
-		$node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
 
-		$user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
-		$user->setUsername('admin');
-		$user2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
-		$user2->setUsername('admin2');
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+
+        $user = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+        $user->setUsername('admin');
+        $user2 = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRole();
+        $user2->setUsername('admin2');
 
         $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
         $mock->getMockController()->getAnswer = array($user, $user2);
 
-		$mockExecute->setVariable('form1',array($mock));
+        $mockExecute->setVariable('form1',array($mock));
 
-		$node->activate($mockExecute);
+        $node->activate($mockExecute);
 
-		$this->assert->exception(function () use ($node, $mockExecute) {
-			$node->execute($mockExecute);
-		})->hasMessage('Unable to set user on execution');
-		
+        $this->assert->exception(function () use ($node, $mockExecute) {
+            $node->execute($mockExecute);
+        })->hasMessage('Unable to set user on execution');
+        
 
-		$this->assert->variable($mockExecute->getRoles())->isNull();
+        $this->assert->variable($mockExecute->getRoles())->isNull();
 
-	}
+    }
 }
