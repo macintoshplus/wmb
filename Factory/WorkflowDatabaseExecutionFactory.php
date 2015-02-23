@@ -7,6 +7,8 @@ use JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use \Swift_Mailer;
+use \Twig_Environment;
 
 /**
 * Execution factory
@@ -32,12 +34,30 @@ class WorkflowDatabaseExecutionFactory
      **/
     private $security;
 
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
-    public function __construct(EntityManager $entityManager,DefinitionManager $definitionService, SecurityContextInterface $security)
+    /**
+     * @var Swift_Mailer
+     */
+    protected $mailer;
+
+    /**
+     * @var Twig_Environment
+     */
+    protected $twig;
+
+
+    public function __construct(EntityManager $entityManager, DefinitionManager $definitionService, SecurityContextInterface $security, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig)
     {
         $this->definitionService = $definitionService;
         $this->entityManager = $entityManager;
         $this->security = $security;
+        $this->logger = $logger;
+        $this->mailer = $mailer;
+        $this->twig = $twig;
     }
 
     /**

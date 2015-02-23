@@ -21,14 +21,15 @@ services:
 
     jb_nahan_workflow_manager.workflow_execution_database_factory:
         class: %jb_nahan_workflow_manager.workflow_execution_database_factory.class%
-        arguments: [@doctrine.orm.default_entity_manager, @jb_nahan.definition_manager, @security.context]
+        arguments: [@doctrine.orm.default_entity_manager, @jb_nahan.definition_manager, @security.context, @logger, @mailer, @twig]
+        tags:
+            - { name: monolog.logger, channel: execution }
 
     jb_nahan.execution_factory:
         alias: jb_nahan_workflow_manager.workflow_execution_database_factory
 
     jb_nahan.node_factory:
         class: %jb_nahan_workflow_manager.workflow_node_factory.class%
-        arguments: [ @mailer, @twig ]
 
     jb_nahan.twig_string_loader:
         class: Twig_Loader_String
