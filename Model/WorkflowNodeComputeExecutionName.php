@@ -14,8 +14,6 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 class WorkflowNodeComputeExecutionName extends WorkflowNode
 {
 
-    private $twig;
-
     /**
      * @param array $configuration
      */
@@ -53,7 +51,7 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
     public function execute(WorkflowExecution $execution)
     {
 
-        if (!isset($this->twig)) {
+        if (!$execution->hasTwig()) {
             throw new \Exception("Enable to use this node if twig service is not set");
         }
 
@@ -78,14 +76,5 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
 
         return parent::execute($execution);
 
-    }
-
-    /**
-     * defini le service de rendu des templates
-     * @param Twig $twig;
-     */
-    public function setTwig(Twig_Environment $twig)
-    {
-        $this->twig = $twig;
     }
 }

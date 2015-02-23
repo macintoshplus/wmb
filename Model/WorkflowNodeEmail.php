@@ -49,7 +49,7 @@ class WorkflowNodeEmail extends WorkflowNode
     public function setFrom($from)
     {
         $this->configuration['from'] = $from;
-        
+
         return $this;
     }
 
@@ -73,7 +73,7 @@ class WorkflowNodeEmail extends WorkflowNode
             $to = implode(',', $unique);
         }
         $this->configuration['to'] = $to;
-        
+
         return $this;
     }
 
@@ -92,7 +92,7 @@ class WorkflowNodeEmail extends WorkflowNode
     public function setSubject($subject)
     {
         $this->configuration['subject'] = $subject;
-        
+
         return $this;
     }
 
@@ -108,7 +108,7 @@ class WorkflowNodeEmail extends WorkflowNode
     public function setBody($body)
     {
         $this->configuration['body'] = $body;
-        
+
         return $this;
     }
 
@@ -124,10 +124,10 @@ class WorkflowNodeEmail extends WorkflowNode
     public function execute(WorkflowExecution $execution)
     {
 
-        if (!isset( $this->mailer)) {
+        if (!$execution->hasMailer()) {
             throw new \Exception("Enable to use this node if mailer service is not set");
         }
-        if (!isset( $this->twig)) {
+        if (!$execution->hasTwig()) {
             throw new \Exception("Enable to use this node if twig service is not set");
         }
 
@@ -140,9 +140,9 @@ class WorkflowNodeEmail extends WorkflowNode
         $variables['workflow_id'] = $execution->workflow->id;
         $variables['now'] = new \DateTime();
 
-        $subject = $this->twig->render($this->configuration['subject'], $variables);
-        $body = $this->twig->render($this->configuration['body'], $variables);
-        
+        $subject = $execution->renderTemplate($this->configuration['subject'], $variables);
+        $body = $execution->renderTemplate($this->configuration['body'], $variables);
+
         $finalTo = $this->configuration['to'];
         //if ('user' === $this->configuration['to']) {
         //Ajoute les emails des utilisateurs de l'execution
@@ -166,19 +166,20 @@ class WorkflowNodeEmail extends WorkflowNode
         ->setFrom($this->configuration['from'])
         ->setTo($toArray)
         ->setBody($body) ;
-        
+
         $recipient = array();
-        $sent = $this->mailer->send($message, $recipient);
+        $sent = $execution->mailerSend($message, $recipient);
 
         if (0 < count($recipient)) {
             return false;
         }
-        
+
         $this->activateNode($execution, $this->outNodes[0]);
 
         return parent::execute($execution);
 
     }
+
     /**
      * defini le service d'envoie des emails
      * @param Swit_Mailer $mailer

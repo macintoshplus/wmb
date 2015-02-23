@@ -7,6 +7,9 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\ExecutionVoterInterface;
+use Psr\Log\LoggerInterface;
+use \Swift_Mailer;
+use \Twig_Environment;
 
 abstract class WorkflowExecution implements ExecutionVoterInterface
 {
@@ -25,6 +28,21 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
      * @var SecurityContextInterface
      **/
     protected $security;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var Swift_Mailer
+     */
+    protected $mailer;
+
+    /**
+     * @var Twig_Environment
+     */
+    protected $twig;
 
     /**
      * Execution ID.
@@ -126,9 +144,12 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     /**
      * @param SecurityContextInterface $security
      */
-    public function __construct(SecurityContextInterface $security)
+    public function __construct(SecurityContextInterface $security, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig)
     {
         $this->security = $security;
+        $this->logger = $logger;
+        $this->mailer = $mailer;
+        $this->twig = $twig;
     }
 
     /**
@@ -384,7 +405,7 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
                 'Unable to cancel execution (execution ended or cancelled)'
             );
         }
-        
+
         if ($node !== null) {
             foreach ($this->plugins as $plugin) {
                 $plugin->afterNodeExecuted($this, $node);
@@ -879,7 +900,7 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      * @ignore
      */
     public function getName()
@@ -1058,6 +1079,44 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     public function getSecurityContext()
     {
         return $this->security;
+    }
+
+    public function hasMailer()
+    {
+        return (null !== $this->mailer);
+    }
+
+    public function mailerSend(\Swift_Message $message)
+    {
+        $this->mailer->send($message);
+    }
+
+    public function hasTwig()
+    {
+        return (null !== $this->twig);
+    }
+
+    public function renderTemplate($template)
+    {
+        $variables = $execution->getVariables();
+        $variables['execution_id'] = $execution->getId();
+        $variables['execution_name'] = $execution->getName();
+        $variables['execution_ended'] = $execution->hasEnded();
+        $variables['execution_cancelled'] = $execution->isCancelled();
+        $variables['workflow_name'] = $execution->workflow->name;
+        $variables['workflow_id'] = $execution->workflow->id;
+        $variables['now'] = new \DateTime();
+        $variables['users_name'] = '';
+        if (null !== $execution->getRoles() && 0 < count($execution->getRoles())) {
+            $roles = $execution->getRoles();
+            $name = '';
+            foreach ($roles as $role) {
+                $name .= (('' === $name)? '':', ').$role->__toString();
+            }
+            $variables['users_name'] = $name;
+        }
+
+        return $this->twig->render($template, $variables);
     }
 
     /**
