@@ -15,9 +15,6 @@ class WorkflowNodeEmail extends WorkflowNode
 {
 
     const AFFECTED_EXECUTION_USER = 'user@execution.tld';
-    private $mailer;
-
-    private $twig;
 
     /**
      * @param array $configuration
@@ -181,23 +178,5 @@ class WorkflowNodeEmail extends WorkflowNode
 
         return parent::execute($execution);
 
-    }
-
-    /**
-     * defini le service d'envoie des emails
-     * @param Swit_Mailer $mailer
-     */
-    public function setMailer(Swift_Mailer $mailer)
-    {
-        $this->mailer = $mailer;
-    }
-
-    /**
-     * defini le service de rendu des templates
-     * @param Twig $twig;
-     */
-    public function setTwig(Twig_Environment $twig)
-    {
-        $this->twig = $twig;
     }
 }
