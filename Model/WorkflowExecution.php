@@ -1107,11 +1107,12 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
 
     /**
      * @param \Swift_Message $message
+     * @param array          $failedRecipients
      * @return int
      */
-    public function mailerSend(\Swift_Message $message)
+    public function mailerSend(\Swift_Message $message, &$failedRecipients = null)
     {
-        return $this->mailer->send($message);
+        return $this->mailer->send($message, $failedRecipients);
     }
 
     /**
@@ -1126,9 +1127,9 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
      * @param string $template
      * @return string
      */
-    public function renderTemplate($template)
+    public function renderTemplate($template, array $variables = array())
     {
-        $variables = $this->getVariables();
+        $variables = array_merge($variables, $this->getVariables());
         $variables['execution_id'] = $this->getId();
         $variables['execution_name'] = $this->getName();
         $variables['execution_ended'] = $this->hasEnded();

@@ -128,17 +128,8 @@ class WorkflowNodeEmail extends WorkflowNode
             throw new \Exception("Unable to use this node if twig service is not set");
         }
 
-        $variables = $execution->getVariables();
-        $variables['execution_id'] = $execution->getId();
-        $variables['execution_name'] = $execution->getName();
-        $variables['execution_ended'] = $execution->hasEnded();
-        $variables['execution_cancelled'] = $execution->isCancelled();
-        $variables['workflow_name'] = $execution->workflow->name;
-        $variables['workflow_id'] = $execution->workflow->id;
-        $variables['now'] = new \DateTime();
-
-        $subject = $execution->renderTemplate($this->configuration['subject'], $variables);
-        $body = $execution->renderTemplate($this->configuration['body'], $variables);
+        $subject = $execution->renderTemplate($this->configuration['subject']);
+        $body = $execution->renderTemplate($this->configuration['body']);
 
         $finalTo = $this->configuration['to'];
         //if ('user' === $this->configuration['to']) {
