@@ -6,6 +6,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsInstanceOf;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
 use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface;
 
 /**
@@ -369,7 +370,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
     public function verify()
     {
-        parent::verify();
+        //parent::verify();
 
         //une réponse mais pas 1
         if ($this->getMinResponse() === $this->getMaxResponse() && $this->getMinResponse() !== 1) {
@@ -380,9 +381,18 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 )
             );
         }
+        //min > max
+        if ($this->getMinResponse() > $this->getMaxResponse()) {
+            throw new WorkflowInvalidWorkflowException(
+                sprintf(
+                    'Node form "%s" has min response greater than max response.',
+                    $this->getInternalName()
+                )
+            );
+        }
 
         //plusieurs réponses avec auto enable
-        if ($this->getMinResponse() < $this->getMaxResponse() && !$this->doConfirmContinue()) {
+        if ($this->getMinResponse() < $this->getMaxResponse() && true === $this->getAutoContinue()) {
             throw new WorkflowInvalidWorkflowException(
                 sprintf(
                     'Node form "%s" has many response required and auto_continue enable. Please disable it.',

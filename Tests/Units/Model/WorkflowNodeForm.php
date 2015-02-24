@@ -940,4 +940,191 @@ class WorkflowNodeForm extends Units\Test
             ->hasKeys(array('form_test1_response', 'form_test1_continue'));
 
     }
+
+
+    public function test_has_role()
+    {
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('test1','test5'));
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        
+        $this->assert->boolean($node->hasRoleUsername('test1'))->isTrue();
+        $this->assert->boolean($node->hasRoleUsername('test2'))->isFalse();
+
+        $this->assert->boolean($node->hasRoles(array('test2', 'test1')))->isTrue();
+        $this->assert->boolean($node->hasRoles(array('test2', 'test3')))->isFalse();
+
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>null);
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        
+        $this->assert->boolean($node->hasRoleUsername('test2'))->isFalse();
+
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array());
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        
+        $this->assert->boolean($node->hasRoleUsername('test2'))->isFalse();
+    }
+
+    public function test_set_get()
+    {
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('test1','test5'));
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        
+        $this->assert->object($node->setMaxResponse(2))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm');
+
+        $this->assert->object($node->setMinResponse(1))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm');
+
+        $this->assert->exception(function () use ($node){
+            $node->setMaxResponse('465fgsd');
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException');
+
+        $this->assert->exception(function () use ($node){
+            $node->setMinResponse('465fgsd');
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException');
+
+        $this->assert->object($node->setInternalName('1'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm');
+
+        $this->assert->object($node->setAutoContinue(false))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm');
+
+        $this->assert->boolean($node->getAutoContinue())->isFalse();
+
+        $this->assert->exception(function () use ($node){
+            $node->setAutoContinue('465fgsd');
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException');
+
+        $this->assert->object($node->setRoles(array('test')))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm');
+
+    }
+
+    public function test_single_response()
+    {
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('test1','test5'));
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        
+        $this->assert->boolean($node->dosingleResponse())->isTrue();
+
+        $config=array('min_response'=>1,
+            'max_response'=>2,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('test1','test5'));
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        
+        $this->assert->boolean($node->dosingleResponse())->isFalse();
+
+    }
+
+    public function test_responseIsEnough()
+    {
+        $controller = new \atoum\mock\controller();
+        $controller->__construct = function () {};
+
+        $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        //$meta = new Mock\Doctrine\ORM\Mapping\ClassMetadata();
+        //$repo = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository(null, $meta);
+        //$repo->getMockController()->getExecutionById = array();
+        //$entityManager->getMockController()->getRepository = $repo;
+
+        $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
+
+        $security = new Mock\Symfony\Component\Security\Core\SecurityContextInterface();
+        $mockLogger = new Mock\Psr\Log\LoggerInterface();
+        $controllerSwift = new \atoum\mock\controller();
+        $controllerSwift->__construct = function () {};
+        $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
+        $mockTwig = new Mock\Twig_Environment();
+        //, $mockLogger, $mockSwift, $mockTwig
+
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute->getMockController()->getId = 1;
+        //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
+
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('test1','test5'));
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->activate($mockExecute);
+
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+
+        $this->assert->boolean($node->responseIsEnough($mockExecute))->isFalse();
+
+        $mock = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface();
+        $mock->getMockController()->getId = 5;
+        $mock->getMockController()->getName = 'new value';
+        $mockExecute->setVariable('form_test1_response', $mock);
+
+        $this->assert->boolean($node->execute($mockExecute))->isFalse();
+
+        $this->assert->boolean($node->responseIsEnough($mockExecute))->isTrue();
+    }
+
+    public function test_verify()
+    {
+
+        $config=array('min_response'=>2,
+            'max_response'=>2,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>true,
+            'roles'=>array('test1','test5'));
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->addInNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart());
+        
+        $node->setMinResponse(2);
+        //var_dump($node->verify());
+        //var_dump($node);
+
+        $this->assert->exception(function() use ($node) {
+            $node->verify();
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
+        ->message->contains('Please set 1 for min and max.');
+
+
+        $node->setMinResponse(1);
+        $node->setMaxResponse(5);
+        $node->setAutoContinue(true);
+        $this->assert->exception(function() use ($node) {
+            $node->verify();
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
+        ->message->contains('many response required and auto_continue enable');
+        //JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException
+        
+
+        $node->setMinResponse(5);
+        $node->setMaxResponse(1);
+        $this->assert->exception(function() use ($node) {
+            $node->verify();
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
+        ->message->contains('min response greater than max response');
+    }
 }
