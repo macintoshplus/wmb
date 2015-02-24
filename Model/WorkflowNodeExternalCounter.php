@@ -29,7 +29,10 @@ class WorkflowNodeExternalCounter extends WorkflowNode
     {
 
         if (!isset($configuration['var_name'])) {
-            $configuration['var_name'] = 'counter';
+            $configuration['var_name'] = null;
+        }
+        if (!isset($configuration['counter_name'])) {
+            $configuration['counter_name'] = null;
         }
 
         parent::__construct($configuration);
@@ -52,7 +55,7 @@ class WorkflowNodeExternalCounter extends WorkflowNode
         if (!is_string($varName)) {
             throw new BaseValueException('var_name', $varName, 'WorkflowNodeExternalCounter');
         }
-        $this->configuration['var_name'] = $var_name;
+        $this->configuration['var_name'] = $varName;
 
         return $this;
     }
@@ -108,11 +111,11 @@ class WorkflowNodeExternalCounter extends WorkflowNode
     {
         parent::verify();
 
-        if (null === $this->configuration['var_name']) {
+        if (null === $this->getVarName()) {
             throw new WorkflowInvalidWorkflowException('Node external counter has no variable name.');
         }
 
-        if (null === $this->configuration['counter_name']) {
+        if (null === $this->getCounterName()) {
             throw new WorkflowInvalidWorkflowException('Node external counter name has not set.');
         }
 

@@ -33,7 +33,7 @@ class WorkflowNodeExternalCounter extends Units\Test
         $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
-        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter(array('counter_name'=>'dde'));
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter(array('var_name'=>'counter', 'counter_name'=>'dde'));
         $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
 
 
