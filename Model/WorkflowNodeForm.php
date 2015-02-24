@@ -190,7 +190,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     {
         $nbResponse = count($this->getResponses($execution));
         //réponse unique
-        if ($this->getMinResponse() === $this->getMaxResponse() && 1 === $nbResponse) {
+        if ($this->doSingleResponse() && 1 === $nbResponse) {
             return true;
         }
         //réponse multiple
@@ -208,6 +208,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
             return true;
         }
         //Par défaut
+        //Cas du : trop de réponse
         return false;
     }
 

@@ -1086,6 +1086,11 @@ class WorkflowNodeForm extends Units\Test
         $this->assert->boolean($node->execute($mockExecute))->isFalse();
 
         $this->assert->boolean($node->responseIsEnough($mockExecute))->isTrue();
+
+        $mockExecute->setVariable('form_test1', array($mock, $mock));
+        
+        $this->assert->boolean($node->responseIsEnough($mockExecute))->isFalse();
+
     }
 
     public function test_verify()
@@ -1126,5 +1131,9 @@ class WorkflowNodeForm extends Units\Test
             $node->verify();
         })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
         ->message->contains('min response greater than max response');
+
+        $node->setMinResponse(1);
+        $node->setMaxResponse(1);
+        $this->variable($node->verify())->isNull();
     }
 }
