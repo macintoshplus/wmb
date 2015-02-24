@@ -53,4 +53,34 @@ class WorkflowNodeExternalCounter extends Units\Test
         $this->assert->integer($mockExecute->getVariable('counter'))->isEqualTo(1);
 
     }
+
+    public function test_verify()
+    {
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter();
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->addInNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart());
+
+        $this->assert->exception(function () use ($node) {
+            $node->verify();
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
+        ->hasMessage('Node external counter has no variable name.');
+
+        $this->assert->object($node->setVarName('test'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter');
+        $this->assert->exception(function () use ($node) {
+            $node->setVarName(123);
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException');
+        
+        $this->assert->exception(function () use ($node) {
+            $node->verify();
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
+        ->hasMessage('Node external counter name has not set.');
+        
+        $this->assert->object($node->setCounterName('test'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeExternalCounter');
+        $this->assert->exception(function () use ($node) {
+            $node->setCounterName(123);
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException');
+        
+        $this->assert->variable($node->verify())->isNull();
+
+    }
 }

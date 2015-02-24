@@ -3,6 +3,7 @@
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
 
 /**
  * WorkflowNodeExternalCounter class
@@ -91,7 +92,7 @@ class WorkflowNodeExternalCounter extends WorkflowNode
 
     public function execute(WorkflowExecution $execution)
     {
-        if (!isset($this->counter)){
+        if (!isset($this->counter)) {
             throw new \Exception("Unable to use this node if counter service is not set");
         }
 
