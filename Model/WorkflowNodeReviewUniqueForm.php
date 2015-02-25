@@ -8,6 +8,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual;
 use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterInterface;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
 
 /**
  * WorkflowNodeReviewUniqueForm class
