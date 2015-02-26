@@ -20,5 +20,7 @@ class WorkflowConditionIsInstanceOf extends Units\Test
 
 
         $this->assert->boolean($condition->evaluate($mock))->isTrue();
+
+        $this->assert->string($condition->getValue())->isEqualTo('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeFormResponseInterface');
     }
 }
