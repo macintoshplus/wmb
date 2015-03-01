@@ -114,5 +114,11 @@ class WorkflowNodeEmail extends Units\Test
         $this->assert->string($node->getSubject())->isEqualTo('Email from Workflow');
         $this->assert->string($node->getBody())->contains('This is a email send by Workflow');
 
+        $this->assert->object($node->setFrom('toto@toto.fr'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail');
+        $this->assert->object($node->setSubject('Subject'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail');
+        $this->assert->object($node->setTo('toto@toto.fr'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail');
+        $this->assert->object($node->setTo(array('toto@toto.fr', 'dede@toto.fr')))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail');
+        $this->assert->object($node->setBody('Body contents'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail');
+
     }
 }
