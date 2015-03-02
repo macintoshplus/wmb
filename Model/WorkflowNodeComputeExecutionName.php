@@ -68,7 +68,8 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
             }
             $array['users_name'] = $name;
         }
-        $name = $this->twig->render($this->configuration['template'], $array);
+        
+        $name = $execution->renderTemplate($this->configuration['template']);
 
         $execution->setName($name);
 
