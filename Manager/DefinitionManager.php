@@ -185,16 +185,7 @@ class DefinitionManager extends BaseWorkflowDefinitionStorage
             } elseif ($nodes[$nodeDbId] instanceof WorkflowNodeStart && !isset($startNode)) {
                 $startNode = $nodes[$nodeDbId];
             }
-            if ($nodes[$nodeDbId] instanceof WorkflowNodeEmail) {
-                $nodes[$nodeDbId]->setMailer($this->mailer);
-                $nodes[$nodeDbId]->setTwig($this->twig);
-            }
-            if ($nodes[$nodeDbId] instanceof WorkflowNodeComputeExecutionName) {
-                $nodes[$nodeDbId]->setTwig($this->twig);
-            }
         }
-
-
 
         if (!isset($startNode) || !isset($defaultEndNode)) {
             throw new WorkflowDefinitionStorageException('Could not load workflow definition.');
