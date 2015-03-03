@@ -37,7 +37,8 @@ class WorkflowNodeCancel extends WorkflowNodeEnd
      */
     public function activate(WorkflowExecution $execution, WorkflowNode $activatedFrom = null, $threadId = 0)
     {
+        $execution->info(sprintf('This execution will be cancelled by node (%s) id %d', ((null === $activatedFrom)? '':get_class($activatedFrom)), ((null === $activatedFrom)? '':$activatedFrom->getId())));
         $execution->cancel($this);
+        $execution->info('This execution was cancelled');
     }
 }
-

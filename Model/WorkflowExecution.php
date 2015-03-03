@@ -248,8 +248,10 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     public function start($parentId = null)
     {
         if ($this->workflow === null) {
+            $err = 'No workflow has been set up for execution.';
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                'No workflow has been set up for execution.'
+                $err
             );
         }
 
@@ -293,8 +295,10 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     public function suspend()
     {
         if ($this->cancelled || $this->ended) {
+            $err = 'Unable to suspend execution (execution ended or cancelled)';
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                'Unable to suspend execution (execution ended or cancelled)'
+                $err
             );
         }
 
@@ -338,14 +342,18 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     public function resume(array $inputData = array())
     {
         if ($this->getId() === null) {
+            $err = 'No execution id given.';
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                'No execution id given.'
+                $err
             );
         }
 
         if ($this->cancelled || $this->ended) {
+            $err = 'Unable to resume execution (execution ended or cancelled)';
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                'Unable to resume execution (execution ended or cancelled)'
+                $err
             );
         }
 
@@ -371,7 +379,9 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
         }
 
         if (!empty($errors)) {
-            throw new WorkflowInvalidInputException($errors);
+            $err = new WorkflowInvalidInputException($errors);
+            $this->critical($err->getMessage());
+            throw $err;
         }
 
         foreach ($this->plugins as $plugin) {
@@ -397,12 +407,16 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     {
         //Vérifie la possibilité d'annuler que si c'est en provenance de l'utilisateur ($node est null)
         if (false === $this->cancellable && null === $node) {
-            throw new \Exception("Unable to cancel this execution.");
+            $err = "Unable to cancel this execution.";
+            $this->critical($err);
+            throw new \Exception($err);
         }
 
         if ($this->cancelled || $this->ended) {
+            $err = 'Unable to cancel execution (execution ended or cancelled)';
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                'Unable to cancel execution (execution ended or cancelled)'
+                $err
             );
         }
 
@@ -442,8 +456,10 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     {
 
         if ($this->cancelled || $this->ended) {
+            $err = 'Unable to end this execution (execution ended or cancelled)';
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                'Unable to end this execution (execution ended or cancelled)'
+                $err
             );
         }
 
@@ -549,8 +565,11 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
         if ($this->cancelled ||
              !$node->isExecutable() ||
              in_array($node, $this->activatedNodes) !== false) {
+            $this->debug(sprintf('cannot activate node ID %d class %s', $node->getId(), get_class($node)));
             return false;
         }
+
+        $this->debug(sprintf('activate node ID %d class %s', $node->getId(), get_class($node)));
 
         $activateNode = true;
 
@@ -597,6 +616,8 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
      */
     public function addWaitingFor(WorkflowNode $node, $variableName, WorkflowConditionInterface $condition)
     {
+        $this->debug(sprintf('node ID %d class %s add waiting for %s with condition %s', $node->getId(), get_class($node), $variableName, $condition));
+
         if (!isset($this->waitingFor[$variableName])) {
             $this->waitingFor[$variableName] = array(
               'node' => $node->getId(),
@@ -657,11 +678,10 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
                 $plugin->afterThreadEnded($this, $threadId);
             }
         } else {
+            $err = sprintf('There is no thread with id #%d.', $threadId);
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                sprintf(
-                    'There is no thread with id #%d.',
-                    $threadId
-                )
+                $err
             );
         }
     }
@@ -837,7 +857,9 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     public function setCancellable($cancellable)
     {
         if (!is_bool($cancellable)) {
-            throw new BaseValueException("cancellable", $cancellable, 'boolean', 'property');
+            $err = new BaseValueException("cancellable", $cancellable, 'boolean', 'property');
+            $this->critical($err->getMessage());
+            throw $err;
         }
         $this->cancellable = $cancellable;
 
@@ -919,11 +941,10 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
         if (array_key_exists($variableName, $this->variables)) {
             return $this->variables[$variableName];
         } else {
+            $err = sprintf('Variable "%s" does not exist.', $variableName);
+            $this->critical($err);
             throw new WorkflowExecutionException(
-                sprintf(
-                    'Variable "%s" does not exist.',
-                    $variableName
-                )
+                $err
             );
         }
     }
@@ -932,7 +953,9 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     {
         $answers = $this->getVariable($formName);
         if (!array_key_exists($id, $answers)) {
-            throw new \Exception(sprintf("Answers ID '%s' not found", $formAnswersId));
+            $err = sprintf("Answers ID '%s' not found", $formAnswersId);
+            $this->critical($err);
+            throw new \Exception($err);
         }
         return $answers[$id];
     }
@@ -1095,6 +1118,31 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    public function debug($msg)
+    {
+        $this->logger->debug(sprintf("[execution %d] %s", $this->id, $msg));
+    }
+
+    public function info($msg)
+    {
+        $this->logger->info(sprintf("[execution %d] %s", $this->id, $msg));
+    }
+
+    public function warning($msg)
+    {
+        $this->logger->warning(sprintf("[execution %d] %s", $this->id, $msg));
+    }
+
+    public function error($msg)
+    {
+        $this->logger->error(sprintf("[execution %d] %s", $this->id, $msg));
+    }
+
+    public function critical($msg)
+    {
+        $this->logger->critical(sprintf("[execution %d] %s", $this->id, $msg));
     }
 
     /**
