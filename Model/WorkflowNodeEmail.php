@@ -122,10 +122,14 @@ class WorkflowNodeEmail extends WorkflowNode
     {
 
         if (!$execution->hasMailer()) {
-            throw new \Exception("Unable to use this node if mailer service is not set");
+            $err = "Unable to use this node if mailer service is not set";
+            $execution->critical($err);
+            throw new \Exception($err);
         }
         if (!$execution->hasTwig()) {
-            throw new \Exception("Unable to use this node if twig service is not set");
+            $err = "Unable to use this node if twig service is not set";
+            $execution->critical($err);
+            throw new \Exception($err);
         }
 
         $subject = $execution->renderTemplate($this->configuration['subject']);
@@ -137,8 +141,9 @@ class WorkflowNodeEmail extends WorkflowNode
         if (false !== strpos($finalTo, WorkflowNodeEmail::AFFECTED_EXECUTION_USER)) {
             $array = $execution->getRoles();
             if (null === $array || 0 === count($array)) {
-                $execution->getLogger()->error("Unable to use 'user' in 'to' email field");
-                throw new \Exception("Unable to use 'user' in 'to' email field");
+                $err = "Unable to use 'user' in 'to' email field";
+                $execution->critical($err);
+                throw new \Exception($err);
             }
 
             $toDef = '';
@@ -158,10 +163,10 @@ class WorkflowNodeEmail extends WorkflowNode
 
         $recipient = array();
         $sent = $execution->mailerSend($message, $recipient);
-        $execution->getLogger()->info(sprintf("Sent email at %d recipient.", $sent));
+        $execution->info(sprintf("Sent email at %d recipient.", $sent));
 
         if (0 < count($recipient)) {
-            $execution->getLogger()->warning("Unable to send at : ".implode(', ', $recipient));
+            $execution->warning("Unable to send at : ".implode(', ', $recipient));
             return false;
         }
 

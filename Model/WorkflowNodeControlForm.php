@@ -94,6 +94,7 @@ class WorkflowNodeControlForm extends WorkflowNodeConditionalBranch
     {
         //Ne passe pas si la date n'est pas passé !
         if ($this->configuration['out_date'] > new \DateTime()) {
+            $execution->debug("Date not pass : ".$this->configuration['out_date']->format('Y-m-d H:i:s'));
             return false;
         }
 
@@ -111,13 +112,11 @@ class WorkflowNodeControlForm extends WorkflowNodeConditionalBranch
 
         if (null === $this->configuration['out_date'] || !$this->configuration['out_date'] instanceof \DateTime) {
             throw new WorkflowInvalidWorkflowException(
-              sprintf(
-                'Node control form "%s" have not out date.',
-                $this->getInternalName()
-              )
+                sprintf(
+                    'Node control form "%s" have not out date.',
+                    $this->getInternalName()
+                )
             );
         }
-
     }
-
-} // END class WorkflowNodeForm
+}

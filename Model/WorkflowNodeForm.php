@@ -259,6 +259,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         if (!$execution->hasVariable($formName)) {
             $execution->setVariable($formName, array());
             $canExecute = false;
+            $execution->debug('Add variable');
         }
 
         //Vérifie si une réponse a été fournie
@@ -296,6 +297,8 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 $responsesDeleted[] = $response;
                 $execution->setVariable($formNameDeleted, $responsesDeleted);
 
+                $execution->info('Delete response !');
+
             } else {
                 //Pas supprimé
 
@@ -308,15 +311,20 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                     $response->setAnsweredAt(new \DateTime());
                 }
                 //si une réponse possible, il ajoute les données en remplaçant celle eventuellement présente
-                if ($this->getMaxResponse() === $this->getMinResponse()) {
+                if ($this->doSingleResponse()) {
                     $responses = array($response);
+                    $execution->info('Single response set !');
                 } else {
                     //Sinon, si la clée est initialisée, remplacement des données, sinon, ajout
                     if (isset($key)) {
                         $responses[$key] = $response;
+                        $execution->info('Response updated !');
                     } else {
                         if (false === $this->getMaxResponse() || count($responses) < $this->getMaxResponse()) {
                             $responses[substr(uniqid(), -8)] = $response;
+                            $execution->info(sprintf('Multiple response : Response add (count = %d) !', count($responses)));
+                        } else {
+                            $execution->warning(sprintf('Multiple response : Response not add (count = %d) !', count($responses)));
                         }
                     }
 

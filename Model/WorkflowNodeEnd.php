@@ -54,6 +54,7 @@ class WorkflowNodeEnd extends WorkflowNode
     public function execute(WorkflowExecution $execution)
     {
         $execution->end($this);
+        $execution->info('Workflow Ended !');
 
         return parent::execute($execution);
     }

@@ -73,6 +73,8 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
 
         $execution->setName($name);
 
+        $execution->info(sprintf('The execution has a new name "%s"', $name));
+
         $this->activateNode($execution, $this->outNodes[0]);
 
         return parent::execute($execution);

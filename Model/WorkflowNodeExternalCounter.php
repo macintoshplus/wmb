@@ -96,10 +96,16 @@ class WorkflowNodeExternalCounter extends WorkflowNode
     public function execute(WorkflowExecution $execution)
     {
         if (!isset($this->counter)) {
-            throw new \Exception("Unable to use this node if counter service is not set");
+            $err = "Unable to use this node if counter service is not set";
+            $execution->critical($err);
+            throw new \Exception($err);
         }
 
-        $execution->setVariable($this->configuration['var_name'], $this->counter->getNext($this->configuration['counter_name']));
+        $val = $this->counter->getNext($this->configuration['counter_name']);
+
+        $execution->setVariable($this->configuration['var_name'], $val);
+
+        $execution->info(sprintf('Variable "%s" defined whith value "%s"', $this->configuration['var_name'], $val));
 
         $this->activateNode($execution, $this->outNodes[0]);
 

@@ -70,7 +70,7 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
         if (!is_null($else)) {
             $this->addOutNode($else);
 
-            $key = array_search($else, $this->outNodes, true );
+            $key = array_search($else, $this->outNodes, true);
             $this->configuration['condition'][$key] = new WorkflowConditionNot($condition);
             $this->configuration['else'][$key] = true;
         }
@@ -153,9 +153,9 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
         }
 
         if ($this->minActivatedConditionalOutNodes !== false && $numActivatedConditionalOutNodes < $this->minActivatedConditionalOutNodes) {
-            throw new WorkflowExecutionException(
-              'Node activates less conditional outgoing nodes than required.'
-            );
+            $err = 'Node activates less conditional outgoing nodes than required.';
+            $execution->critical($err);
+            throw new WorkflowExecutionException($err);
         }
 
         return $this->activateOutgoingNodes($execution, $nodesToStart);
@@ -174,7 +174,7 @@ abstract class WorkflowNodeConditionalBranch extends WorkflowNodeBranch
 
         if ($this->minConditionalOutNodes !== false && $numConditionalOutNodes < $this->minConditionalOutNodes) {
             throw new WorkflowInvalidWorkflowException(
-              'Node has less conditional outgoing nodes than required.'
+                'Node has less conditional outgoing nodes than required.'
             );
         }
     }
