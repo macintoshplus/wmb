@@ -94,17 +94,23 @@ class WorkflowNodeAddExecutionUser extends WorkflowNode implements WorkflowNodeF
     {
 
         if (null === $this->configuration['form_internal_name']) {
-            throw new \Exception("Unable to use this node if form internal name is not set");
+            $err = "Unable to use this node if form internal name is not set";
+            $execution->critical($err);
+            throw new \Exception($err);
         }
 
         if (null === $this->configuration['field_internal_name']) {
-            throw new \Exception("Unable to use this node if field internal name is not set");
+            $err = "Unable to use this node if field internal name is not set";
+            $execution->critical($err);
+            throw new \Exception($err);
         }
 
         $roles = $this->getRolesFromForm($execution);
         if (null !== $roles) {
             if (!is_object($roles) || !($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRolesInterface)) {
-                throw new \Exception("Unable to set user on execution");
+                $err = "Unable to set user on execution";
+                $execution->critical($err);
+                throw new \Exception($err);
             }
             //récupere les ancien roles
             $old = $execution->getRoles();
@@ -114,6 +120,7 @@ class WorkflowNodeAddExecutionUser extends WorkflowNode implements WorkflowNodeF
             $old[]=$roles;
 
             $execution->setRoles($old);
+            $execution->info(sprintf("The role %s has been added.", $roles->getUsername()));
         }
 
         $this->activateNode($execution, $this->outNodes[0]);

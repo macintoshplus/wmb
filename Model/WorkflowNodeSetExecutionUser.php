@@ -107,6 +107,7 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode implements WorkflowNodeF
             }
 
             $execution->setRoles(array($roles));
+            $execution->info(sprintf("The role %s has been defined.", $roles->getUsername()));
         }
 
         $this->activateNode($execution, $this->outNodes[0]);
