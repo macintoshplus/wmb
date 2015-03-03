@@ -93,10 +93,14 @@ class WorkflowNodeSetExecutionUser extends WorkflowNode implements WorkflowNodeF
     {
 
         if (null === $this->configuration['form_internal_name']) {
+            $err = "Unable to use this node if form internal name is not set";
+            $execution->critical($err);
             throw new \Exception("Unable to use this node if form internal name is not set");
         }
 
         if (null === $this->configuration['field_internal_name']) {
+            $err = "Unable to use this node if field internal name is not set";
+            $execution->critical($err);
             throw new \Exception("Unable to use this node if field internal name is not set");
         }
 
