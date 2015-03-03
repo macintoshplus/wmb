@@ -51,10 +51,11 @@ class WorkflowNodeStart extends WorkflowNode
     public function execute(WorkflowExecution $execution)
     {
         $this->outNodes[0]->activate(
-          $execution,
-          $this,
-          $execution->startThread()
+            $execution,
+            $this,
+            $execution->startThread()
         );
+        $execution->info('Execution start !');
 
         return parent::execute($execution);
     }

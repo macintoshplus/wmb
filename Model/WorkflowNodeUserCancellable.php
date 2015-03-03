@@ -14,6 +14,8 @@ abstract class WorkflowNodeUserCancellable extends WorkflowNode
     public function execute(WorkflowExecution $execution)
     {
         $execution->setCancellable($this->newStatusForCancellable);
+        
+        $execution->info(sprintf('Set worflow cancellable : %s', (($this->newStatusForCancellable)? 'True':'False')));
 
         $this->activateNode($execution, $this->outNodes[0]);
 
