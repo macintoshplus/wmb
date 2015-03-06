@@ -30,7 +30,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -140,7 +140,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -278,7 +278,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -437,7 +437,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -611,7 +611,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -778,7 +778,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -1060,7 +1060,7 @@ class WorkflowNodeForm extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         //$mockExecute->getMockController()->loadFromVariableHandlers = function () {};
 
@@ -1105,14 +1105,10 @@ class WorkflowNodeForm extends Units\Test
         $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
         $node->addInNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart());
         
-        $node->setMinResponse(2);
-        //var_dump($node->verify());
-        //var_dump($node);
+        $this->assert->integer($node->getMinResponse())->isEqualTo(2);
+        $this->assert->integer($node->getMaxResponse())->isEqualTo(2);
 
-        $this->assert->exception(function() use ($node) {
-            $node->verify();
-        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
-        ->message->contains('Please set 1 for min and max.');
+        $this->assert->variable($node->verify())->isNull();
 
 
         $node->setMinResponse(1);

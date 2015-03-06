@@ -32,7 +32,7 @@ class WorkflowNodeEmail extends Units\Test
         $mockTwig->getMockController()->render = '';
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $mockDefinition = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
@@ -80,7 +80,7 @@ class WorkflowNodeEmail extends Units\Test
         $mockTwig->getMockController()->render = '';
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
         $mockExecute->getMockController()->mailerSend = function ($arg1, &$arg2) {
             $arg2[]='toto@toto.fr';

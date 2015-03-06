@@ -87,7 +87,7 @@ class WorkflowNodeExternalCounter extends WorkflowNode
             throw new WorkflowExecutionException($err);
         }
 
-        $val = $this->counter->getNext($this->configuration['counter_name']);
+        $val = $execution->getNext($this->configuration['counter_name']);
 
         $execution->setVariable($this->configuration['var_name'], $val);
 

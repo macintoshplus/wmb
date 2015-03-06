@@ -32,7 +32,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
     public function __construct(array $configuration)
     {
-        if (!isset($configuration['min_response']) || !is_integer($configuration['min_response']) || 1 < $configuration['min_response']) {
+        if (!isset($configuration['min_response']) || !is_integer($configuration['min_response']) || 1 > $configuration['min_response']) {
             $configuration['min_response'] = $this->configuration['min_response'];
         }
 
@@ -41,7 +41,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         }
 
         if (false !== $configuration['max_response'] && $configuration['max_response'] < $configuration['min_response']) {
-            $configuration['max_response'] = $configuration['min_response'];
+            $configuration['min_response'] = $configuration['max_response'];
         }
 
         if (!isset($configuration['auto_continue']) || (!is_bool($configuration['auto_continue']))) {

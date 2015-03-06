@@ -35,7 +35,7 @@ class WorkflowNodeAddExecutionUser extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array());
@@ -70,7 +70,7 @@ class WorkflowNodeAddExecutionUser extends Units\Test
         $mockSwift = new Mock\Swift_Mailer(new Mock\Swift_Transport(), $controllerSwift);
         $mockTwig = new Mock\Twig_Environment();
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1'));
@@ -108,7 +108,7 @@ class WorkflowNodeAddExecutionUser extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
 
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
@@ -152,7 +152,7 @@ class WorkflowNodeAddExecutionUser extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
 
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
@@ -212,7 +212,7 @@ class WorkflowNodeAddExecutionUser extends Units\Test
         $mockTwig = new Mock\Twig_Environment();
 
 
-        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, $controller);
+        $mockExecute = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, null, null, $controller);
         $mockExecute->getMockController()->getId = 1;
 
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser(array('form_internal_name'=>'form1', 'field_internal_name'=>'user'));
