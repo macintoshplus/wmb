@@ -4,6 +4,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 
 /**
  * WorkflowNodeExternalCounter class
@@ -12,10 +13,6 @@ use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowExcept
  **/
 class WorkflowNodeExternalCounter extends WorkflowNode
 {
-    /**
-     * @var WorkflowExternalCounterInterface
-     */
-    protected $counter;
 
     protected $configuration = array(
         'var_name'=>null,
@@ -82,23 +79,12 @@ class WorkflowNodeExternalCounter extends WorkflowNode
         return $this;
     }
 
-    /**
-     * @param WorkflowExternalCounterInterface $counter
-     * @return WorkflowNodeExternalCounter
-     */
-    public function setExternalCounter(WorkflowExternalCounterInterface $counter)
-    {
-        $this->counter = $counter;
-
-        return $this;
-    }
-
     public function execute(WorkflowExecution $execution)
     {
-        if (!isset($this->counter)) {
+        if (!$execution->hasCounter()) {
             $err = "Unable to use this node if counter service is not set";
             $execution->critical($err);
-            throw new \Exception($err);
+            throw new WorkflowExecutionException($err);
         }
 
         $val = $this->counter->getNext($this->configuration['counter_name']);

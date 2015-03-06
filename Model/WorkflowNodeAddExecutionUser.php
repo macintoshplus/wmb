@@ -5,6 +5,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use \Twig_Environment;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 
 /**
  * WorkflowNodeAddExecutionUser class
@@ -96,13 +97,13 @@ class WorkflowNodeAddExecutionUser extends WorkflowNode implements WorkflowNodeF
         if (null === $this->configuration['form_internal_name']) {
             $err = "Unable to use this node if form internal name is not set";
             $execution->critical($err);
-            throw new \Exception($err);
+            throw new WorkflowExecutionException($err);
         }
 
         if (null === $this->configuration['field_internal_name']) {
             $err = "Unable to use this node if field internal name is not set";
             $execution->critical($err);
-            throw new \Exception($err);
+            throw new WorkflowExecutionException($err);
         }
 
         $roles = $this->getRolesFromForm($execution);
@@ -110,7 +111,7 @@ class WorkflowNodeAddExecutionUser extends WorkflowNode implements WorkflowNodeF
             if (!is_object($roles) || !($roles instanceof \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowRolesInterface)) {
                 $err = "Unable to set user on execution";
                 $execution->critical($err);
-                throw new \Exception($err);
+                throw new WorkflowExecutionException($err);
             }
             //récupere les ancien roles
             $old = $execution->getRoles();

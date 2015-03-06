@@ -381,15 +381,6 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     {
         //parent::verify();
 
-        //une réponse mais pas 1
-        if ($this->getMinResponse() === $this->getMaxResponse() && $this->getMinResponse() !== 1) {
-            throw new WorkflowInvalidWorkflowException(
-                sprintf(
-                    'Node form "%s" has one response required and min_response is not 1. Please set 1 for min and max.',
-                    $this->getInternalName()
-                )
-            );
-        }
         //min > max
         if ($this->getMinResponse() > $this->getMaxResponse()) {
             throw new WorkflowInvalidWorkflowException(

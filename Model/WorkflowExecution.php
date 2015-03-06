@@ -45,6 +45,11 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     protected $twig;
 
     /**
+     * @var WorkflowExternalCounterInterface
+     */
+    protected $counterManager;
+
+    /**
      * Execution ID.
      *
      * @var integer
@@ -144,12 +149,13 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
     /**
      * @param SecurityContextInterface $security
      */
-    public function __construct(SecurityContextInterface $security, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig)
+    public function __construct(SecurityContextInterface $security, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig, WorkflowExternalCounterInterface $counterManager = null)
     {
         $this->security = $security;
         $this->logger = $logger;
         $this->mailer = $mailer;
         $this->twig = $twig;
+        $this->counterManager = $counterManager;
     }
 
     /**
@@ -1196,6 +1202,29 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
         }
 
         return $this->twig->render($template, $variables);
+    }
+
+    /**
+     * check if counter manager is set
+     * @return boolean
+     */
+    public function hasCounter()
+    {
+        return (null !== $this->counterManager);
+    }
+
+    /**
+     * Get next index for counter name
+     * @param string $name
+     * @return integer
+     */
+    public function getNext($name)
+    {
+        if (!$this->hasCounter()) {
+            throw new \Exception("No counter manager set !");
+        }
+
+        return $this->counterManager->getNext($name);
     }
 
     /**

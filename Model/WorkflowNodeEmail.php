@@ -5,6 +5,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use \Swift_Mailer;
 use \Twig_Environment;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 
 /**
  * WorkflowNodeEmail class
@@ -124,12 +125,12 @@ class WorkflowNodeEmail extends WorkflowNode
         if (!$execution->hasMailer()) {
             $err = "Unable to use this node if mailer service is not set";
             $execution->critical($err);
-            throw new \Exception($err);
+            throw new WorkflowExecutionException($err);
         }
         if (!$execution->hasTwig()) {
             $err = "Unable to use this node if twig service is not set";
             $execution->critical($err);
-            throw new \Exception($err);
+            throw new WorkflowExecutionException($err);
         }
 
         $subject = $execution->renderTemplate($this->configuration['subject']);
@@ -143,7 +144,7 @@ class WorkflowNodeEmail extends WorkflowNode
             if (null === $array || 0 === count($array)) {
                 $err = "Unable to use 'user' in 'to' email field";
                 $execution->critical($err);
-                throw new \Exception($err);
+                throw new WorkflowExecutionException($err);
             }
 
             $toDef = '';

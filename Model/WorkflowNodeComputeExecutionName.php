@@ -5,6 +5,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use \Twig_Environment;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowExecutionException;
 
 /**
  * WorkflowNodeComputeExecutionName class
@@ -52,7 +53,7 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
     {
 
         if (!$execution->hasTwig()) {
-            throw new \Exception("Enable to use this node if twig service is not set");
+            throw new WorkflowExecutionException("Enable to use this node if twig service is not set");
         }
 
         $array = $execution->getVariables();
