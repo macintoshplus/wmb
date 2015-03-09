@@ -177,7 +177,7 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
      */
     public function __toString()
     {
-        $dot = 'digraph ' . $this->workflowName . " {\n";
+        $dot = 'digraph "' . $this->workflowName . "\" {\n";
 
         foreach ($this->nodes as $key => $data) {
             $dot .= sprintf(
