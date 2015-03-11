@@ -5,7 +5,7 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Form\DataTransformer;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use JbNahan\Bundle\WorkflowManagerBundle\Manager\DefinitionManager;
-use Acme\TaskBundle\Entity\Issue;
+use JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition;
 
 class DefinitionToNumberTransformer implements DataTransformerInterface
 {
@@ -23,18 +23,20 @@ class DefinitionToNumberTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms an object (issue) to a string (number).
+     * Transforms an object (definition) to a string (number).
      *
-     * @param  Issue|null $issue
+     * @param  Definition|null $definition
      * @return string
      */
-    public function transform($issue)
+    public function transform($definition)
     {
-        if (null === $issue) {
+        if (null === $definition
+            || !is_object($definition)
+            || !($definition instanceof Definition)) {
             return "";
         }
 
-        return $issue->getId();
+        return $definition->getId();
     }
 
     /**
