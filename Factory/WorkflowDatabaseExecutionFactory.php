@@ -87,7 +87,7 @@ class WorkflowDatabaseExecutionFactory
      * @param int $workflowId
      * @return WorkflowDatabaseExecution
      */
-    public function executionByWorkflowId($workflowId)
+    public function executionByWorkflowId($workflowId, $id = null)
     {
         $wf = $this->definitionService->loadById($workflowId);
         if (!$wf->isPublished()) {
@@ -96,8 +96,10 @@ class WorkflowDatabaseExecutionFactory
         if ($wf->isArchived()) {
             throw new WorkflowExecutionException("Unable to create new execution for a archived definition");
         }
-        $execution = new WorkflowDatabaseExecution($this->entityManager, $this->definitionService, $this->security, $this->logger, $this->mailer, $this->twig, $this->counterManager);
+
+        $execution = new WorkflowDatabaseExecution($this->entityManager, $this->definitionService, $this->security, $this->logger, $this->mailer, $this->twig, $this->counterManager, $id);
         $execution->workflow = $wf;
+
         return $execution;
     }
 }

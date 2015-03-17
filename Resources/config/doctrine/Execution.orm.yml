@@ -4,14 +4,11 @@ JbNahan\Bundle\WorkflowManagerBundle\Entity\Execution:
     repositoryClass: JbNahan\Bundle\WorkflowManagerBundle\Repository\ExecutionRepository
     id:
         id:
-            type: integer
+            type: string
+            length: 50
             nullable: false
-            unsigned: false
-            comment: ''
             id: true
             column: id
-            generator:
-                strategy: IDENTITY
     fields:
         definition:
             type: integer

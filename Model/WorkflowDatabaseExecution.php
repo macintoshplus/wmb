@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 use Psr\Log\LoggerInterface;
 use \Swift_Mailer;
 use \Twig_Environment;
+use Rhumsaa\Uuid\Uuid;
 
 /**
  * Workflow executer that suspends and resumes workflow
@@ -60,8 +61,11 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      */
     public function __construct(EntityManagerInterface $entityManager, WorkflowDefinitionStorageInterface $definitionService, SecurityContextInterface $security, LoggerInterface $logger, Swift_Mailer $mailer, Twig_Environment $twig, WorkflowExternalCounterInterface $counterManager = null, $executionId = null)
     {
-        if ($executionId !== null && !is_int($executionId)) {
-            throw new WorkflowExecutionException('$executionId must be an integer.');
+        if ($executionId === null) {
+            $executionId = Uuid::uuid1()->toString();
+        } else {
+            //Vérifie la validité de l'ID
+            $uuid = Uuid::fromString($executionId);
         }
 
         parent::__construct($security, $logger, $mailer, $twig, $counterManager);
@@ -71,9 +75,9 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         $this->properties['definitionStorage'] = $definitionService;
         $this->properties['options'] = new WorkflowDatabaseOptions;
 
-        if (is_int($executionId)) {
-            $this->loadExecution($executionId);
-        }
+        //if (is_int($executionId)) {
+        $this->loadExecution($executionId);
+        //}
     }
 
     /**
@@ -158,6 +162,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
 
         $execution = new Entity\Execution();
 
+        $execution->setId($this->id);
 
         $execution->setDefinition((int)$this->workflow->id);
         $execution->setParent((int)$parentId);
@@ -172,7 +177,7 @@ class WorkflowDatabaseExecution extends WorkflowExecution
         $this->entityManager->persist($execution);
         $this->entityManager->flush();
 
-        $this->id = $execution->getId();
+        //$this->id = $execution->getId();
     }
 
     /**
@@ -303,15 +308,16 @@ class WorkflowDatabaseExecution extends WorkflowExecution
     protected function loadExecution($executionId)
     {
         $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->getExecutionById($executionId);
-
+        
+        $this->id = $executionId;
         if ($result === false || empty($result)) {
-            throw new WorkflowExecutionException(
+            /*throw new WorkflowExecutionException(
                 'Could not load execution state.'
-            );
+            );*/
+            return ;
         }
 
         $wf = $result[0];
-        $this->id = $executionId;
 
         $this->nextThreadId = $wf->getNextThreadId();
         $this->roles = $wf->getRoles();

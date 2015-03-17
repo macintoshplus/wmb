@@ -261,6 +261,14 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
             );
         }
 
+        if (null === $this->id) {
+            $err = 'No ID has been set up for execution.';
+            $this->critical($err);
+            throw new WorkflowExecutionException(
+                $err
+            );
+        }
+
         $this->cancelled = false;
         $this->ended     = false;
         $this->resumed   = false;
@@ -282,7 +290,7 @@ abstract class WorkflowExecution implements ExecutionVoterInterface
 
         // Return execution ID if the workflow has been suspended.
         if ($this->isSuspended()) {
-            return (int)$this->getId();
+            return $this->getId();
         }
     }
 
