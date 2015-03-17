@@ -160,7 +160,7 @@ class WorkflowNodeEmail extends WorkflowNode
         ->setSubject($subject)
         ->setFrom($this->configuration['from'])
         ->setTo($toArray)
-        ->setBody($body) ;
+        ->setBody($body, 'text/html');
 
         $recipient = array();
         $sent = $execution->mailerSend($message, $recipient);
