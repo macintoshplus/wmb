@@ -15,6 +15,9 @@ class WorkflowDatabaseExecution extends Units\Test
         $controller->__construct = function() {};
 
         $entityManager = new Mock\Doctrine\ORM\EntityManagerInterface();
+        $mockRepo = new Mock\Doctrine\Common\Persistence\ObjectRepository();
+        $mockRepo->getMockController()->getExecutionById = null;
+        $entityManager->getMockController()->getRepository = $mockRepo;
 
         $definitionService = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageInterface();
 
@@ -26,9 +29,11 @@ class WorkflowDatabaseExecution extends Units\Test
         $mockSwift->getMockController()->send = 1;
         $mockTwig = new Mock\Twig_Environment();
         $mockTwig->getMockController()->render = '';
+
+        $mockCounter = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExternalCounterInterface();
         //, $mockLogger, $mockSwift, $mockTwig
 
-        $execution = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig);
+        $execution = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseExecution($entityManager, $definitionService, $security, $mockLogger, $mockSwift, $mockTwig, $mockCounter);
         
         $mockDefinition = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
         $execution->workflow = $mockDefinition;

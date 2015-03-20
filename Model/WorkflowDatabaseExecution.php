@@ -307,9 +307,17 @@ class WorkflowDatabaseExecution extends WorkflowExecution
      */
     protected function loadExecution($executionId)
     {
-        $result = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution')->getExecutionById($executionId);
-        
+
         $this->id = $executionId;
+
+        $repo = $this->entityManager->getRepository('JbNahanWorkflowManagerBundle:Execution');
+        
+        if (!is_object($repo)) {
+            return;
+        }
+
+        $result = $repo->getExecutionById($executionId);
+        
         if ($result === false || empty($result)) {
             /*throw new WorkflowExecutionException(
                 'Could not load execution state.'
