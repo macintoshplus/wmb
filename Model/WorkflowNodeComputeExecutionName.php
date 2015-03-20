@@ -70,7 +70,7 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
             $array['users_name'] = $name;
         }
         
-        $name = $execution->renderTemplate($this->configuration['template']);
+        $name = html_entity_decode($execution->renderTemplate($this->configuration['template']));
 
         $execution->setName($name);
 
