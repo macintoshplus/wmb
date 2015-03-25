@@ -382,7 +382,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         //parent::verify();
 
         //min > max
-        if ($this->getMinResponse() > $this->getMaxResponse()) {
+        if (false !== $this->getMaxResponse() && $this->getMinResponse() > $this->getMaxResponse()) {
             throw new WorkflowInvalidWorkflowException(
                 sprintf(
                     'Node form "%s" has min response greater than max response.',
@@ -392,7 +392,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         }
 
         //plusieurs réponses avec auto enable
-        if ($this->getMinResponse() < $this->getMaxResponse() && true === $this->getAutoContinue()) {
+        if (false === $this->doSingleResponse() && true === $this->getAutoContinue()) {
             throw new WorkflowInvalidWorkflowException(
                 sprintf(
                     'Node form "%s" has many response required and auto_continue enable. Please disable it.',

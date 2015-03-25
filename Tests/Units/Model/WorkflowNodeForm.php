@@ -1093,7 +1093,7 @@ class WorkflowNodeForm extends Units\Test
 
     }
 
-    public function test_verify()
+    public function test_verifyAutoContinue()
     {
 
         $config=array('min_response'=>2,
@@ -1107,8 +1107,11 @@ class WorkflowNodeForm extends Units\Test
         
         $this->assert->integer($node->getMinResponse())->isEqualTo(2);
         $this->assert->integer($node->getMaxResponse())->isEqualTo(2);
-
-        $this->assert->variable($node->verify())->isNull();
+        
+        $this->assert->exception(function() use ($node) {
+            $node->verify();
+        })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
+        ->message->contains('many response required and auto_continue enable');
 
 
         $node->setMinResponse(1);
@@ -1127,9 +1130,47 @@ class WorkflowNodeForm extends Units\Test
             $node->verify();
         })->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowInvalidWorkflowException')
         ->message->contains('min response greater than max response');
+    }
 
-        $node->setMinResponse(1);
-        $node->setMaxResponse(1);
+    public function testVerifyMinEqualMaxAuto()
+    {
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>true,
+            'roles'=>array('test1','test5'));
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->addInNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart());
+        
+        $this->variable($node->verify())->isNull();
+    }
+
+
+    public function testVerifyMinEqualMaxNoAuto()
+    {
+        $config=array('min_response'=>1,
+            'max_response'=>1,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>true,
+            'roles'=>array('test1','test5'));
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->addInNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart());
+        
+        $this->variable($node->verify())->isNull();
+    }
+    public function testVerifyNoMax()
+    {
+        $config=array('min_response'=>1,
+            'max_response'=>false,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('test1','test5'));
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $node->addOutNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEnd());
+        $node->addInNode(new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeStart());
+        
         $this->variable($node->verify())->isNull();
     }
 }
