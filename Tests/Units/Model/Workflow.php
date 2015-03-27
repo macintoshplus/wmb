@@ -40,22 +40,34 @@ class Workflow extends Units\Test
 
         //var_dump($workflow->getEmailParameters());
 
-        $this->assert->exception(function () use ($workflow) {
-            $workflow->setEmailParameters('22', array());
-        })->hasMessage('Invalid param values !');
+        // $this->assert->exception(function () use ($workflow) {
+        //     $workflow->setEmailParameters('22', array());
+        // })->hasMessage('Invalid param values !');
 
         $this->assert->exception(function () use ($workflow) {
             $workflow->setEmailParameters('22', array('to'=>null, 'from'=>null, 'body'=>null, 'subject'=>null));
         })->hasMessage('Unable to set email parameters for node id 22 (node not found or not type Email)');
 
-        $config = array('to'=>'me@me2.fr', 'from'=>'you@you2.fr', 'body'=>'Write here all you want', 'subject'=>'My Subject');
+        $config = array('name'=>'test 1', 'to'=>'me@me2.fr', 'from'=>'you@you2.fr', 'body'=>'Write here all you want', 'subject'=>'My Subject');
 
         $workflow->setEmailParameters('4', $config);
 
+        $this->assert->string($nodeEmail->getName())->isEqualTo($config['name']);
         $this->assert->string($nodeEmail->getFrom())->isEqualTo($config['from']);
         $this->assert->array($nodeEmail->getTo())->hasSize(1)->contains($config['to']);
         $this->assert->string($nodeEmail->getBody())->isEqualTo($config['body']);
         $this->assert->string($nodeEmail->getSubject())->isEqualTo($config['subject']);
+
+
+        $config2 = array('to'=>['me@me3.fr', 'me@me2.fr'], 'from'=>'you@you8.fr', 'subject'=>'My Subject 2');
+
+        $workflow->setEmailParameters('4', $config2);
+
+        $this->assert->string($nodeEmail->getName())->isEqualTo($config['name']);
+        $this->assert->string($nodeEmail->getFrom())->isEqualTo($config2['from']);
+        $this->assert->array($nodeEmail->getTo())->hasSize(2)->containsValues($config2['to']);
+        $this->assert->string($nodeEmail->getBody())->isEqualTo($config['body']);
+        $this->assert->string($nodeEmail->getSubject())->isEqualTo($config2['subject']);
     }
 
     public function test_get_date()

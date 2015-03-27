@@ -455,9 +455,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
             throw new \Exception("Unable to alter published definition");
         }
         //Si le tableau de paramètre n'a pas toutes les clées
-        if (4 !== count(array_intersect_key($param, array('to'=>null, 'from'=>null, 'body'=>null, 'subject'=>null)))) {
+        /*if (4 !== count(array_intersect_key($param, array('to'=>null, 'from'=>null, 'body'=>null, 'subject'=>null)))) {
             throw new \Exception("Invalid param values !");
-        }
+        }*/
         if (!is_integer($nodeid)) {
             $nodeid = intval($nodeid);
         }
@@ -465,10 +465,15 @@ class Workflow implements Countable, WorkflowVisitableInterface
         $nodes = $this->nodes;
         foreach ($nodes as $node) {
             if ($node instanceof WorkflowNodeEmail && $node->getId() === $nodeid) {
-                $node->setFrom($param['from']);
-                $node->setTo($param['to']);
-                $node->setSubject($param['subject']);
-                $node->setBody($param['body']);
+                $arr = $node->getConfiguration();
+                $arr['name'] = $node->getName();
+                $params = array_merge($arr, $param);
+
+                $node->setName($params['name']);
+                $node->setFrom($params['from']);
+                $node->setTo($params['to']);
+                $node->setSubject($params['subject']);
+                $node->setBody($params['body']);
 
                 return;
             }
