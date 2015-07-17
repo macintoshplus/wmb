@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionStorageException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BasePropertyNotFoundException;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
+use JbNahan\Bundle\WorkflowManagerBundle\Exception\WorkflowDefinitionException;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowExecution;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDatabaseOptions;
 use JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNode;
@@ -415,33 +416,16 @@ class DefinitionManager extends BaseWorkflowDefinitionStorage
      */
     public function cloneById($workflowId)
     {
+        // Check if can clone
+        $this->canCreateNewVersion($workflowId);
+
+        //Load def
         $def = $this->loadById($workflowId);
 
-        if (!$def->isPublished()) {
-            throw new \Exception("Unable to clone a unpublished definition");
-        }
-
-
-        if ($def->isArchived()) {
-            throw new \Exception("Unable to clone a archived definition");
-        }
-
-        $repo = $this->getRepository();
-
-        $result = $repo->findBy(array('parent'=>$workflowId, 'publishedAt'=>null));
-
-        if (0 < count($result)) {
-            throw new \Exception("Unable to clone this definition. Another draft version exist.");
-        }
-
+        // compute new version
         $newVersion = $def->version + 1;
 
-        $result = $repo->findBy(array('parent'=>$workflowId, 'version'=>$newVersion));
-
-        if (0 < count($result)) {
-            throw new \Exception("Unable to clone this definition. Please clone the last version.");
-        }
-
+        //Make new version
         $def->setParent($workflowId);
         $def->id = false;
         $def->version = $newVersion;
@@ -725,6 +709,41 @@ class DefinitionManager extends BaseWorkflowDefinitionStorage
     {
         $def = $this->loadById($id);
         return $def->getDateParameters();
+    }
+
+    /**
+     * Check if you can create new version from Workflow Definition Id
+     * @param integer $workflowId
+     * @throws WorkflowDefinitionException
+     */
+    private function canCreateNewVersion($workflowId)
+    {
+        $def = $this->loadById($workflowId);
+
+        if (!$def->isPublished()) {
+            throw new WorkflowDefinitionException("Unable to create new version from a unpublished definition");
+        }
+
+
+        if ($def->isArchived()) {
+            throw new WorkflowDefinitionException("Unable to create new version from a archived definition");
+        }
+
+        $repo = $this->getRepository();
+
+        $result = $repo->findBy(array('parent'=>$workflowId, 'publishedAt'=>null));
+
+        if (0 < count($result)) {
+            throw new WorkflowDefinitionException("Unable to create new version from this definition. Another draft version exist.");
+        }
+
+        $newVersion = $def->version + 1;
+
+        $result = $repo->findBy(array('parent'=>$workflowId, 'version'=>$newVersion));
+
+        if (0 < count($result)) {
+            throw new WorkflowDefinitionException("Unable to create new version from this definition. Please create new version from the last version.");
+        }
     }
 
 
