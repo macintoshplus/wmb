@@ -73,11 +73,23 @@ class ExecutionRepository extends EntityRepository
                 ->setParameter('def', $param->getDefinition());
         }
 
+
+        if (null !== $param->getIsRunning()) {
+            if (true == $param->getIsRunning()) {
+                $param->setIsCanceled(false);
+                $param->setIsEnded(false);
+            }
+            //en cours
+            if (false == $param->getIsRunning()) {
+                $qb->andWhere($qb->expr()->orX($qb->expr()->isNotNull('e.canceledAt'), $qb->expr()->isNotNull('e.endAt')));
+            }
+        }
+
         if (null !== $param->getIsEnded()) {
             if (true == $param->getIsEnded()) {
                 $qb->andWhere($qb->expr()->isNotNull('e.endAt'));
             }
-            //c'est pas publié
+            //c'est pas fini
             if (false == $param->getIsEnded()) {
                 $qb->andWhere($qb->expr()->isNull('e.endAt'));
             }
@@ -87,11 +99,25 @@ class ExecutionRepository extends EntityRepository
             if (true == $param->getIsCanceled()) {
                 $qb->andWhere($qb->expr()->isNotNull('e.canceledAt'));
             }
-            //c'est pas publié
+            //c'est pas annulée
             if (false == $param->getIsCanceled()) {
                 $qb->andWhere($qb->expr()->isNull('e.canceledAt'));
             }
         }
+
+
+        if (null !== $param->getIsRunning()) {
+            if (true == $param->getIsRunning()) {
+                $param->setIsCanceled(false);
+                $param->setIsEnded(false);
+            }
+            //en cours
+            if (false == $param->getIsRunning()) {
+                $qb->andWhere($qb->expr()->orX($qb->expr()->isNotNull('e.canceledAt'), $qb->expr()->isNotNull('e.endAt')));
+            }
+        }
+
+        
 
         $qb = $this->addFilterDate($qb, 'e.canceledAt', $param->getCanceledAt(), $param->getCanceledAtEnd());
         $qb = $this->addFilterDate($qb, 'e.endAt', $param->getEndAt(), $param->getEndAtEnd());

@@ -98,6 +98,8 @@ class ExecutionSearch
      */
     private $roles;
 
+    private $isRunning;
+
     /**
      * Set id
      *
@@ -625,5 +627,29 @@ class ExecutionSearch
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    /**
+     * Gets the value of isRunning.
+     *
+     * @return mixed
+     */
+    public function getIsRunning()
+    {
+        return $this->isRunning;
+    }
+
+    /**
+     * Sets the value of isRunning.
+     *
+     * @param mixed $isRunning the is running
+     *
+     * @return self
+     */
+    public function setIsRunning($isRunning)
+    {
+        $this->isRunning = $isRunning;
+
+        return $this;
     }
 }
