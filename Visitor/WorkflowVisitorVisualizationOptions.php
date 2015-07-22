@@ -29,6 +29,7 @@ class WorkflowVisitorVisualizationOptions extends BaseOptions
         'colorNormal'       => '#2e3436',
         'highlightedNodes'  => array(),
         'workflowVariables' => array(),
+        'optionsByClass'    => array()
     );
 
     /**
@@ -57,6 +58,7 @@ class WorkflowVisitorVisualizationOptions extends BaseOptions
                 break;
             case 'highlightedNodes':
             case 'workflowVariables':
+            case 'optionsByClass':
                 if (!is_array($propertyValue)) {
                     throw new BaseValueException(
                         $propertyName,

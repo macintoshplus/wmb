@@ -136,17 +136,31 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
         if ($visitable instanceof WorkflowNode) {
             $id = $visitable->getId();
 
+            $className = get_class($visitable);
+
+            $defaultOptions = array();
+
+            if (array_key_exists($className, $this->options['optionsByClass'])) {
+                $defaultOptions = $this->options['optionsByClass'][$className];
+            }
+            
+            // set defaulf color if not set
+            if (!array_key_exists('color', $defaultOptions)) {
+                $defaultOptions['color'] = $this->options['colorNormal'];
+            }
+
+            // hightlight node
             if (in_array($id, $this->options['highlightedNodes'])) {
-                $color = $this->options['colorHighlighted'];
-            } else {
-                $color = $this->options['colorNormal'];
+                $defaultOptions['color'] = $this->options['colorHighlighted'];
             }
 
             if (!isset($this->nodes[$id])) {
-                $this->nodes[$id] = array(
+                $defaultOptions['label'] = (string)$visitable;
+                $this->nodes[$id] = $defaultOptions;
+                /*array(
                   'label' => (string)$visitable,
                   'color' => $color
-                );
+                );*/
             }
 
             $outNodes = array();
@@ -180,11 +194,14 @@ class WorkflowVisitorVisualization extends WorkflowVisitor
         $dot = 'digraph "' . $this->workflowName . "\" {\n";
 
         foreach ($this->nodes as $key => $data) {
+            $opt = array();
+            foreach ($data as $keyData => $value) {
+                $opt[] = sprintf('%s="%s"', $keyData, (string)$value);
+            }
             $dot .= sprintf(
-                "node%s [label=\"%s\", color=\"%s\"]\n",
+                "node%s [%s]\n",
                 $key,
-                $data['label'],
-                $data['color']
+                implode(', ', $opt)
             );
         }
 
