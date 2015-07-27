@@ -157,7 +157,7 @@ class WorkflowNodeEmail extends WorkflowNode
         $toArray = array_filter(explode(',', $finalTo));
 
         $message = \Swift_Message::newInstance()
-        ->setSubject($subject)
+        ->setSubject(html_entity_decode($subject))
         ->setFrom($this->configuration['from'])
         ->setTo($toArray)
         ->setBody($body, 'text/html');
