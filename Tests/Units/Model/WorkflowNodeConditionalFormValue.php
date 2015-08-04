@@ -115,4 +115,31 @@ class WorkflowNodeConditionalFormValue extends Units\Test
 
         $this->mock($elseEnd)->call('activate')->once();
 	}
+
+    public function test_export_xml()
+    {
+        $storage = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageXml();
+        $def = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+        $def->definitionStorage = $storage;
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalFormValue([
+        'internal_name'=>'condition1',
+        'form_internal_name'=>'form1',
+        'field_internal_name'=>'field_3_14']);
+        $def->startNode->addOutNode($node);
+        $condition = new \JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual('test1');
+
+        $node->addSelectOutNode($def->endNode, $def->finallyNode, $condition);
+
+        $element = $storage->saveToDocument($def, 1);
+
+        $this->assert->string($element->saveXML())->contains('condition1')->contains('test1')->contains('form1')->contains('field_3_14');
+        
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $nodeXml = $document->createElement('node');
+        $node->configurationToXML($nodeXml);
+
+        $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalFormValue::configurationFromXML($nodeXml);
+
+        $this->assert->array($config)->hasSize(3)->containsValues(['condition1', 'form1', 'field_3_14']);
+    }
 }

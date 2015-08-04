@@ -245,4 +245,28 @@ class WorkflowNodeAddExecutionUser extends Units\Test
         $this->assert->variable($mockExecute->getRoles())->isNull();
 
     }
+
+    public function test_export_xml()
+    {
+        $storage = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageXml();
+        $def = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+        $def->definitionStorage = $storage;
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser([
+        'form_internal_name'=>'form1',
+        'field_internal_name'=>'field_3_14']);
+        $def->startNode->addOutNode($node);
+        $node->addOutNode($def->endNode);
+
+        $document = $storage->saveToDocument($def, 1);
+
+        $this->assert->string($document->saveXML())->contains('form1')->contains('field_3_14');
+        
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $nodeXml = $document->createElement('node');
+        $node->configurationToXML($nodeXml);
+
+        $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAddExecutionUser::configurationFromXML($nodeXml);
+
+        $this->assert->array($config)->hasSize(2)->containsValues(['form1', 'field_3_14']);
+    }
 }

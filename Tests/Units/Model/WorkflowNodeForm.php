@@ -1173,4 +1173,40 @@ class WorkflowNodeForm extends Units\Test
         
         $this->variable($node->verify())->isNull();
     }
+
+
+
+    public function testExportXml()
+    {
+        $storage = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageXml();
+        $def = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+        $def->definitionStorage = $storage;
+        $config=array('min_response'=>1,
+            'max_response'=>false,
+            'internal_name'=>'form_test1',
+            'auto_continue'=>false,
+            'roles'=>array('role_1','role_2'));
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm($config);
+        $def->startNode->addOutNode($node);
+        $node->addOutNode($def->endNode);
+
+        $element = $storage->saveToDocument($def, 1);
+
+        $this->assert->string($element->saveXML())
+            ->contains('form_test1')
+            ->contains('auto_continue="false"')
+            ->contains('max_response="false"')
+            ->contains('roles')
+            ->contains('role_1')
+            ->contains('role_2');
+        
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $nodeXml = $document->createElement('node');
+        $node->configurationToXML($nodeXml);
+
+        $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm::configurationFromXML($nodeXml);
+
+        $this->assert->array($config)->hasSize(5)->containsValues(['form1', 'field_3_14']);
+    }
 }

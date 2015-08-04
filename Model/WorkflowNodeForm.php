@@ -59,6 +59,44 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         parent::__construct($configuration);
     }
 
+    
+
+    /**
+     * Generate node configuration from XML representation.
+     *
+     * @param DOMElement $element
+     * @return array
+     * @ignore
+     */
+    public static function configurationFromXML(\DOMElement $element)
+    {
+        $configuration = array(
+          'min_response'     => intval($element->getAttribute('min_response')),
+          'max_response' => (($element->getAttribute('max_response')=='0')? false:intval($element->getAttribute('max_response'))),
+          'internal_name' => $element->getAttribute('internal_name'),
+          'auto_continue' => ($element->getAttribute('auto_continue') == 'true'),
+          'roles' => explode(',', $element->getAttribute('roles'))
+        );
+
+        return $configuration;
+    }
+
+    /**
+     * Generate XML representation of this node's configuration.
+     *
+     * @param DOMElement $element
+     * @ignore
+     */
+    public function configurationToXML(\DOMElement $element)
+    {
+        $element->setAttribute('min_response', sprintf('%d', $this->configuration['min_response']));
+        $element->setAttribute('max_response', sprintf('%d', $this->configuration['max_response']));
+        $element->setAttribute('internal_name', $this->configuration['internal_name']);
+        $element->setAttribute('auto_continue', ($this->configuration['auto_continue']? 'true':'false'));
+        $element->setAttribute('roles', implode(',', $this->configuration['roles']));
+
+    }
+
     /**
      * return internal name
      * this name is use when ID for Type Form link

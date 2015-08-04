@@ -16,7 +16,7 @@
         "doctrine/doctrine-bundle": "1.2.*",
         "twig/extensions": "1.0.*",
         "jms/serializer-bundle": "0.13.*",
-        "rhumsaa/uuid": "~2.8.0",
+        "ramsey/uuid": "~2.8.0",
         "moontoast/math": "~1.1.0"
     },
     "require-dev": {

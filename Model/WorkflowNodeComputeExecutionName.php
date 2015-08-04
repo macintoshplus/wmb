@@ -29,6 +29,34 @@ class WorkflowNodeComputeExecutionName extends WorkflowNode
     }
 
     /**
+     * Generate node configuration from XML representation.
+     *
+     * @param DOMElement $element
+     * @return array
+     * @ignore
+     */
+    public static function configurationFromXML(\DOMElement $element)
+    {
+        $configuration = array(
+          'template'     => base64_decode($element->getAttribute('template'))
+        );
+
+        return $configuration;
+    }
+
+    /**
+     * Generate XML representation of this node's configuration.
+     *
+     * @param DOMElement $element
+     * @ignore
+     */
+    public function configurationToXML(\DOMElement $element)
+    {
+        $element->setAttribute('template', base64_encode($this->configuration['template']));
+
+    }
+
+    /**
      * @return string
      */
     public function getTemplate()

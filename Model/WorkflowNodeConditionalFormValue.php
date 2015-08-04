@@ -46,6 +46,39 @@ class WorkflowNodeConditionalFormValue extends WorkflowNodeConditionalBranch imp
         parent::__construct($configuration);
     }
 
+
+    /**
+     * Generate node configuration from XML representation.
+     *
+     * @param DOMElement $element
+     * @return array
+     * @ignore
+     */
+    public static function configurationFromXML(\DOMElement $element)
+    {
+        $configuration = array(
+          'internal_name'     => $element->getAttribute('internal_name'),
+          'form_internal_name'     => $element->getAttribute('form_internal_name'),
+          'field_internal_name'     => $element->getAttribute('field_internal_name')
+        );
+
+        return $configuration;
+    }
+
+    /**
+     * Generate XML representation of this node's configuration.
+     *
+     * @param DOMElement $element
+     * @ignore
+     */
+    public function configurationToXML(\DOMElement $element)
+    {
+        $element->setAttribute('internal_name', $this->configuration['internal_name']);
+        $element->setAttribute('form_internal_name', $this->configuration['form_internal_name']);
+        $element->setAttribute('field_internal_name', $this->configuration['field_internal_name']);
+
+    }
+
     /**
      * @param WorkflowNode $outNode
      * @param WorkflowNode $else

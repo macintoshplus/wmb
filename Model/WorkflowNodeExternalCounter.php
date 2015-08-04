@@ -34,6 +34,37 @@ class WorkflowNodeExternalCounter extends WorkflowNode
 
         parent::__construct($configuration);
     }
+    
+
+    /**
+     * Generate node configuration from XML representation.
+     *
+     * @param DOMElement $element
+     * @return array
+     * @ignore
+     */
+    public static function configurationFromXML(\DOMElement $element)
+    {
+        $configuration = array(
+          'var_name'     => $element->getAttribute('var_name'),
+          'counter_name' => $element->getAttribute('counter_name')
+        );
+
+        return $configuration;
+    }
+
+    /**
+     * Generate XML representation of this node's configuration.
+     *
+     * @param DOMElement $element
+     * @ignore
+     */
+    public function configurationToXML(\DOMElement $element)
+    {
+        $element->setAttribute('var_name', $this->configuration['var_name']);
+        $element->setAttribute('counter_name', $this->configuration['counter_name']);
+
+    }
 
     /**
      * @return string

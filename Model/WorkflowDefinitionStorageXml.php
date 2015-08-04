@@ -113,9 +113,7 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
             $className = $xmlNode->getAttribute('type');
 
             if (class_exists($className)) {
-                $configuration = call_user_func_array(
-                  array($className, 'configurationFromXML' ), array( $xmlNode)
-                );
+                $configuration = call_user_func_array(array($className, 'configurationFromXML'), array($xmlNode));
 
                 if (is_null($configuration)) {
                     $configuration = self::getDefaultConfiguration($className);
@@ -125,10 +123,10 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
             $node = new $className($configuration);
             $node->setId($id);
 
-            if ( $node instanceof WorkflowNodeFinally &&
+            if ($node instanceof WorkflowNodeFinally &&
                  !isset($finallyNode )) {
                 $finallyNode = $node;
-            } elseif ( $node instanceof WorkflowNodeEnd &&
+            } elseif ($node instanceof WorkflowNodeEnd &&
                       !isset($defaultEndNode )) {
                 $defaultEndNode = $node;
             } elseif ($node instanceof WorkflowNodeStart) {
@@ -139,9 +137,7 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
         }
 
         if (!isset($startNode ) || !isset( $defaultEndNode)) {
-            throw new WorkflowDefinitionStorageException(
-              'Could not load workflow definition.'
-            );
+            throw new WorkflowDefinitionStorageException('Could not load workflow definition.');
         }
 
         // Connect node objects.
@@ -169,14 +165,14 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
                         foreach ($xpath->query('outNode', $childNode) as $outNode) {
                             if (!isset($elseId)) {
                                 $nodes[$id]->addConditionalOutNode(
-                                  $condition,
-                                  $nodes[(int)$outNode->getAttribute('id')]
+                                    $condition,
+                                    $nodes[(int)$outNode->getAttribute('id')]
                                 );
                             } else {
                                 $nodes[$id]->addConditionalOutNode(
-                                  $condition,
-                                  $nodes[(int)$outNode->getAttribute('id')],
-                                  $nodes[$elseId]
+                                    $condition,
+                                    $nodes[(int)$outNode->getAttribute('id')],
+                                    $nodes[$elseId]
                                 );
 
                                 unset($elseId);
@@ -187,8 +183,7 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
             }
         }
 
-        if (!isset( $finallyNode) ||
-             count($finallyNode->getInNodes() ) > 0) {
+        if (!isset( $finallyNode) || count($finallyNode->getInNodes()) > 0) {
             $finallyNode = null;
         }
 
@@ -264,7 +259,7 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
               get_class($node)
             );
 
-            $node->configurationtoXML($xmlNode);
+            $node->configurationToXML($xmlNode);
             $root->appendChild($xmlNode);
 
             $outNodes    = $node->getOutNodes();
@@ -281,7 +276,7 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
                 $xmlOutNode = $document->createElement('outNode');
                 $xmlOutNode->setAttribute('id', $outNodeId);
 
-                if (is_subclass_of( $nodeClass, 'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalBranch') &&
+                if (is_subclass_of($nodeClass, 'JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeConditionalBranch') &&
                       $condition = $node->getCondition($outNodes[$_keys[$j]] )) {
                     if (!$node->isElse($outNodes[$_keys[$j]])) {
                         $xmlCondition = self::conditionToXml(
