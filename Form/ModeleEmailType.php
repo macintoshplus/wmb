@@ -28,10 +28,10 @@ class ModeleEmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add('to', 'text', array(
+            ->add('name', 'text', array(
                 'required'=>true,
-                'constraints'=>array(new NotBlank(), new Email(array('groups' => array('ToEmail'))))
-                ))*/
+                'constraints'=>array(new NotBlank()))
+            )
             ->add('to', 'collection', array(
                 'type'=> 'text',
                 'options'=>array('required'=>false, 'constraints'=>array(new NotBlank(), new Email())),

@@ -426,6 +426,54 @@ class Workflow implements Countable, WorkflowVisitableInterface
         return $fields;
     }
 
+    public function getFormParameters()
+    {
+        $fields = array();
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeForm) {
+                $name = $node->getName();
+                $config = array('name' => ((null !== $name)? $name:'Form '.$node->getInternalName()));
+                $config['min'] = $node->getMinResponse();
+                $config['max'] = $node->getMaxResponse();
+                $config['auto_continue'] = $node->getAutoContinue();
+                $config['roles'] = $node->getRoles();
+                $config['doConfirm'] = $node->doConfirmContinue();
+                $config['singleResponse'] = $node->doSingleResponse();
+                $fields[$node->getInternalName()] = $config;
+            }
+        }
+        return $fields;
+    }
+
+    public function setFormParameters($internalName, $config)
+    {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof WorkflowNodeForm && $node->getInternalName() == $internalName) {
+                if (array_key_exists('name', $config)) {
+                    $node->setName($config['name']);
+                }
+                
+                if (array_key_exists('min', $config)) {
+                    $node->setMinResponse($config['min']);
+                }
+                
+                if (array_key_exists('max', $config)) {
+                    $node->setMaxResponse($config['max']);
+                }
+                
+                if (array_key_exists('auto_continue', $config)) {
+                    $node->setAutoContinue($config['auto_continue']);
+                }
+                
+                if (array_key_exists('roles', $config)) {
+                    $node->setRoles($config['roles']);
+                }
+
+            }
+        }
+    }
+
+
     /**
      * @return array
      */
@@ -434,11 +482,9 @@ class Workflow implements Countable, WorkflowVisitableInterface
         $list = array();
         foreach ($this->nodes as $node) {
             if ($node instanceof WorkflowNodeEmail) {
-                $config = array('name' => $node->getName());
+                $config = $node->getConfiguration();
+                $config['name'] = $node->getName();
                 $config['to'] = $node->getTo();
-                $config['from'] = $node->getFrom();
-                $config['subject'] = $node->getSubject();
-                $config['body'] = $node->getBody();
                 $list[$node->getId()] = $config;
             }
         }

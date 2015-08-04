@@ -678,6 +678,20 @@ class DefinitionManager extends BaseWorkflowDefinitionStorage
         return $def->getFormType();
     }
 
+    public function getFormForDefinitionByType($id, $type)
+    {
+        $def = $this->loadById($id);
+        $forms = $def->getFormParameters();
+        return $forms[$type];
+    }
+
+    public function setFormParamaterForDefinition($id, $type, array $config)
+    {
+        $def = $this->loadById($id);
+        $def->setFormParameters($type, $config);
+        $this->save($def);
+    }
+
 
     /**
      * @param integer $id
