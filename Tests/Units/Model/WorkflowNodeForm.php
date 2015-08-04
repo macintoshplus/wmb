@@ -1207,6 +1207,6 @@ class WorkflowNodeForm extends Units\Test
 
         $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeForm::configurationFromXML($nodeXml);
 
-        $this->assert->array($config)->hasSize(5)->contains('form1');
+        $this->assert->array($config)->hasSize(5)->contains('form_test1');
     }
 }
