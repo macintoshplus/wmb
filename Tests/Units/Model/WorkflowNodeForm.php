@@ -1196,7 +1196,7 @@ class WorkflowNodeForm extends Units\Test
         $this->assert->string($element->saveXML())
             ->contains('form_test1')
             ->contains('auto_continue="false"')
-            ->contains('max_response="false"')
+            ->contains('max_response="0"')
             ->contains('roles')
             ->contains('role_1')
             ->contains('role_2');
