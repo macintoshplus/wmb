@@ -121,4 +121,35 @@ class WorkflowNodeEmail extends Units\Test
         $this->assert->object($node->setBody('Body contents'))->isInstanceOf('JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail');
 
     }
+
+
+    public function testExportXml()
+    {
+        $storage = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageXml();
+        $def = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+        $def->definitionStorage = $storage;
+        $config=array('from'=>'my_superbe_website@me.fr',
+            'to'=>['me@toto.fr', 'arthur@me.fr'],
+            'subject'=>'Sujet de mon mail avec du code> &gt;toto',
+            'body'=>'Contenu HTML');
+
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail($config);
+        $def->startNode->addOutNode($node);
+        $node->addOutNode($def->endNode);
+
+        $element = $storage->saveToDocument($def, 1);
+
+        $this->assert->string($element->saveXML())
+            ->contains('arthur@me.fr')
+            ->contains('from="my_superbe_website@me.fr"')
+            ->contains('me@toto.fr');
+        
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $nodeXml = $document->createElement('node');
+        $node->configurationToXML($nodeXml);
+
+        $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeEmail::configurationFromXML($nodeXml);
+
+        $this->assert->array($config)->hasSize(4)->contains('my_superbe_website@me.fr')->contains('Contenu HTML');
+    }
 }

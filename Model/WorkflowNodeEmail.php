@@ -29,6 +29,9 @@ class WorkflowNodeEmail extends WorkflowNode
         if (!isset( $configuration['to'])) {
             $configuration['to'] = 'exemple@toto.fr';
         }
+        if (is_array($configuration['to'])) {
+            $configuration['to'] = implode(',', $configuration['to']);
+        }
         if (!isset( $configuration['subject'])) {
             $configuration['subject'] = 'Email from Workflow';
         }
@@ -38,6 +41,51 @@ class WorkflowNodeEmail extends WorkflowNode
         }
 
         parent::__construct($configuration);
+    }
+
+    
+
+    /**
+     * Generate node configuration from XML representation.
+     *
+     * @param DOMElement $element
+     * @return array
+     * @ignore
+     */
+    public static function configurationFromXML(\DOMElement $element)
+    {
+        $configuration = array('from' => $element->getAttribute('from'));
+
+        $tos = $element->getElementsByTagName('to');
+        $toEmails = [];
+        foreach ($tos as $to) {
+            $toEmails[] = $to->nodeValue;
+        }
+        $configuration['to']=$toEmails;
+
+        $body = $element->getElementsByTagName('body')->item(0);
+        $configuration['body']=base64_decode($body->nodeValue);
+        $subject = $element->getElementsByTagName('subject')->item(0);
+        $configuration['subject']=($subject->nodeValue);
+
+        return $configuration;
+    }
+
+    /**
+     * Generate XML representation of this node's configuration.
+     *
+     * @param DOMElement $element
+     * @ignore
+     */
+    public function configurationToXML(\DOMElement $element)
+    {
+        $element->setAttribute('from', $this->configuration['from']);
+        foreach ($this->getTo() as $toEmail) {
+            $element->appendChild($element->ownerDocument->createElement('to', $toEmail));
+        }
+        $element->appendChild($element->ownerDocument->createElement('body', base64_encode($this->configuration['body'])));
+        $element->appendChild($element->ownerDocument->createElement('subject', ($this->configuration['subject'])));
+        
     }
 
     /**
