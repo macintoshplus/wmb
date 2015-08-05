@@ -730,7 +730,7 @@ class DefinitionManager extends BaseWorkflowDefinitionStorage
      * @param integer $workflowId
      * @throws WorkflowDefinitionException
      */
-    private function canCreateNewVersion($workflowId)
+    public function canCreateNewVersion($workflowId)
     {
         $def = $this->loadById($workflowId);
 
