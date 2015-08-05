@@ -123,8 +123,8 @@ class WorkflowNodeControlForm extends Units\Test
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array('internal_name'=>'form_1','out_date'=>new \DateTime('2015-02-01')));
 
 
-        $continueNode  = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction( 'PrintContinue' );
-        $elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction( 'PrintElse' );
+        $continueNode  = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintContinue');
+        $elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintElse');
 
         $node->addSelectOutNode($continueNode, $elseNode);
 
@@ -138,7 +138,7 @@ class WorkflowNodeControlForm extends Units\Test
 
     }
 
-    public function test_export_xml()
+    public function testExportXml()
     {
         $storage = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageXml();
         $def = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
