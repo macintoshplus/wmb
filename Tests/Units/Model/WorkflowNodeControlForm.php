@@ -153,7 +153,7 @@ class WorkflowNodeControlForm extends Units\Test
 
         $element = $storage->saveToDocument($def, 1);
 
-        $this->assert->string($element->saveXML())->contains('condition1')->contains('test1')->contains('form1')->contains('field_3_14');
+        $this->assert->string($element->saveXML())->contains('condition1')->contains('2015-02-01');
         
         $document = new \DOMDocument('1.0', 'UTF-8');
         $nodeXml = $document->createElement('node');
@@ -162,5 +162,6 @@ class WorkflowNodeControlForm extends Units\Test
         $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm::configurationFromXML($nodeXml);
 
         $this->assert->array($config)->hasSize(2)->containsValues(['condition1']);
+        $this->assert->object($config[1])->isInstanceOf('DateTime');
     }
 }
