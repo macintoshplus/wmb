@@ -36,10 +36,6 @@ class WorkflowConditionInArray extends WorkflowConditionComparison
      */
     public function evaluate($value)
     {
-        if (is_array($value)) {
-            return in_array($this->value, $value);
-        }
-        
         return in_array($value, $this->value);
     }
 
@@ -57,7 +53,6 @@ class WorkflowConditionInArray extends WorkflowConditionComparison
         for ($i = 0; $i < $count; $i++) {
             $array[$i] = var_export($array[$i], true);
         }
-
         return $this->operator . '(' . join(', ', $array) . ')';
     }
 }
