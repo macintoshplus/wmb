@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\SecurityContext;
 
 /**
@@ -28,49 +28,48 @@ class ModeleEmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array(
+            ->add('name', 'text', [
                 'required'=>true,
-                'constraints'=>array(new NotBlank()))
-            )
-            ->add('to', 'collection', array(
+                'constraints'=>[new NotBlank()]
+                ])
+            ->add('to', 'collection', [
                 'type'=> 'text',
-                'options'=>array('required'=>false, 'constraints'=>array(new NotBlank(), new Email())),
+                'options'=>['required'=>false, 'constraints'=>[new NotBlank(), new Email()]],
                 'required' => false,
                 'cascade_validation'=>true,
                 'allow_add'=>true,
                 'prototype_name'=>'__name_value__',
                 'allow_delete' => true,
                 'error_bubbling'=>false,
-                'constraints'=>array(new NotBlank())/*,
-                'by_reference'=>false*/))
-            ->add('from', 'text', array(
+                'constraints'=>[new NotBlank()]/*,
+                'by_reference'=>false*/])
+            ->add('from', 'text', [
                 'required'=>true,
-                'constraints'=>array(new NotBlank(), new Email())
-                ))
-            ->add('subject', 'text', array(
+                'constraints'=>[new NotBlank(), new Email()]
+                ])
+            ->add('subject', 'text', [
                 'required'=>true,
-                'constraints'=>array(new NotBlank())
-                ))
-            ->add('body', 'textarea', array(
+                'constraints'=>[new NotBlank()]
+                ])
+            ->add('body', 'textarea', [
                 'required'=>true,
-                'constraints'=>array(new NotBlank())
-                ))
+                'constraints'=>[new NotBlank()]
+                ])
         ;
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-         $resolver->setDefaults(array(
-        //     'data_class' => 'JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition'
+         $resolver->setDefaults([
             'validation_groups' => function (FormInterface $form) {
                 $data = $form->getData();
-                $list=array('Default');
+                $list=['Default'];
                 return $list;
             }
-         ));
+         ]);
 
     }
 
