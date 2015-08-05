@@ -417,7 +417,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
     public function verify()
     {
-        //parent::verify();
+        parent::verify();
 
         //min > max
         if (false !== $this->getMaxResponse() && $this->getMinResponse() > $this->getMaxResponse()) {
