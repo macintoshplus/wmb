@@ -162,6 +162,6 @@ class WorkflowNodeControlForm extends Units\Test
         $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm::configurationFromXML($nodeXml);
 
         $this->assert->array($config)->hasSize(2)->containsValues(['condition1']);
-        $this->assert->object($config[1])->isInstanceOf('DateTime');
+        $this->assert->object($config['out_date'])->isInstanceOf('DateTime');
     }
 }
