@@ -83,6 +83,12 @@ class DefinitionRepository extends EntityRepository
             }
             
         }
+        
+        if (null !== $param->getVersion()) {
+            $qb->andWhere('w.version = :version')
+            ->setParameter('version', $param->getVersion());
+        }
+        
         /*if (null !== $param->get()) {
             $qb->andWhere('w. =')
             ->setParameter('', $param->get());
