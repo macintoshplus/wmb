@@ -6,8 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 /**
  * Definition Type
@@ -16,14 +16,14 @@ class DefinitionType extends AbstractType
 {
 
     /**
-     * @var SecurityContext $security
+     * @var AuthorizationChecker $security
      */
     private $security;
 
     /**
-     * @param SecurityContext $security
+     * @param AuthorizationChecker $security
      */
-    public function __construct(SecurityContext $security)
+    public function __construct(AuthorizationChecker $security)
     {
         $this->security = $security;
     }
@@ -71,9 +71,9 @@ class DefinitionType extends AbstractType
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'JbNahan\Bundle\WorkflowManagerBundle\Entity\Definition'

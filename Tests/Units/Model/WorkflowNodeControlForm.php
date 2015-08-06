@@ -123,8 +123,8 @@ class WorkflowNodeControlForm extends Units\Test
         $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm(array('internal_name'=>'form_1','out_date'=>new \DateTime('2015-02-01')));
 
 
-        $continueNode  = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction( 'PrintContinue' );
-        $elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction( 'PrintElse' );
+        $continueNode  = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintContinue');
+        $elseNode = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeAction('PrintElse');
 
         $node->addSelectOutNode($continueNode, $elseNode);
 
@@ -136,5 +136,32 @@ class WorkflowNodeControlForm extends Units\Test
         //var_dump($mockExecute->getActivatedNodes());
         $this->assert->array($mockExecute->getActivatedNodes())->hasSize(2);
 
+    }
+
+    public function testExportXml()
+    {
+        $storage = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowDefinitionStorageXml();
+        $def = new Mock\JbNahan\Bundle\WorkflowManagerBundle\Model\Workflow('test');
+        $def->definitionStorage = $storage;
+        $node = new \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm([
+        'internal_name'=>'condition1',
+        'out_date'=>new \DateTime('2015-02-01')]);
+        $def->startNode->addOutNode($node);
+        $condition = new \JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual('test1');
+
+        $node->addSelectOutNode($def->endNode, $def->finallyNode, $condition);
+
+        $element = $storage->saveToDocument($def, 1);
+
+        $this->assert->string($element->saveXML())->contains('condition1')->contains('2015-02-01');
+        
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $nodeXml = $document->createElement('node');
+        $node->configurationToXML($nodeXml);
+
+        $config = \JbNahan\Bundle\WorkflowManagerBundle\Model\WorkflowNodeControlForm::configurationFromXML($nodeXml);
+
+        $this->assert->array($config)->hasSize(2)->containsValues(['condition1']);
+        $this->assert->object($config['out_date'])->isInstanceOf('DateTime');
     }
 }

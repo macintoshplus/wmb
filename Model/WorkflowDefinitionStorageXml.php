@@ -325,61 +325,82 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
         $xmlCondition->setAttribute('type', $conditionClass);
 
         switch ($conditionClass) {
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable':
                 $xmlCondition->setAttribute('name', $condition->getVariableName());
 
                 $xmlCondition->appendChild(
-                  self::conditionToXml($condition->getCondition(), $document)
+                    self::conditionToXml($condition->getCondition(), $document)
                 );
-            }
-            break;
+            
+                break;
 
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariables': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariables':
                 list($variableNameA, $variableNameB) = $condition->getVariableNames();
 
                 $xmlCondition->setAttribute('a', $variableNameA);
                 $xmlCondition->setAttribute('b', $variableNameB);
 
                 $xmlCondition->appendChild(
-                  self::conditionToXml($condition->getCondition(), $document)
+                    self::conditionToXml($condition->getCondition(), $document)
                 );
-            }
-            break;
+            
+                break;
 
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionAnd':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionOr':
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionXor': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionXor':
                 foreach ($condition->getConditions() as $childCondition) {
                     $xmlCondition->appendChild(
-                      self::conditionToXml($childCondition, $document)
+                        self::conditionToXml($childCondition, $document)
                     );
                 }
-            }
-            break;
+            
+                break;
 
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionNot': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionNot':
                 $xmlCondition->appendChild(
-                  self::conditionToXml($condition->getCondition(), $document)
+                    self::conditionToXml($condition->getCondition(), $document)
                 );
-            }
-            break;
+            
+                break;
 
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqualOrGreaterThan':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqualOrLessThan':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterThan':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsLessThan':
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsNotEqual': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsNotEqual':
                 $xmlCondition->setAttribute('value', $condition->getValue());
-            }
-            break;
+            
+                break;
 
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInArray': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInArray':
                 $xmlCondition->appendChild(
-                  self::variableToXml($condition->getValue(), $document)
+                    self::variableToXml($condition->getValue(), $document)
                 );
-            }
-            break;
+            
+                break;
+                
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionArrayContains':
+                $xmlCondition->appendChild(
+                    self::variableToXml($condition->getValue(), $document)
+                );
+            
+                break;
+
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength':
+                $xmlCondition->setAttribute('variableName', $condition->getVariableName());
+                $xmlCondition->appendChild(
+                    self::conditionToXml($condition->getCondition(), $document)
+                );
+                break;
+                
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsInstanceOf':
+                $xmlCondition->appendChild(
+                    self::variableToXml($condition->getValue(), $document)
+                );
+            
+                break;
         }
 
         return $xmlCondition;
@@ -397,26 +418,33 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
         $class = $element->getAttribute('type');
 
         switch ($class) {
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariable':
                 return new $class(
                   $element->getAttribute('name'),
                   self::xmlToCondition(self::getChildNode($element))
                 );
-            }
-            break;
+            
+                break;
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariableArrayLength':
+                return new $class(
+                  $element->getAttribute('variableName'),
+                  self::xmlToCondition(self::getChildNode($element))
+                );
+            
+                break;
 
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariables': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionVariables':
                 return new $class(
                   $element->getAttribute('a'),
                   $element->getAttribute('b'),
                   self::xmlToCondition(self::getChildNode($element))
                 );
-            }
-            break;
+            
+                break;
 
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionAnd':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionOr':
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionXor': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionXor':
                 $conditions = array();
 
                 foreach (self::getChildNodes($element) as $childNode) {
@@ -426,33 +454,43 @@ class WorkflowDefinitionStorageXml extends BaseWorkflowDefinitionStorage
                 }
 
                 return new $class($conditions);
-            }
-            break;
+            
+                break;
 
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionNot': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionNot':
                 return new $class(self::xmlToCondition(self::getChildNode($element)));
-            }
-            break;
+            
+                break;
 
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqual':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqualOrGreaterThan':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsEqualOrLessThan':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsGreaterThan':
             case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsLessThan':
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsNotEqual': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsNotEqual':
                 return new $class($element->getAttribute('value'));
-            }
-            break;
+            
+                break;
 
-            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInArray': {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionInArray':
                 return new $class(self::xmlToVariable(self::getChildNode($element)));
-            }
-            break;
+            
+                break;
 
-            default: {
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionArrayContains':
+                return new $class(self::xmlToVariable(self::getChildNode($element)));
+            
+                break;
+
+            case 'JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsInstanceOf':
+                return new $class(self::xmlToVariable(self::getChildNode($element)));
+            
+                break;
+
+            default:
                 return new $class;
-            }
-            break;
+            
+                break;
         }
     }
 
