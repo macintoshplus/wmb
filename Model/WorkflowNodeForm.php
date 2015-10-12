@@ -2,7 +2,6 @@
 
 namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
 
-use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsAnything;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsBool;
 use JbNahan\Bundle\WorkflowManagerBundle\Conditions\WorkflowConditionIsInstanceOf;
 use JbNahan\Bundle\WorkflowManagerBundle\Exception\BaseValueException;
@@ -11,7 +10,7 @@ use JbNahan\Bundle\WorkflowManagerBundle\Security\Authorization\Voter\NodeVoterI
 
 /**
  * WorkflowNodeForm class
- * Multiple response for one form
+ * Multiple response for one form.
  *
  * @author Jean-Baptiste Nahan <jbnahan at gmail dot com>
  **/
@@ -19,16 +18,18 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 {
     const PREFIX_RESPONSE = '_response';
     const PREFIX_CONTINUE = '_continue';
-    const PREFIX_REVIEW   = '_review';
-    const PREFIX_DELETED  = '_deleted';
+    const PREFIX_REVIEW = '_review';
+    const PREFIX_DELETED = '_deleted';
 
     protected $configuration = array(
-        'min_response'=>1,
-        'max_response'=>false,
-        'internal_name'=>null,
-        'auto_continue'=>false,
-        'roles'=>null
+        'min_response' => 1,
+        'max_response' => false,
+        'internal_name' => null,
+        'auto_continue' => false,
+        'roles' => null,
        );
+
+    protected $maxInNodes = 1;
 
     public function __construct(array $configuration)
     {
@@ -59,23 +60,22 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         parent::__construct($configuration);
     }
 
-    
-
     /**
      * Generate node configuration from XML representation.
      *
      * @param DOMElement $element
+     *
      * @return array
      * @ignore
      */
     public static function configurationFromXML(\DOMElement $element)
     {
         $configuration = array(
-          'min_response'     => intval($element->getAttribute('min_response')),
-          'max_response' => (($element->getAttribute('max_response')=='0')? false:intval($element->getAttribute('max_response'))),
+          'min_response' => intval($element->getAttribute('min_response')),
+          'max_response' => (($element->getAttribute('max_response') == '0') ? false : intval($element->getAttribute('max_response'))),
           'internal_name' => $element->getAttribute('internal_name'),
           'auto_continue' => ($element->getAttribute('auto_continue') == 'true'),
-          'roles' => explode(',', $element->getAttribute('roles'))
+          'roles' => explode(',', $element->getAttribute('roles')),
         );
 
         return $configuration;
@@ -92,14 +92,14 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         $element->setAttribute('min_response', sprintf('%d', $this->configuration['min_response']));
         $element->setAttribute('max_response', sprintf('%d', $this->configuration['max_response']));
         $element->setAttribute('internal_name', $this->configuration['internal_name']);
-        $element->setAttribute('auto_continue', ($this->configuration['auto_continue']? 'true':'false'));
+        $element->setAttribute('auto_continue', ($this->configuration['auto_continue'] ? 'true' : 'false'));
         $element->setAttribute('roles', implode(',', $this->configuration['roles']));
-
     }
 
     /**
      * return internal name
-     * this name is use when ID for Type Form link
+     * this name is use when ID for Type Form link.
+     *
      * @return string
      */
     public function getInternalName()
@@ -109,6 +109,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
     /**
      * @param string $name
+     *
      * @return WorkflowNodeForm
      */
     public function setInternalName($name)
@@ -119,8 +120,9 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * Return true if auto continue is disabled
-     * @return boolean
+     * Return true if auto continue is disabled.
+     *
+     * @return bool
      */
     public function doConfirmContinue()
     {
@@ -135,7 +137,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMinResponse()
     {
@@ -143,7 +145,8 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * @param integer $min
+     * @param int $min
+     *
      * @return WorkflowNodeForm
      */
     public function setMinResponse($min)
@@ -157,7 +160,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * @return false|integer
+     * @return false|int
      */
     public function getMaxResponse()
     {
@@ -165,7 +168,8 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * @param integer|false $max
+     * @param int|false $max
+     *
      * @return WorkflowNodeForm
      */
     public function setMaxResponse($max)
@@ -178,9 +182,8 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         return $this;
     }
 
-
     /**
-     * @return boolean
+     * @return bool
      */
     public function getAutoContinue()
     {
@@ -188,7 +191,8 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * @param boolean $autoContinue
+     * @param bool $autoContinue
+     *
      * @return WorkflowNodeForm
      */
     public function setAutoContinue($autoContinue)
@@ -211,6 +215,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
 
     /**
      * @param array $roles
+     *
      * @return WorkflowNodeForm
      */
     public function setRoles(array $roles = null)
@@ -221,8 +226,9 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * return true if the response count is valid
-     * @return boolean
+     * return true if the response count is valid.
+     *
+     * @return bool
      */
     public function responseIsEnough(WorkflowExecution $execution)
     {
@@ -256,9 +262,11 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     }
 
     /**
-     * return true if username si in roles
+     * return true if username si in roles.
+     *
      * @param string $username
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasRoleUsername($username)
     {
@@ -270,6 +278,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 return true;
             }
         }
+
         return false;
     }
 
@@ -280,6 +289,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 return true;
             }
         }
+
         return false;
     }
 
@@ -287,10 +297,10 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
     {
         $canExecute = true;
         $formName = $this->configuration['internal_name'];
-        $formNameResponse = $formName . WorkflowNodeForm::PREFIX_RESPONSE;
-        $formNameContinue = $formName . WorkflowNodeForm::PREFIX_CONTINUE;
-        $formNameReview   = $formName . WorkflowNodeForm::PREFIX_REVIEW;
-        $formNameDeleted  = $formName . WorkflowNodeForm::PREFIX_DELETED;
+        $formNameResponse = $formName.self::PREFIX_RESPONSE;
+        $formNameContinue = $formName.self::PREFIX_CONTINUE;
+        $formNameReview = $formName.self::PREFIX_REVIEW;
+        $formNameDeleted = $formName.self::PREFIX_DELETED;
         //$variables = $execution->getVariables();
 
         //Vérifie que les données sont renseignées
@@ -331,12 +341,11 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 }
                 unset($responses[$key]);
 
-                $responsesDeleted = ($execution->hasVariable($formNameDeleted))? $execution->getVariable($formNameDeleted):array();
+                $responsesDeleted = ($execution->hasVariable($formNameDeleted)) ? $execution->getVariable($formNameDeleted) : array();
                 $responsesDeleted[] = $response;
                 $execution->setVariable($formNameDeleted, $responsesDeleted);
 
                 $execution->info('Delete response !');
-
             } else {
                 //Pas supprimé
 
@@ -365,7 +374,6 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                             $execution->warning(sprintf('Multiple response : Response not add (count = %d) !', count($responses)));
                         }
                     }
-
                 }
             }
 
@@ -384,7 +392,6 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
             } else {
                 $canExecute = false;
             }
-
         } else {
             //ne passe pas si aucune saisie
             $canExecute = false;
@@ -406,13 +413,13 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
             if ($this->doConfirmContinue()) {
                 $execution->addWaitingFor($this, $formNameContinue, new WorkflowConditionIsBool());
             }
+
             return false;
         }
 
         $this->activateNode($execution, $this->outNodes[0]);
 
         return parent::execute($execution);
-
     }
 
     public function verify()
@@ -438,6 +445,5 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
                 )
             );
         }
-
     }
 }
