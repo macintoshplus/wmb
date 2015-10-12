@@ -29,7 +29,7 @@ class WorkflowNodeForm extends WorkflowNode implements NodeVoterInterface
         'roles' => null,
        );
 
-    protected $maxInNodes = 1;
+    protected $maxInNodes = false;
 
     public function __construct(array $configuration)
     {

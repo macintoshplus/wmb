@@ -23,15 +23,15 @@ namespace JbNahan\Bundle\WorkflowManagerBundle\Model;
  * $node->addOutNode($workflow->endNode);
  * ?>
  * </code>
- *
  */
 class WorkflowNodeEnd extends WorkflowNode
 {
+    protected $maxInNodes = false;
     /**
      * Constraint: The minimum number of outgoing nodes this node has to have
      * to be valid.
      *
-     * @var integer
+     * @var int
      */
     protected $minOutNodes = 0;
 
@@ -39,7 +39,7 @@ class WorkflowNodeEnd extends WorkflowNode
      * Constraint: The maximum number of outgoing nodes this node has to have
      * to be valid.
      *
-     * @var integer
+     * @var int
      */
     protected $maxOutNodes = 0;
 
@@ -47,8 +47,9 @@ class WorkflowNodeEnd extends WorkflowNode
      * Ends the execution of this workflow.
      *
      * @param WorkflowExecution $execution
-     * @return boolean true when the node finished execution,
-     *                 and false otherwise
+     *
+     * @return bool true when the node finished execution,
+     *              and false otherwise
      * @ignore
      */
     public function execute(WorkflowExecution $execution)
